@@ -27,5 +27,5 @@ jobs:
       - name: Test
         run: |
           for dir in ./gleansdk ./gleancli; do \
-            cd $dir; go test --race --covermode=atomic ./...; cd ..;\
+            cd $dir; go test --race --covermode=atomic ./...; cd ..; \
           done
