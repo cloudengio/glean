@@ -27,6 +27,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           cache: true
+          cache-dependency-path: gleancli/go.sum
 
       - name: Test
         run: |
