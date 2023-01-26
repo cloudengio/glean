@@ -28,5 +28,6 @@ jobs:
 
       - name: Test
         run: |
-          cd github.com/vanadium/go.lib
-          go test -failfast --covermode=atomic -race ./...
+          for dir in ./gleansdk ./gleancli; do ; \
+                go test --race --covermode=atomic ./...; \
+          done

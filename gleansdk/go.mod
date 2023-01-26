@@ -1,4 +1,4 @@
-module github.com/cosnicolaou/gleansdk
+module github.com/cloudengio/glean/gleansdk
 
 go 1.13
 
