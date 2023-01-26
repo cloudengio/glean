@@ -1,8 +1,8 @@
-![linux](https://github.com/cloudengio/go.pkgs/actions/workflows/linux.yml/badge.svg)
-![macos](https://github.com/cloudengio/go.pkgs/actions/workflows/macos.yml/badge.svg)
-![windows](https://github.com/cloudengio/go.pkgs/actions/workflows/windows.yml/badge.svg)
-![lint-govuln](https://github.com/cloudengio/go.pkgs/actions/workflows/lint-govuln.yml/badge.svg)
-![CodeQL](https://github.com/cloudengio/go.pkgs/actions/workflows/codeql.yml/badge.svg)
+![linux](https://github.com/cloudengio/glean/actions/workflows/linux.yml/badge.svg)
+![macos](https://github.com/cloudengio/glean/actions/workflows/macos.yml/badge.svg)
+![windows](https://github.com/cloudengio/glean/actions/workflows/windows.yml/badge.svg)
+![lint-govuln](https://github.com/cloudengio/glean/actions/workflows/lint-govuln.yml/badge.svg)
+![CodeQL](https://github.com/cloudengio/glean/actions/workflows/codeql.yml/badge.svg)
 
 # Glean support in go.
 
