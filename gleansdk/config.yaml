@@ -1,0 +1,5 @@
+additionalProperties:
+  packageName: gleansdk
+  disallowAdditionalPropertiesIfNotPresent: true
+  packageVersion: 0.9.0
+
