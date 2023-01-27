@@ -22,16 +22,23 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           cache: true
-          cache-dependency-path: ./go.sum
+          cache-dependency-path: ./gleancli/go.sum
 
       - name: Lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+          working-directory: ./gleansdk
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: ./gleancli
 
       - name: Vulnerabilities
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
-	  for dir in ./gleansdk ./gleancli; do ; \
-		cd $dir; govulncheck ./...; cd .. ; \
-	  done
+          for dir in ./gleansdk ./gleancli; do \
+              cd $dir; govulncheck ./...; cd .. ; \
+          done
