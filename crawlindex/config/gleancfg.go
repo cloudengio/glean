@@ -12,11 +12,11 @@ import (
 	"github.com/cloudengio/glean/gleansdk"
 )
 
-type GleanConfigFlags struct {
+type GleanFlags struct {
 	Config string `subcmd:"config,$HOME/.glean.yaml,'glean config file'"`
 }
 
-type GleanConfig []struct {
+type Glean []struct {
 	Name string `yaml:"name"`
 	Auth struct {
 		BearerToken string `yaml:"token"`
@@ -26,7 +26,7 @@ type GleanConfig []struct {
 	}
 }
 
-func (c GleanConfig) String() string {
+func (c Glean) String() string {
 	var out strings.Builder
 	for _, cfg := range c {
 		fmt.Fprintf(&out, "name: %s\n  auth:\n", cfg.Name)
@@ -38,7 +38,7 @@ func (c GleanConfig) String() string {
 	return out.String()
 }
 
-func (c GleanConfig) NewAPIClient(ctx context.Context, name string) (context.Context, *gleansdk.APIClient, error) {
+func (c Glean) NewAPIClient(ctx context.Context, name string) (context.Context, *gleansdk.APIClient, error) {
 	for _, cfg := range c {
 		if cfg.Name == name {
 			templateVars := map[string]string{

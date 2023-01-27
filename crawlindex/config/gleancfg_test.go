@@ -25,7 +25,7 @@ const configSpec = `
 `
 
 func TestConfig(t *testing.T) {
-	var cfg config.GleanConfig
+	var cfg config.Glean
 	if err := cmdutil.ParseYAMLConfigString(configSpec, &cfg); err != nil {
 		t.Fatal(err)
 	}

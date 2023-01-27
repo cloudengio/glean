@@ -13,22 +13,34 @@ import (
 	"sync"
 
 	"cloudeng.io/errors"
+	"cloudeng.io/file"
+	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl"
 	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/file/download"
 	"cloudeng.io/path"
 	"cloudeng.io/path/cloudpath"
 	"cloudeng.io/sync/errgroup"
+	"github.com/cloudengio/glean/crawlindex"
 	"github.com/cloudengio/glean/crawlindex/config"
 )
 
+// Flags represents the flags that are used to control the crawl.
 type Flags struct {
 	config.FileFlags
 	Outlinks bool `subcmd:"outlinks,false,display extracted outlinks"`
 	Progress bool `subcmd:"progress,true,'display progress of downloads'"`
 }
 
-func Run(ctx context.Context, gleanConfig config.GleanConfig, fv *Flags, datasource string) error {
+// Crawler represents a crawler instance that contains global configuration
+// information.
+type Crawler struct {
+	GleanConfig config.Glean
+	Extractors  func() map[content.Type]outlinks.Extractor
+	FSForCrawl  func(config.Crawl) map[string]file.FSFactory
+}
+
+func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 	cfg, err := config.DatasourceForName(fv.ConfigFile, datasource)
 	if err != nil {
 		return err
@@ -54,11 +66,14 @@ func Run(ctx context.Context, gleanConfig config.GleanConfig, fv *Flags, datasou
 	for _, crawl := range cfg.Crawls {
 		crawlCache := filepath.Join(cachePath, crawl.Cache.Prefix)
 		crawler := crawler{
-			name:       crawl.Name,
-			cachePath:  crawlCache,
-			Flags:      fv,
-			Crawl:      crawl,
-			Datasource: cfg,
+			name:        crawl.Name,
+			gleanConfig: c.GleanConfig,
+			extractors:  c.Extractors,
+			fsForCrawl:  c.FSForCrawl,
+			cachePath:   crawlCache,
+			Flags:       fv,
+			Crawl:       crawl,
+			Datasource:  cfg,
 		}
 		g.Go(func() error {
 			return crawler.run(ctx)
@@ -69,8 +84,11 @@ func Run(ctx context.Context, gleanConfig config.GleanConfig, fv *Flags, datasou
 
 type crawler struct {
 	*Flags
-	name      string
-	cachePath string
+	gleanConfig config.Glean
+	extractors  func() map[content.Type]outlinks.Extractor
+	fsForCrawl  func(config.Crawl) map[string]file.FSFactory
+	name        string
+	cachePath   string
 	config.Crawl
 	config.Datasource
 }
@@ -92,7 +110,7 @@ func (c *crawler) run(ctx context.Context) error {
 		return fmt.Errorf("unable to determine a file system for seeds: %v", rejected)
 	}
 
-	requests, err := c.Crawl.CreateSeedCrawlRequests(ctx, configured.FSForCrawl(c.Crawl), seedsByScheme)
+	requests, err := c.Crawl.CreateSeedCrawlRequests(ctx, c.fsForCrawl(c.Crawl), seedsByScheme)
 	if err != nil {
 		return err
 	}
@@ -117,7 +135,7 @@ func (c *crawler) run(ctx context.Context) error {
 		return fmt.Errorf("failed to compile link processing rules: %v", err)
 	}
 
-	extractorRegistry, err := c.Crawl.ExtractorRegistry(configured.Extractors())
+	extractorRegistry, err := c.Crawl.ExtractorRegistry(c.extractors())
 	if err != nil {
 		return fmt.Errorf("failed to create extractor registry: %v", err)
 	}
@@ -183,7 +201,8 @@ func (c crawler) saveCrawled(ctx context.Context, prefix string, crawledCh chan 
 			}
 			prefix, suffix := sharder.Assign(prefix + dld.Name)
 			path := filepath.Join(c.cachePath, prefix, suffix)
-			err := encoding.WriteDownload(filepath.Join(c.cachePath, prefix), suffix, dld)
+			doc := crawlindex.NewDownloadDocument(&dld, content.TypeForPath(dld.Name))
+			err := doc.WriteToFile(filepath.Join(c.cachePath, prefix), suffix)
 			if err != nil {
 				fmt.Printf("failed to write: %v as %v: %v\n", dld.Name, path, err)
 				continue
