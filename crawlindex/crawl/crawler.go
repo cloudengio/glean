@@ -18,11 +18,11 @@ import (
 	"cloudeng.io/file/crawl"
 	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/file/download"
+	"cloudeng.io/glean/crawlindex"
+	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/path"
 	"cloudeng.io/path/cloudpath"
 	"cloudeng.io/sync/errgroup"
-	"github.com/cloudengio/glean/crawlindex"
-	"github.com/cloudengio/glean/crawlindex/config"
 )
 
 // Flags represents the flags that are used to control the crawl.

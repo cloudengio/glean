@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudengio/glean/gleansdk"
+	"cloudeng.io/glean/gleansdk"
 )
 
 type GleanFlags struct {

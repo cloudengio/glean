@@ -1,3 +1,3 @@
-module github.com/cloudengio/glean/gleancli
+module cloudeng.io/glean/gleancli
 
 go 1.19

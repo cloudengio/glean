@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"cloudeng.io/cmdutil"
-	"github.com/cloudengio/glean/crawlindex/config"
+	"cloudeng.io/glean/crawlindex/config"
 )
 
 const bulkIndexSpec = `

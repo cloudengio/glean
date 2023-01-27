@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	"cloudeng.io/cmdutil"
-	"github.com/cloudengio/glean/gleansdk"
+	"cloudeng.io/glean/gleansdk"
 )
 
 // FileFlags represents a command line flag for the datasource config file.

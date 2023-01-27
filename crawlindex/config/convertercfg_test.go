@@ -9,7 +9,7 @@ import (
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/file/content"
-	"github.com/cloudengio/glean/crawlindex/config"
+	"cloudeng.io/glean/crawlindex/config"
 )
 
 const convertersSpec = `
