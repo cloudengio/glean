@@ -32,6 +32,6 @@ jobs:
       - name: Vulnerabilities
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
-	  for dir in ./gleansdk ./gleancli; do ; \
-		cd $dir; govulncheck ./...; cd .. ; \
-	  done
+          for dir in ./gleansdk ./gleancli; do ; \
+              cd $dir; govulncheck ./...; cd .. ; \
+          done
