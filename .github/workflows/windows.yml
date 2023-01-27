@@ -31,6 +31,6 @@ jobs:
 
       - name: Test
         run: |
-          for dir in ./gleansdk ./gleancli; do \
-                cd $dir; go test --race --covermode=atomic ./...; cd ..; \
-          done
+          foreach ($dir in @("gleancli", "gleansdk")) { \
+		cd $dir; go test --race --covermode=atomic ./...; cd ..; \
+          }
