@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           cache: true
-          cache-dependency-path: ./go.sum
+          cache-dependency-path: ./gleancli/go.sum
 
       - name: Lint
         uses: golangci/golangci-lint-action@v3
