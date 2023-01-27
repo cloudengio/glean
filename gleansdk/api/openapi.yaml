@@ -1,0 +1,2741 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: support@glean.com
+  description: |
+    # Introduction
+    In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
+
+    # Early Access
+    Please note that we are continually evolving the system so these APIs are considered “early access” and are subject to change.
+  title: Glean Indexing API
+  version: 0.9.0
+servers:
+- url: "https://{domain}-be.glean.com/api/index/v1"
+  variables:
+    domain:
+      default: domain
+      description: Email domain (without extension) that determines the deployment
+        backend.
+security:
+- BearerAuth: []
+tags:
+- description: Manage datasources.
+  name: Datasources
+- description: Index documents from a datasource.
+  name: Documents
+- description: Index employee people data.
+  name: People
+- description: "Manage users, groups and membership."
+  name: Permissions
+paths:
+  /indexdocument:
+    post:
+      description: Adds a document to the index or updates an existing document.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexDocumentRequest'
+        required: true
+        x-exportParamName: IndexDocumentRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index document
+      tags:
+      - Documents
+  /getdocumentcount:
+    post:
+      description: Fetches document count for the specified custom datasource.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetDocumentCountRequest'
+        required: true
+        x-exportParamName: GetDocumentCountRequest
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentCountResponse'
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Get document count
+      tags:
+      - Documents
+  /getdocumentstatus:
+    post:
+      description: Intended for debugging/validation. Fetches the current upload and
+        indexing status of documents.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetDocumentStatusRequest'
+        required: true
+        x-exportParamName: GetDocumentStatusRequest
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentStatusResponse'
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+      summary: Get document upload and indexing status
+      tags:
+      - Documents
+  /bulkindexdocuments:
+    post:
+      description: Replaces the documents in a datasource using paginated batch API
+        calls.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkIndexDocumentsRequest'
+        required: true
+        x-exportParamName: BulkIndexDocumentsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index documents
+      tags:
+      - Documents
+  /processalldocuments:
+    post:
+      description: |
+        Schedules the immediate processing of documents uploaded through the indexing API. By default the uploaded documents will be processed asynchronously but this API can be used to schedule processing of all documents on demand.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessAllDocumentsRequest'
+        x-exportParamName: ProcessAllDocumentsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "429":
+          description: The rate limit for invoking /processalldocuments has been hit
+      summary: Schedules the processing of uploaded documents
+      tags:
+      - Documents
+  /deletedocument:
+    post:
+      description: Deletes the specified document from the index. Succeeds if document
+        is not present.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteDocumentRequest'
+        required: true
+        x-exportParamName: DeleteDocumentRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Delete document
+      tags:
+      - Documents
+  /indexuser:
+    post:
+      description: Adds a datasource user or updates an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexUserRequest'
+        required: true
+        x-exportParamName: IndexUserRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index user
+      tags:
+      - Permissions
+  /getusercount:
+    post:
+      description: Fetches user count for the specified custom datasource.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetUserCountRequest'
+        required: true
+        x-exportParamName: GetUserCountRequest
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserCountResponse'
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Get user count
+      tags:
+      - Permissions
+  /bulkindexusers:
+    post:
+      description: Replaces the users in a datasource using paginated batch API calls.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkIndexUsersRequest'
+        required: true
+        x-exportParamName: BulkIndexUsersRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index users
+      tags:
+      - Permissions
+  /indexgroup:
+    post:
+      description: Add or update a group in the datasource.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexGroupRequest'
+        required: true
+        x-exportParamName: IndexGroupRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index group
+      tags:
+      - Permissions
+  /bulkindexgroups:
+    post:
+      description: Replaces the groups in a datasource using paginated batch API calls.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkIndexGroupsRequest'
+        required: true
+        x-exportParamName: BulkIndexGroupsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index groups
+      tags:
+      - Permissions
+  /indexmembership:
+    post:
+      description: Add the memberships of a group in the datasource.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexMembershipRequest'
+        required: true
+        x-exportParamName: IndexMembershipRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index membership
+      tags:
+      - Permissions
+  /bulkindexmemberships:
+    post:
+      description: Replaces the memberships for a group in a datasource using paginated
+        batch API calls.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkIndexMembershipsRequest'
+        required: true
+        x-exportParamName: BulkIndexMembershipsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index memberships for a group
+      tags:
+      - Permissions
+  /processallmemberships:
+    post:
+      description: |
+        Schedules the immediate processing of all group memberships uploaded through the indexing API. By default the uploaded group memberships will be processed asynchronously but this API can be used to schedule processing of all memberships on demand.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessAllMembershipsRequest'
+        x-exportParamName: ProcessAllMembershipsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+      summary: Schedules the processing of group memberships
+      tags:
+      - Permissions
+  /deleteuser:
+    post:
+      description: Delete the user from the datasource. Silently succeeds if user
+        is not present.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserRequest'
+        required: true
+        x-exportParamName: DeleteUserRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Delete user
+      tags:
+      - Permissions
+  /deletegroup:
+    post:
+      description: Delete group from the datasource. Silently succeeds if group is
+        not present.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteGroupRequest'
+        required: true
+        x-exportParamName: DeleteGroupRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Delete group
+      tags:
+      - Permissions
+  /deletemembership:
+    post:
+      description: Delete membership to a group in the specified datasource. Silently
+        succeeds if membership is not present.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteMembershipRequest'
+        required: true
+        x-exportParamName: DeleteMembershipRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Delete membership
+      tags:
+      - Permissions
+  /checkdocumentaccess:
+    post:
+      description: Check if a given user has access to access a document in a custom
+        datasource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckDocumentAccessRequest'
+        required: true
+        x-exportParamName: CheckDocumentAccessRequest
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckDocumentAccessResponse'
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+      summary: Check document access
+      tags:
+      - Permissions
+  /betausers:
+    post:
+      description: Allow the datasource be visible to the specified beta users. The
+        default behaviour is datasource being visible to all users if it is enabled
+        and not visible to any user if it is not enabled.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GreenlistUsersRequest'
+        required: true
+        x-exportParamName: GreenlistUsersRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Beta users
+      tags:
+      - Permissions
+  /adddatasource:
+    post:
+      description: API to register a custom datasource type and its schema.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomDatasourceConfig'
+        required: true
+        x-exportParamName: DatasourceConfig
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+      summary: Add datasource
+      tags:
+      - Datasources
+  /getdatasourceconfig:
+    post:
+      description: Fetches the datasource config for the specified custom datasource.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetDatasourceConfigRequest'
+        required: true
+        x-exportParamName: GetDatasourceConfigRequest
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomDatasourceConfig'
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Get datasource config
+      tags:
+      - Datasources
+  /indexemployee:
+    post:
+      description: Adds an employee or updates information about an employee
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/IndexEmployeeRequest'
+        required: true
+        x-exportParamName: IndexEmployeeRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index employee
+      tags:
+      - People
+  /bulkindexemployees:
+    post:
+      description: Replaces all the currently indexed employees using paginated batch
+        API calls.
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/BulkIndexEmployeesRequest'
+        required: true
+        x-exportParamName: BulkIndexEmployeesRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index employees
+      tags:
+      - People
+  /indexemployeelist:
+    post:
+      deprecated: true
+      description: Bulk upload details of all the employees. This deletes all employees
+        uploaded in the prior batch. SOON TO BE DEPRECATED in favor of /bulkindexemployees.
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/IndexEmployeeListRequest'
+        required: true
+        x-exportParamName: IndexEmployeeListRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index employees
+      tags:
+      - People
+  /deleteemployee:
+    post:
+      description: Delete an employee. Silently succeeds if employee is not present.
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/DeleteEmployeeRequest'
+        required: true
+        x-exportParamName: DeleteEmployeeRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Delete employee
+      tags:
+      - People
+  /indexteam:
+    post:
+      description: Adds a team or updates information about a team
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/IndexTeamRequest'
+        required: true
+        x-exportParamName: IndexTeamRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Index team
+      tags:
+      - People
+  /bulkindexteams:
+    post:
+      description: Replaces all the currently indexed teams using paginated batch
+        API calls.
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/BulkIndexTeamsRequest'
+        required: true
+        x-exportParamName: BulkIndexTeamsRequest
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "409":
+          description: Conflict
+      summary: Bulk index teams
+      tags:
+      - People
+components:
+  schemas:
+    IndexDocumentRequest:
+      description: Describes the request body of the /indexdocument API call
+      example:
+        document:
+          container: container
+          summary:
+            textContent: textContent
+            mimeType: mimeType
+            binaryContent: binaryContent
+          owner:
+            datasourceUserId: datasourceUserId
+            name: name
+            email: email
+          updatedBy:
+            datasourceUserId: datasourceUserId
+            name: name
+            email: email
+          author:
+            datasourceUserId: datasourceUserId
+            name: name
+            email: email
+          title: title
+          body:
+            textContent: textContent
+            mimeType: mimeType
+            binaryContent: binaryContent
+          objectType: objectType
+          tags:
+          - tags
+          - tags
+          interactions:
+            numComments: 2
+            numLikes: 5
+            numViews: 5
+          createdAt: 6
+          customProperties:
+          - name: name
+            value: ""
+          - name: name
+            value: ""
+          datasource: datasource
+          permissions:
+            allowAnonymousAccess: true
+            allowAllDatasourceUsersAccess: true
+            allowedUsers:
+            - datasourceUserId: datasourceUserId
+              name: name
+              email: email
+            - datasourceUserId: datasourceUserId
+              name: name
+              email: email
+            allowedGroupIntersections:
+            - requiredGroups:
+              - requiredGroups
+              - requiredGroups
+            - requiredGroups:
+              - requiredGroups
+              - requiredGroups
+            allowedGroups:
+            - allowedGroups
+            - allowedGroups
+          viewURL: viewURL
+          additionalUrls:
+          - additionalUrls
+          - additionalUrls
+          id: id
+          updatedAt: 1
+          status: status
+        version: 0
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        document:
+          $ref: '#/components/schemas/DocumentDefinition'
+      required:
+      - document
+      type: object
+    GetDocumentCountRequest:
+      description: Describes the request body of the /getdocumentcount API call
+      example:
+        name: name
+      properties:
+        name:
+          description: Datasource name for which document count is needed.
+          type: string
+      required:
+      - name
+      type: object
+    GetDocumentCountResponse:
+      description: Describes the response body of the /getdocumentcount API call
+      example:
+        documentCount: 0
+      properties:
+        documentCount:
+          description: Number of documents corresponding to the specified custom datasource.
+          type: integer
+      type: object
+    GetDocumentStatusRequest:
+      description: Describes the request body for /getdocumentstatus API call
+      example:
+        datasource: datasource
+        docId: docId
+        objectType: objectType
+      properties:
+        datasource:
+          description: Datasource to get fetch document status for
+          type: string
+        objectType:
+          description: Object type of the document to get the status for
+          type: string
+        docId:
+          description: Document ID within the datasource to get the status for
+          type: string
+      required:
+      - datasource
+      - docId
+      - objectType
+      type: object
+    GetDocumentStatusResponse:
+      description: Describes the response body of the /getdocumentstatus API call
+      example:
+        lastUploadedAt: 0
+        uploadStatus: uploadStatus
+        indexingStatus: indexingStatus
+        lastIndexedAt: 6
+      properties:
+        uploadStatus:
+          description: "Upload status, enum of NOT_UPLOADED, UPLOADED, STATUS_UNKNOWN"
+          type: string
+        lastUploadedAt:
+          description: "Time of last successful upload, in epoch seconds"
+          format: int64
+          type: integer
+        indexingStatus:
+          description: "Indexing status, enum of NOT_INDEXED, INDEXED, STATUS_UNKNOWN"
+          type: string
+        lastIndexedAt:
+          description: "Time of last successful indexing, in epoch seconds"
+          format: int64
+          type: integer
+      type: object
+    BulkIndexRequest:
+      description: Describes the request body of the /bulkindexteams API call
+      properties:
+        uploadId:
+          description: Unique id that must be used for this instance of datasource
+            employees upload
+          type: string
+        isFirstPage:
+          description: true if this is the first page of the upload. Defaults to false
+          type: boolean
+        isLastPage:
+          description: true if this is the last page of the upload. Defaults to false
+          type: boolean
+        forceRestartUpload:
+          description: Flag to discard previous upload attempts and start from scratch.
+            Must be specified with isFirstPage=true
+          type: boolean
+      required:
+      - uploadId
+      type: object
+    BulkIndexTeamsRequest:
+      allOf:
+      - $ref: '#/components/schemas/BulkIndexRequest'
+      - $ref: '#/components/schemas/BulkIndexTeamsRequest_allOf'
+      description: Describes the request body of the /bulkindexteams API call
+      type: object
+    BulkIndexEmployeesRequest:
+      allOf:
+      - $ref: '#/components/schemas/BulkIndexRequest'
+      - $ref: '#/components/schemas/BulkIndexEmployeesRequest_allOf'
+      description: Describes the request body of the /bulkindexemployees API call
+      type: object
+    BulkIndexDocumentsRequest:
+      allOf:
+      - $ref: '#/components/schemas/BulkIndexRequest'
+      - $ref: '#/components/schemas/BulkIndexDocumentsRequest_allOf'
+      description: Describes the request body of the /bulkindexdocuments API call
+      type: object
+    ProcessAllDocumentsRequest:
+      description: Describes the request body of the /processalldocuments API call
+      example:
+        datasource: datasource
+      properties:
+        datasource:
+          description: "If provided, process documents only for this custom datasource.\
+            \ Otherwise all uploaded documents are processed."
+          type: string
+      type: object
+    DeleteDocumentRequest:
+      description: Describes the request body of the /deletedocument API call
+      example:
+        datasource: datasource
+        id: id
+        version: 0
+        objectType: objectType
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: datasource of the document
+          type: string
+        objectType:
+          description: object type of the document
+          type: string
+        id:
+          description: The id of the document
+          type: string
+      required:
+      - datasource
+      - id
+      - objectType
+      type: object
+    IndexUserRequest:
+      description: Describes the request body of the /indexuser API call
+      example:
+        datasource: datasource
+        version: 0
+        user:
+          name: name
+          isActive: true
+          userId: userId
+          email: email
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the user is added
+          type: string
+        user:
+          $ref: '#/components/schemas/DatasourceUserDefinition'
+      required:
+      - datasource
+      - user
+      type: object
+    GetUserCountRequest:
+      description: Describes the request body of the /getusercount API call
+      example:
+        name: name
+      properties:
+        name:
+          description: Datasource name for which user count is needed.
+          type: string
+      type: object
+    GetUserCountResponse:
+      description: Describes the response body of the /getusercount API call
+      example:
+        userCount: 0
+      properties:
+        userCount:
+          description: Number of users corresponding to the specified custom datasource.
+          type: integer
+      type: object
+    BulkIndexUsersRequest:
+      description: Describes the request body for the /bulkindexusers API call
+      example:
+        uploadId: uploadId
+        datasource: datasource
+        isLastPage: true
+        isFirstPage: true
+        forceRestartUpload: true
+        users:
+        - name: name
+          isActive: true
+          userId: userId
+          email: email
+        - name: name
+          isActive: true
+          userId: userId
+          email: email
+      properties:
+        uploadId:
+          description: Unique id that must be used for this instance of datasource
+            users upload
+          type: string
+        isFirstPage:
+          description: true if this is the first page of the upload. Defaults to false
+          type: boolean
+        isLastPage:
+          description: true if this is the last page of the upload. Defaults to false
+          type: boolean
+        forceRestartUpload:
+          description: Flag to discard previous upload attempts and start from scratch.
+            Must be specified with isFirstPage=true
+          type: boolean
+        datasource:
+          description: datasource of the users
+          type: string
+        users:
+          description: batch of users for the datasource
+          items:
+            $ref: '#/components/schemas/DatasourceUserDefinition'
+          type: array
+      required:
+      - datasource
+      - uploadId
+      - users
+      type: object
+    GreenlistUsersRequest:
+      description: Describes the request body of the /betausers API call
+      example:
+        emails:
+        - emails
+        - emails
+        datasource: datasource
+      properties:
+        datasource:
+          description: Datasource which needs to be made visible to users specified
+            in the `emails` field.
+          type: string
+        emails:
+          description: The emails of the beta users
+          items:
+            format: email
+            type: string
+          type: array
+      required:
+      - datasource
+      - emails
+      type: object
+    DatasourceUserDefinition:
+      description: describes a user in the datasource
+      example:
+        name: name
+        isActive: true
+        userId: userId
+        email: email
+      properties:
+        email:
+          type: string
+        userId:
+          description: To be supplied if the user id in the datasource is not the
+            email
+          type: string
+        name:
+          type: string
+        isActive:
+          description: set to false if the user is a former employee or a bot
+          type: boolean
+      required:
+      - name
+      type: object
+    IndexGroupRequest:
+      description: Describes the request body of the /indexgroup API call
+      example:
+        datasource: datasource
+        version: 0
+        group:
+          name: name
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the group is added
+          type: string
+        group:
+          $ref: '#/components/schemas/DatasourceGroupDefinition'
+      required:
+      - datasource
+      - group
+      type: object
+    BulkIndexGroupsRequest:
+      description: Describes the request body for the /bulkindexgroups API call
+      example:
+        uploadId: uploadId
+        datasource: datasource
+        isLastPage: true
+        groups:
+        - name: name
+        - name: name
+        isFirstPage: true
+        forceRestartUpload: true
+      properties:
+        uploadId:
+          description: Unique id that must be used for this instance of datasource
+            groups upload
+          type: string
+        isFirstPage:
+          description: true if this is the first page of the upload. Defaults to false
+          type: boolean
+        isLastPage:
+          description: true if this is the last page of the upload. Defaults to false
+          type: boolean
+        forceRestartUpload:
+          description: Flag to discard previous upload attempts and start from scratch.
+            Must be specified with isFirstPage=true
+          type: boolean
+        datasource:
+          description: datasource of the groups
+          type: string
+        groups:
+          description: batch of groups for the datasource
+          items:
+            $ref: '#/components/schemas/DatasourceGroupDefinition'
+          type: array
+      required:
+      - datasource
+      - groups
+      - uploadId
+      type: object
+    DatasourceGroupDefinition:
+      description: describes a group in the datasource
+      example:
+        name: name
+      properties:
+        name:
+          description: "name of the group. Should be unique among all groups for the\
+            \ datasource, and cannot have spaces."
+          type: string
+      required:
+      - name
+      type: object
+    IndexMembershipRequest:
+      description: Describes the request body of the /indexmembership API call
+      example:
+        datasource: datasource
+        membership:
+          memberGroupName: memberGroupName
+          groupName: groupName
+          memberUserId: memberUserId
+        version: 0
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the membership is added
+          type: string
+        membership:
+          $ref: '#/components/schemas/DatasourceMembershipDefinition'
+      required:
+      - datasource
+      - membership
+      type: object
+    BulkIndexMembershipsRequest:
+      description: Describes the request body for the /bulkindexmemberships API call
+      example:
+        uploadId: uploadId
+        datasource: datasource
+        isLastPage: true
+        isFirstPage: true
+        forceRestartUpload: true
+        memberships:
+        - memberGroupName: memberGroupName
+          memberUserId: memberUserId
+        - memberGroupName: memberGroupName
+          memberUserId: memberUserId
+        group: group
+      properties:
+        uploadId:
+          description: Unique id that must be used for this instance of datasource
+            group memberships upload
+          type: string
+        isFirstPage:
+          description: true if this is the first page of the upload. Defaults to false
+          type: boolean
+        isLastPage:
+          description: true if this is the last page of the upload. Defaults to false
+          type: boolean
+        forceRestartUpload:
+          description: Flag to discard previous upload attempts and start from scratch.
+            Must be specified with isFirstPage=true
+          type: boolean
+        datasource:
+          description: datasource of the memberships
+          type: string
+        group:
+          description: group who's memberships are specified
+          type: string
+        memberships:
+          description: batch of memberships for the group
+          items:
+            $ref: '#/components/schemas/DatasourceBulkMembershipDefinition'
+          type: array
+      required:
+      - datasource
+      - memberships
+      - uploadId
+      type: object
+    ProcessAllMembershipsRequest:
+      description: Describes the request body of the /processallmemberships API call
+      example:
+        datasource: datasource
+      properties:
+        datasource:
+          description: "If provided, process group memberships only for this custom\
+            \ datasource. Otherwise all uploaded memberships are processed."
+          type: string
+      type: object
+    DatasourceMembershipDefinition:
+      description: describes the membership row of a group. Only one of memberUserId
+        and memberGroupName can be specified.
+      example:
+        memberGroupName: memberGroupName
+        groupName: groupName
+        memberUserId: memberUserId
+      properties:
+        groupName:
+          description: The group for which the membership is specified
+          type: string
+        memberUserId:
+          description: "If the member is a user, then the email or datasource id for\
+            \ the user"
+          type: string
+        memberGroupName:
+          description: "If the member is a group, then the name of the member group"
+          type: string
+      required:
+      - groupName
+      type: object
+    DatasourceBulkMembershipDefinition:
+      description: describes the membership row of a group in the bulk uploaded. Only
+        one of memberUserId and memberGroupName can be specified.
+      example:
+        memberGroupName: memberGroupName
+        memberUserId: memberUserId
+      properties:
+        memberUserId:
+          description: "If the member is a user, then the email or datasource id for\
+            \ the user"
+          type: string
+        memberGroupName:
+          description: "If the member is a group, then the name of the member group"
+          type: string
+      type: object
+    DeleteUserRequest:
+      description: Describes the request body of the /deleteuser API call
+      example:
+        datasource: datasource
+        version: 0
+        email: email
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the user is removed
+          type: string
+        email:
+          description: The email of the user to be deleted
+          type: string
+      required:
+      - datasource
+      - email
+      type: object
+    DeleteGroupRequest:
+      description: Describes the request body of the /deletegroup API call
+      example:
+        groupName: groupName
+        datasource: datasource
+        version: 0
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the group is removed
+          type: string
+        groupName:
+          description: the name of the group to be deleted
+          type: string
+      required:
+      - datasource
+      - groupName
+      type: object
+    DeleteMembershipRequest:
+      description: Describes the request body of the /deletemembership API call
+      example:
+        datasource: datasource
+        membership:
+          memberGroupName: memberGroupName
+          groupName: groupName
+          memberUserId: memberUserId
+        version: 0
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        datasource:
+          description: The datasource for which the membership is removed
+          type: string
+        membership:
+          $ref: '#/components/schemas/DatasourceMembershipDefinition'
+      required:
+      - datasource
+      - membership
+      type: object
+    DeleteEmployeeRequest:
+      description: Describes the request body of the /deleteemployee API call
+      example:
+        employeeEmail: employeeEmail
+        version: 0
+      properties:
+        version:
+          description: Version number for document for optimistic concurrency control.
+            If absent or 0 then no version checks are done.
+          format: int64
+          type: integer
+        employeeEmail:
+          description: The deleted employee's email
+          type: string
+      required:
+      - employeeEmail
+      type: object
+    DocumentDefinition:
+      description: Indexable document structure
+      example:
+        container: container
+        summary:
+          textContent: textContent
+          mimeType: mimeType
+          binaryContent: binaryContent
+        owner:
+          datasourceUserId: datasourceUserId
+          name: name
+          email: email
+        updatedBy:
+          datasourceUserId: datasourceUserId
+          name: name
+          email: email
+        author:
+          datasourceUserId: datasourceUserId
+          name: name
+          email: email
+        title: title
+        body:
+          textContent: textContent
+          mimeType: mimeType
+          binaryContent: binaryContent
+        objectType: objectType
+        tags:
+        - tags
+        - tags
+        interactions:
+          numComments: 2
+          numLikes: 5
+          numViews: 5
+        createdAt: 6
+        customProperties:
+        - name: name
+          value: ""
+        - name: name
+          value: ""
+        datasource: datasource
+        permissions:
+          allowAnonymousAccess: true
+          allowAllDatasourceUsersAccess: true
+          allowedUsers:
+          - datasourceUserId: datasourceUserId
+            name: name
+            email: email
+          - datasourceUserId: datasourceUserId
+            name: name
+            email: email
+          allowedGroupIntersections:
+          - requiredGroups:
+            - requiredGroups
+            - requiredGroups
+          - requiredGroups:
+            - requiredGroups
+            - requiredGroups
+          allowedGroups:
+          - allowedGroups
+          - allowedGroups
+        viewURL: viewURL
+        additionalUrls:
+        - additionalUrls
+        - additionalUrls
+        id: id
+        updatedAt: 1
+        status: status
+      properties:
+        title:
+          description: "Document title, in plain text, if present."
+          type: string
+        container:
+          description: The container for the content (Folder for example for file
+            content).
+          type: string
+        datasource:
+          type: string
+        objectType:
+          description: "The type of the document (Case, KnowledgeArticle for Salesforce\
+            \ for example). It cannot have spaces or _"
+          type: string
+        viewURL:
+          description: The permalink for viewing the document.
+          type: string
+        id:
+          description: The datasource specific id for the document. This should not
+            be more than 200 characters in length.
+          type: string
+        summary:
+          $ref: '#/components/schemas/ContentDefinition'
+        body:
+          $ref: '#/components/schemas/ContentDefinition'
+        author:
+          $ref: '#/components/schemas/UserReferenceDefinition'
+        owner:
+          $ref: '#/components/schemas/UserReferenceDefinition'
+        permissions:
+          $ref: '#/components/schemas/DocumentPermissionsDefinition'
+        createdAt:
+          description: "The creation time, in epoch seconds."
+          format: int64
+          type: integer
+        updatedAt:
+          description: "The last update time, in epoch seconds."
+          format: int64
+          type: integer
+        updatedBy:
+          $ref: '#/components/schemas/UserReferenceDefinition'
+        tags:
+          description: Labels associated with the document.
+          items:
+            type: string
+          type: array
+        interactions:
+          $ref: '#/components/schemas/DocumentInteractionsDefinition'
+        status:
+          type: string
+        additionalUrls:
+          description: Additional variations of the url that this document points
+            to.
+          items:
+            type: string
+          type: array
+        customProperties:
+          description: Additional metadata properties of the document.
+          items:
+            $ref: '#/components/schemas/CustomProperty'
+          type: array
+      required:
+      - datasource
+      type: object
+    ContentDefinition:
+      description: Describes text content or base64 encoded binary content
+      example:
+        textContent: textContent
+        mimeType: mimeType
+        binaryContent: binaryContent
+      properties:
+        mimeType:
+          type: string
+        textContent:
+          description: text content. Only one of textContent or binary content can
+            be specified
+          type: string
+        binaryContent:
+          description: base64 encoded binary content. Only one of textContent or binary
+            content can be specified
+          type: string
+      required:
+      - mimeType
+      type: object
+    UserReferenceDefinition:
+      description: Describes how a user is referenced in a document. The user can
+        be referenced by email or by a datasource specific id.
+      example:
+        datasourceUserId: datasourceUserId
+        name: name
+        email: email
+      properties:
+        email:
+          type: string
+        datasourceUserId:
+          description: some datasources refer to the user by the datasource user id
+            in the document
+          type: string
+        name:
+          type: string
+      type: object
+    PermissionsGroupIntersectionDefinition:
+      description: describes a list of groups that are all required in a permissions
+        constraint
+      example:
+        requiredGroups:
+        - requiredGroups
+        - requiredGroups
+      properties:
+        requiredGroups:
+          items:
+            type: string
+          type: array
+      type: object
+    DocumentPermissionsDefinition:
+      description: describes the access control details of the document
+      example:
+        allowAnonymousAccess: true
+        allowAllDatasourceUsersAccess: true
+        allowedUsers:
+        - datasourceUserId: datasourceUserId
+          name: name
+          email: email
+        - datasourceUserId: datasourceUserId
+          name: name
+          email: email
+        allowedGroupIntersections:
+        - requiredGroups:
+          - requiredGroups
+          - requiredGroups
+        - requiredGroups:
+          - requiredGroups
+          - requiredGroups
+        allowedGroups:
+        - allowedGroups
+        - allowedGroups
+      properties:
+        allowedUsers:
+          description: List of users who can view the document
+          items:
+            $ref: '#/components/schemas/UserReferenceDefinition'
+          type: array
+        allowedGroups:
+          description: List of groups that can view the document
+          items:
+            type: string
+          type: array
+        allowedGroupIntersections:
+          description: List of allowed group intersections. This describes a permissions
+            constraint of the form ((GroupA AND GroupB AND GroupC) OR (GroupX AND
+            GroupY) OR ...
+          items:
+            $ref: '#/components/schemas/PermissionsGroupIntersectionDefinition'
+          type: array
+        allowAnonymousAccess:
+          description: "If true, then any Glean user can view the document"
+          type: boolean
+        allowAllDatasourceUsersAccess:
+          description: "If true, then any user who has an account in the datasource\
+            \ can view the document."
+          type: boolean
+      type: object
+    DocumentInteractionsDefinition:
+      description: describes the interactions on the document
+      example:
+        numComments: 2
+        numLikes: 5
+        numViews: 5
+      properties:
+        numViews:
+          type: integer
+        numLikes:
+          type: integer
+        numComments:
+          type: integer
+      type: object
+    CheckDocumentAccessRequest:
+      description: Describes the request body of the /checkdocumentaccess API call
+      example:
+        datasource: datasource
+        docId: docId
+        userEmail: userEmail
+        objectType: objectType
+      properties:
+        datasource:
+          description: Datasource of document to get check access for
+          type: string
+        objectType:
+          description: Object type of document to get check access for
+          type: string
+        docId:
+          description: ID of document to get check access for
+          type: string
+        userEmail:
+          description: Email of user to check access for
+          type: string
+      required:
+      - datasource
+      - docId
+      - objectType
+      - userEmail
+      type: object
+    CheckDocumentAccessResponse:
+      description: Describes the response body of the /checkdocumentaccess API call
+      example:
+        hasAccess: true
+      properties:
+        hasAccess:
+          description: "If true, user has access to document for search"
+          type: boolean
+      type: object
+    CustomProperty:
+      description: Describes the custom properties of the object.
+      example:
+        name: name
+        value: ""
+      properties:
+        name:
+          type: string
+        value:
+          description: "Must either be a string or an array of strings. An integer,\
+            \ boolean, etc. is not valid. When OpenAPI Generator supports `oneOf`,\
+            \ we can semantically enforce this."
+      type: object
+    DatasourceConfig:
+      $ref: '#/components/schemas/SharedDatasourceConfig'
+    GetDatasourceConfigRequest:
+      description: Describes the request body of the /getdatasourceconfig API call
+      example:
+        name: name
+      properties:
+        name:
+          description: Datasource name for which config is needed.
+          type: string
+      type: object
+    DatasourceConfigList:
+      description: List of datasource configurations.
+      properties:
+        datasourceConfig:
+          description: Datasource configuration.
+          items:
+            $ref: '#/components/schemas/SharedDatasourceConfig'
+          type: array
+      required:
+      - datasourceConfig
+    IndexEmployeeRequest:
+      description: Info about an employee and optional version for that info
+      example:
+        employee:
+          profileUrl: profileUrl
+          lastName: lastName
+          businessUnit: businessUnit
+          additionalFields:
+          - value:
+            - "{}"
+            - "{}"
+            key: key
+          - value:
+            - "{}"
+            - "{}"
+            key: key
+          endDate: 2000-01-23
+          bio: bio
+          title: title
+          alsoKnownAs:
+          - alsoKnownAs
+          - alsoKnownAs
+          photoUrl: https://openapi-generator.tech
+          managerEmail: managerEmail
+          pronoun: pronoun
+          socialNetworks:
+          - profileName: profileName
+            profileUrl: profileUrl
+            name: name
+          - profileName: profileName
+            profileUrl: profileUrl
+            name: name
+          preferredName: preferredName
+          id: id
+          department: department
+          datasourceProfiles:
+          - isUserGenerated: true
+            datasource: github
+            handle: handle
+            nativeAppUrl: nativeAppUrl
+            url: url
+          - isUserGenerated: true
+            datasource: github
+            handle: handle
+            nativeAppUrl: nativeAppUrl
+            url: url
+          email: email
+          teams:
+          - name: name
+            id: id
+            url: https://openapi-generator.tech
+          - name: name
+            id: id
+            url: https://openapi-generator.tech
+          managerId: managerId
+          structuredLocation:
+            zipCode: zipCode
+            country: country
+            address: address
+            city: city
+            timezone: timezone
+            countryCode: countryCode
+            state: state
+            region: region
+            deskLocation: deskLocation
+          firstName: firstName
+          phoneNumber: phoneNumber
+          location: location
+          startDate: 2000-01-23
+          status: CURRENT
+        version: 0
+      properties:
+        employee:
+          $ref: '#/components/schemas/EmployeeInfoDefinition'
+        version:
+          description: Version number for the employee object. If absent or 0 then
+            no version checks are done
+          format: int64
+          type: integer
+      required:
+      - employee
+      type: object
+    IndexEmployeeListRequest:
+      description: Describes the request body of the /indexemployeelist API call
+      example:
+        employees:
+        - employee:
+            profileUrl: profileUrl
+            lastName: lastName
+            businessUnit: businessUnit
+            additionalFields:
+            - value:
+              - "{}"
+              - "{}"
+              key: key
+            - value:
+              - "{}"
+              - "{}"
+              key: key
+            endDate: 2000-01-23
+            bio: bio
+            title: title
+            alsoKnownAs:
+            - alsoKnownAs
+            - alsoKnownAs
+            photoUrl: https://openapi-generator.tech
+            managerEmail: managerEmail
+            pronoun: pronoun
+            socialNetworks:
+            - profileName: profileName
+              profileUrl: profileUrl
+              name: name
+            - profileName: profileName
+              profileUrl: profileUrl
+              name: name
+            preferredName: preferredName
+            id: id
+            department: department
+            datasourceProfiles:
+            - isUserGenerated: true
+              datasource: github
+              handle: handle
+              nativeAppUrl: nativeAppUrl
+              url: url
+            - isUserGenerated: true
+              datasource: github
+              handle: handle
+              nativeAppUrl: nativeAppUrl
+              url: url
+            email: email
+            teams:
+            - name: name
+              id: id
+              url: https://openapi-generator.tech
+            - name: name
+              id: id
+              url: https://openapi-generator.tech
+            managerId: managerId
+            structuredLocation:
+              zipCode: zipCode
+              country: country
+              address: address
+              city: city
+              timezone: timezone
+              countryCode: countryCode
+              state: state
+              region: region
+              deskLocation: deskLocation
+            firstName: firstName
+            phoneNumber: phoneNumber
+            location: location
+            startDate: 2000-01-23
+            status: CURRENT
+          version: 0
+        - employee:
+            profileUrl: profileUrl
+            lastName: lastName
+            businessUnit: businessUnit
+            additionalFields:
+            - value:
+              - "{}"
+              - "{}"
+              key: key
+            - value:
+              - "{}"
+              - "{}"
+              key: key
+            endDate: 2000-01-23
+            bio: bio
+            title: title
+            alsoKnownAs:
+            - alsoKnownAs
+            - alsoKnownAs
+            photoUrl: https://openapi-generator.tech
+            managerEmail: managerEmail
+            pronoun: pronoun
+            socialNetworks:
+            - profileName: profileName
+              profileUrl: profileUrl
+              name: name
+            - profileName: profileName
+              profileUrl: profileUrl
+              name: name
+            preferredName: preferredName
+            id: id
+            department: department
+            datasourceProfiles:
+            - isUserGenerated: true
+              datasource: github
+              handle: handle
+              nativeAppUrl: nativeAppUrl
+              url: url
+            - isUserGenerated: true
+              datasource: github
+              handle: handle
+              nativeAppUrl: nativeAppUrl
+              url: url
+            email: email
+            teams:
+            - name: name
+              id: id
+              url: https://openapi-generator.tech
+            - name: name
+              id: id
+              url: https://openapi-generator.tech
+            managerId: managerId
+            structuredLocation:
+              zipCode: zipCode
+              country: country
+              address: address
+              city: city
+              timezone: timezone
+              countryCode: countryCode
+              state: state
+              region: region
+              deskLocation: deskLocation
+            firstName: firstName
+            phoneNumber: phoneNumber
+            location: location
+            startDate: 2000-01-23
+            status: CURRENT
+          version: 0
+      properties:
+        employees:
+          description: List of employee info and version.
+          items:
+            $ref: '#/components/schemas/IndexEmployeeRequest'
+          type: array
+      type: object
+    StructuredLocation:
+      description: "Detailed location with information about country, state, city\
+        \ etc."
+      example:
+        zipCode: zipCode
+        country: country
+        address: address
+        city: city
+        timezone: timezone
+        countryCode: countryCode
+        state: state
+        region: region
+        deskLocation: deskLocation
+      properties:
+        deskLocation:
+          description: Desk number.
+          type: string
+        timezone:
+          description: "Location's timezone, e.g. UTC, PST."
+          type: string
+        address:
+          description: Office address or name.
+          type: string
+        city:
+          description: Name of the city.
+          type: string
+        state:
+          description: State code.
+          type: string
+        region:
+          description: "Region information, e.g. NORAM, APAC."
+          type: string
+        zipCode:
+          description: ZIP Code for the address.
+          type: string
+        country:
+          description: Country name.
+          type: string
+        countryCode:
+          description: "Alpha-2 or Alpha-3 ISO 3166 country code, e.g. US or USA."
+          type: string
+      type: object
+    SocialNetworkDefinition:
+      description: Employee's social network profile
+      example:
+        profileName: profileName
+        profileUrl: profileUrl
+        name: name
+      properties:
+        name:
+          description: "Possible values are \"twitter\", \"linkedin\"."
+          type: string
+        profileName:
+          description: Human-readable profile name.
+          type: string
+        profileUrl:
+          description: Link to profile.
+          type: string
+      type: object
+    AdditionalFieldDefinition:
+      description: Additional information about the employee.
+      example:
+        value:
+        - "{}"
+        - "{}"
+        key: key
+      properties:
+        key:
+          description: "Key to reference this field, e.g. \"languages\"."
+          type: string
+        value:
+          description: |
+            List of type string or HypertextField.
+
+            HypertextField is defined as
+            ```
+            {
+              anchor: string,    // Anchor text for the hypertext field.
+              hyperlink: string, // URL for the hypertext field.
+            }
+            ```
+            Example: ```{"anchor":"Glean","hyperlink":"https://glean.com"}```
+
+            When OpenAPI Generator supports oneOf, we will semantically enforce this in the docs.
+          items:
+            description: "Either a string or HypertextField. When OpenAPI Generator\
+              \ supports oneOf, we can semantically enforce this in the docs."
+            type: object
+          type: array
+      type: object
+    HypertextField:
+      properties:
+        anchor:
+          description: Anchor text for the hypertext field.
+          type: string
+        hyperlink:
+          description: URL for the hypertext field.
+          type: string
+      type: object
+    EmployeeInfoDefinition:
+      description: Describes employee info
+      example:
+        profileUrl: profileUrl
+        lastName: lastName
+        businessUnit: businessUnit
+        additionalFields:
+        - value:
+          - "{}"
+          - "{}"
+          key: key
+        - value:
+          - "{}"
+          - "{}"
+          key: key
+        endDate: 2000-01-23
+        bio: bio
+        title: title
+        alsoKnownAs:
+        - alsoKnownAs
+        - alsoKnownAs
+        photoUrl: https://openapi-generator.tech
+        managerEmail: managerEmail
+        pronoun: pronoun
+        socialNetworks:
+        - profileName: profileName
+          profileUrl: profileUrl
+          name: name
+        - profileName: profileName
+          profileUrl: profileUrl
+          name: name
+        preferredName: preferredName
+        id: id
+        department: department
+        datasourceProfiles:
+        - isUserGenerated: true
+          datasource: github
+          handle: handle
+          nativeAppUrl: nativeAppUrl
+          url: url
+        - isUserGenerated: true
+          datasource: github
+          handle: handle
+          nativeAppUrl: nativeAppUrl
+          url: url
+        email: email
+        teams:
+        - name: name
+          id: id
+          url: https://openapi-generator.tech
+        - name: name
+          id: id
+          url: https://openapi-generator.tech
+        managerId: managerId
+        structuredLocation:
+          zipCode: zipCode
+          country: country
+          address: address
+          city: city
+          timezone: timezone
+          countryCode: countryCode
+          state: state
+          region: region
+          deskLocation: deskLocation
+        firstName: firstName
+        phoneNumber: phoneNumber
+        location: location
+        startDate: 2000-01-23
+        status: CURRENT
+      properties:
+        email:
+          description: The employee's email
+          type: string
+        firstName:
+          description: The first name of the employee
+          type: string
+        lastName:
+          description: The last name of the employee
+          type: string
+        preferredName:
+          description: The preferred name or nickname of the employee
+          type: string
+        id:
+          description: |
+            **[Advanced]** A unique universal internal identifier for the employee. This is solely used for understanding manager relationships along with `managerId`.
+          type: string
+        phoneNumber:
+          description: The employee's phone number.
+          type: string
+        location:
+          deprecated: true
+          description: The employee's location (city/office name etc).
+          type: string
+        structuredLocation:
+          $ref: '#/components/schemas/StructuredLocation'
+        title:
+          description: The employee's role title.
+          type: string
+        photoUrl:
+          description: The employee's profile pic
+          format: uri
+          type: string
+        businessUnit:
+          description: Typically the highest level organizational unit; generally
+            applies to bigger companies with multiple distinct businesses.
+          type: string
+        department:
+          description: "An organizational unit where everyone has a similar task,\
+            \ e.g. `Engineering`."
+          type: string
+        datasourceProfiles:
+          description: "The datasource profiles of the employee, e.g. `Slack`,`Github`."
+          items:
+            $ref: '#/components/schemas/DatasourceProfile'
+          type: array
+        teams:
+          description: Info about the employee's team(s)
+          items:
+            $ref: '#/components/schemas/EmployeeTeamInfo'
+          type: array
+        startDate:
+          description: The date when the employee started
+          format: date
+          type: string
+        endDate:
+          description: "If a former employee, the last date of employment."
+          format: date
+          type: string
+        bio:
+          description: Short biography or mission statement of the employee.
+          type: string
+        pronoun:
+          description: "She/her, He/his or other pronoun."
+          type: string
+        alsoKnownAs:
+          description: Other names associated with the employee.
+          items:
+            type: string
+          type: array
+        profileUrl:
+          description: Link to internal company person profile.
+          type: string
+        socialNetworks:
+          description: List of social network profiles.
+          items:
+            $ref: '#/components/schemas/SocialNetworkDefinition'
+          type: array
+        managerEmail:
+          description: The email of the employee's manager
+          type: string
+        managerId:
+          description: |
+            **[Advanced]** A unique universal internal identifier for the employee's manager. This is solely used in conjunction with `id`.
+          type: string
+        status:
+          default: CURRENT
+          description: "The status of the employee, an enum of `CURRENT`, `FUTURE`,\
+            \ `EX`"
+          type: string
+        additionalFields:
+          description: List of additional fields with more information about the employee.
+          items:
+            $ref: '#/components/schemas/AdditionalFieldDefinition'
+          type: array
+      required:
+      - department
+      - email
+      type: object
+    EmployeeAndVersionDefinition:
+      description: describes info about an employee and optional version for that
+        info
+      properties:
+        employee:
+          $ref: '#/components/schemas/EmployeeInfoDefinition'
+        version:
+          description: Version number for the employee object. If absent or 0 then
+            no version checks are done
+          format: int64
+          type: integer
+      required:
+      - info
+      type: object
+    EmployeeTeamInfo:
+      description: Information about which team an employee belongs to
+      example:
+        name: name
+        id: id
+        url: https://openapi-generator.tech
+      properties:
+        id:
+          description: unique identifier for this team
+          type: string
+        name:
+          description: Team name
+          type: string
+        url:
+          description: Link to internal company team page
+          format: uri
+          type: string
+      type: object
+    TeamMember:
+      description: Information about a team's member
+      example:
+        join_date: 2000-01-23
+        relationship: MEMBER
+        email: email
+      properties:
+        email:
+          description: The member's email
+          format: email
+          type: string
+        relationship:
+          default: MEMBER
+          description: "The member's relationship to the team, an enum of `MEMBER`,\
+            \ `MANAGER`, `LEAD`, `POINT_OF_CONTACT`, `OTHER`"
+          type: string
+        join_date:
+          description: The member's start date
+          format: date
+          type: string
+      required:
+      - email
+      type: object
+    TeamEmail:
+      description: Information about a team's email
+      example:
+        type: OTHER
+        email: email
+      properties:
+        email:
+          description: An email address
+          format: email
+          type: string
+        type:
+          default: OTHER
+          description: "An enum of `PRIMARY`, `SECONDARY`, `ONCALL`, `OTHER`"
+          type: string
+      required:
+      - email
+      - type
+      type: object
+    TeamInfoDefinition:
+      description: Information about an employee's team
+      example:
+        emails:
+        - type: OTHER
+          email: email
+        - type: OTHER
+          email: email
+        photoUrl: https://openapi-generator.tech
+        businessUnit: businessUnit
+        externalLink: https://openapi-generator.tech
+        members:
+        - join_date: 2000-01-23
+          relationship: MEMBER
+          email: email
+        - join_date: 2000-01-23
+          relationship: MEMBER
+          email: email
+        name: name
+        description: description
+        id: id
+        department: department
+        datasourceProfiles:
+        - isUserGenerated: true
+          datasource: github
+          handle: handle
+          nativeAppUrl: nativeAppUrl
+          url: url
+        - isUserGenerated: true
+          datasource: github
+          handle: handle
+          nativeAppUrl: nativeAppUrl
+          url: url
+      properties:
+        id:
+          description: The unique ID of the team
+          type: string
+        name:
+          description: Human-readable team name
+          type: string
+        description:
+          description: The description of this team
+          type: string
+        businessUnit:
+          description: Typically the highest level organizational unit; generally
+            applies to bigger companies with multiple distinct businesses.
+          type: string
+        department:
+          description: "An organizational unit where everyone has a similar task,\
+            \ e.g. `Engineering`."
+          type: string
+        photoUrl:
+          description: A link to the team's photo
+          format: uri
+          type: string
+        externalLink:
+          description: |
+            A link to an external team page. If set, team results will link to it.
+          format: uri
+          type: string
+        emails:
+          description: The emails of the team
+          items:
+            $ref: '#/components/schemas/TeamEmail'
+          type: array
+        datasourceProfiles:
+          description: The datasource profiles of the team
+          items:
+            $ref: '#/components/schemas/DatasourceProfile'
+          type: array
+        members:
+          description: The members of the team
+          items:
+            $ref: '#/components/schemas/TeamMember'
+          type: array
+      required:
+      - id
+      - members
+      - name
+      type: object
+    IndexTeamRequest:
+      description: Info about a team and optional version for that info
+      example:
+        team:
+          emails:
+          - type: OTHER
+            email: email
+          - type: OTHER
+            email: email
+          photoUrl: https://openapi-generator.tech
+          businessUnit: businessUnit
+          externalLink: https://openapi-generator.tech
+          members:
+          - join_date: 2000-01-23
+            relationship: MEMBER
+            email: email
+          - join_date: 2000-01-23
+            relationship: MEMBER
+            email: email
+          name: name
+          description: description
+          id: id
+          department: department
+          datasourceProfiles:
+          - isUserGenerated: true
+            datasource: github
+            handle: handle
+            nativeAppUrl: nativeAppUrl
+            url: url
+          - isUserGenerated: true
+            datasource: github
+            handle: handle
+            nativeAppUrl: nativeAppUrl
+            url: url
+        version: 0
+      properties:
+        team:
+          $ref: '#/components/schemas/TeamInfoDefinition'
+        version:
+          description: Version number for the team object. If absent or 0 then no
+            version checks are done
+          format: int64
+          type: integer
+      required:
+      - team
+      type: object
+    PropertyDefinition:
+      properties:
+        name:
+          description: "The name of the property in the `DocumentMetadata` (e.g. 'createTime',\
+            \ 'updateTime', 'author', 'container'). In the future, this will support\
+            \ custom properties too."
+          type: string
+        displayLabel:
+          description: The user friendly label for the property.
+          type: string
+        displayLabelPlural:
+          description: The user friendly label for the property that will be used
+            if a plural context.
+          type: string
+        propertyType:
+          description: The type of custom property - this governs the search and faceting
+            behavior
+          enum:
+          - TEXT
+          - DATE
+          - INT
+          - USERID
+          - PICKLIST
+          - TEXTLIST
+          type: string
+        uiOptions:
+          enum:
+          - NONE
+          - SEARCH_RESULT
+          - DOC_HOVERCARD
+          type: string
+        hideUiFacet:
+          description: If true then the property will not show up as a facet in the
+            UI.
+          type: boolean
+        uiFacetOrder:
+          description: "Will be used to set the order of facets in the UI, if present.\
+            \ If set for one facet, must be set for all non-hidden UI facets. Must\
+            \ take on an integer value from 1 (shown at the top) to N (shown last),\
+            \ where N is the number of non-hidden UI facets. These facets will be\
+            \ ordered below the built-in \"Type\" and \"Tag\" operators."
+          type: integer
+        objectPropertyOptions:
+          items:
+            $ref: '#/components/schemas/ObjectPropertyOptions'
+          type: array
+        group:
+          description: The unique identifier of the `PropertyGroup` to which this
+            property belongs.
+          type: string
+    ObjectPropertyOptions:
+      description: Options for object properties.
+      properties:
+        subobjectProperties:
+          description: "The properties of the sub-object. These properties represent\
+            \ a nested object. For example, if this property represents a postal address,\
+            \ the subobjectProperties might be named street, city, and state."
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+          type: array
+    PropertyGroup:
+      description: A grouping for multiple PropertyDefinition. Grouped properties
+        will be displayed together in the UI.
+      properties:
+        name:
+          description: The unique identifier of the group.
+          type: string
+        displayLabel:
+          description: The user-friendly group label to display.
+          type: string
+    ObjectDefinition:
+      description: The definition for an `DocumentMetadata.objectType` within a datasource.
+      properties:
+        name:
+          description: "Unique identifier for this `DocumentMetadata.objectType`.\
+            \ If omitted, this definition is used as a default for all unmatched `DocumentMetadata.objectType`s\
+            \ in this datasource."
+          type: string
+        displayLabel:
+          description: The user-friendly name of the object for display.
+          type: string
+        docCategory:
+          description: The document category of this object type.
+          enum:
+          - UNCATEGORIZED
+          - TICKETS
+          - CRM
+          - PUBLISHED_CONTENT
+          - COLLABORATIVE_CONTENT
+          - QUESTION_ANSWER
+          - MESSAGING
+          - CODE_REPOSITORY
+          - CHANGE_MANAGEMENT
+          - PEOPLE
+          - EMAIL
+          - SSO
+          - ATS
+          - KNOWLEDGE_HUB
+          - EXTERNAL_SHORTCUT
+          type: string
+        propertyDefinitions:
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+          type: array
+        propertyGroups:
+          description: "A list of `PropertyGroup`s belonging to this object type,\
+            \ which will group properties to be displayed together in the UI."
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+          type: array
+    CanonicalizingRegexType:
+      description: Regular expression to apply to an arbitrary string to transform
+        it into a canonical string.
+      properties:
+        matchRegex:
+          description: Regular expression to match to an arbitrary string.
+          type: string
+        rewriteRegex:
+          description: Regular expression to transform into a canonical string.
+          type: string
+    ConnectorType:
+      description: "The source from which document content was pulled, e.g. an API\
+        \ crawl or browser history"
+      enum:
+      - API_CRAWL
+      - BROWSER_CRAWL
+      - BROWSER_HISTORY
+      - BUILTIN
+      - FEDERATED_SEARCH
+      - PUSH_API
+      - WEB_CRAWL
+      - NATIVE_HISTORY
+      type: string
+    IconConfig:
+      description: Defines how to render an icon
+      example:
+        color: '#343CED'
+        key: person_icon
+        iconType: GLYPH
+        name: user
+      properties:
+        color:
+          type: string
+        key:
+          type: string
+        iconType:
+          enum:
+          - COLLECTION
+          - CUSTOM
+          - DATASOURCE
+          - DATASOURCE_INSTANCE
+          - FAVICON
+          - FILE_TYPE
+          - GLYPH
+          - MIME_TYPE
+          - PERSON
+          - REACTIONS
+          - URL
+          type: string
+        name:
+          description: The filename for iconType.GLYPH icons
+          type: string
+        url:
+          description: The URL to an image to be displayed for iconType.URL icons
+          type: string
+    Quicklink:
+      description: "An action for a specific datasource that will show up in autocomplete\
+        \ and app card, e.g. \"Create new issue\" for jira"
+      properties:
+        name:
+          description: Full action name. Used in autocomplete
+          type: string
+        shortName:
+          description: Shortened name. Used in app card
+          type: string
+        url:
+          description: The URL for the action
+          type: string
+        iconConfig:
+          $ref: '#/components/schemas/IconConfig'
+        id:
+          description: Unique identifier of this quicklink
+          type: string
+        scopes:
+          description: The scopes for which this quicklink is applicable
+          items:
+            enum:
+            - APP_CARD
+            - AUTOCOMPLETE_EXACT_MATCH
+            - AUTOCOMPLETE_FUZZY_MATCH
+            - AUTOCOMPLETE_ZERO_QUERY
+            - NEW_TAB_PAGE
+            type: string
+          type: array
+    SharedDatasourceConfigNoInstance:
+      description: Structure describing shared config properties of a datasource with
+        no multi-instance support.
+      properties:
+        name:
+          description: Unique identifier of datasource instance to which this config
+            applies.
+          type: string
+        suggestionText:
+          description: Example text for what to search for in this datasource
+          type: string
+        displayName:
+          description: "The user-friendly instance label to display. If omitted, falls\
+            \ back to the title-cased `name`."
+          type: string
+        homeUrl:
+          description: "The URL of the landing page for this datasource instance.\
+            \ Should point to the most useful page for users, not the company marketing\
+            \ page."
+          type: string
+        crawlerSeedUrls:
+          description: This only applies to WEB_CRAWL and BROWSER_CRAWL datasources.
+            Defines the seed urls for crawling.
+          items:
+            type: string
+          type: array
+        iconDarkUrl:
+          description: "The URL to an image to be displayed as an icon for this datasource\
+            \ instance in dark mode. Must have a transparency mask. SVG are recommended\
+            \ over PNG. Public, scio-authenticated and Base64 encoded data URLs are\
+            \ all valid (but not third-party-authenticated URLs)."
+          type: string
+        iconUrl:
+          description: "The URL to an image to be displayed as an icon for this datasource\
+            \ instance. Must have a transparency mask. SVG are recommended over PNG.\
+            \ Public, scio-authenticated and Base64 encoded data URLs are all valid\
+            \ (but not third-party-authenticated URLs)."
+          type: string
+        objectDefinitions:
+          description: The list of top-level `objectType`s for the datasource.
+          items:
+            $ref: '#/components/schemas/ObjectDefinition'
+          type: array
+        hideBuiltInFacets:
+          description: List of built-in facet types that should be hidden for the
+            datasource.
+          items:
+            enum:
+            - TYPE
+            - TAG
+            - AUTHOR
+            - OWNER
+            type: string
+          type: array
+        urlRegex:
+          description: "Regular expression that matches URLs of documents of the datasource\
+            \ instance. The behavior for multiple matches is non-deterministic. **Note:\
+            \ urlRegex is a required field for non-entity datasources (ie. datasources\
+            \ where isEntityDatasource is false). Please add a regex as specific as\
+            \ possible to this datasource instance.**"
+          example: https://example-company.datasource.com/.*
+          type: string
+        canonicalizingURLRegex:
+          description: A list of regular expressions to apply to an arbitrary URL
+            to transform it into a canonical URL for this datasource instance. Regexes
+            are to be applied in the order specified in this list.
+          items:
+            $ref: '#/components/schemas/CanonicalizingRegexType'
+          type: array
+        canonicalizingTitleRegex:
+          description: A list of regular expressions to apply to an arbitrary title
+            to transform it into a title that will be displayed in the search results
+          items:
+            $ref: '#/components/schemas/CanonicalizingRegexType'
+          type: array
+        redlistTitleRegex:
+          description: A regex that identifies titles that should not be indexed
+          type: string
+        connectorType:
+          $ref: '#/components/schemas/ConnectorType'
+        quicklinks:
+          description: "List of actions for this datasource instance that will show\
+            \ up in autocomplete and app card, e.g. \"Create new issue\" for jira"
+          items:
+            $ref: '#/components/schemas/Quicklink'
+          type: array
+        renderConfigPreset:
+          description: "The name of a render config to use for displaying results\
+            \ from this datasource. Any well known datasource name may be used to\
+            \ render the same as that source, e.g. `web` or `gdrive`."
+          type: string
+        aliases:
+          description: Aliases that can be used as `app` operator-values.
+          items:
+            type: string
+          type: array
+        datasourceCategory:
+          default: UNCATEGORIZED
+          description: The type of this datasource. It is an important signal for
+            relevance and must be specified and cannot be UNCATEGORIZED.
+          enum:
+          - UNCATEGORIZED
+          - TICKETS
+          - CRM
+          - PUBLISHED_CONTENT
+          - COLLABORATIVE_CONTENT
+          - QUESTION_ANSWER
+          - MESSAGING
+          - CODE_REPOSITORY
+          - CHANGE_MANAGEMENT
+          - PEOPLE
+          - EMAIL
+          - SSO
+          - ATS
+          - KNOWLEDGE_HUB
+          - EXTERNAL_SHORTCUT
+          type: string
+        isOnPrem:
+          description: Whether or not this datasource is hosted on-premise.
+          type: boolean
+        trustUrlRegexForViewActivity:
+          default: true
+          description: True if browser activity is able to report the correct URL
+            for VIEW events. Set this to true if the URLs reported by Chrome are constant
+            throughout each page load. Set this to false if the page has Javascript
+            that modifies the URL during or after the load.
+          type: boolean
+        includeUtmSource:
+          description: "If true, a utm_source query param will be added to outbound\
+            \ links to this datasource within Glean."
+          type: boolean
+      required:
+      - name
+      type: object
+    CustomDatasourceConfig:
+      allOf:
+      - $ref: '#/components/schemas/SharedDatasourceConfigNoInstance'
+      - $ref: '#/components/schemas/CustomDatasourceConfig_allOf'
+      description: Structure describing config properties of a custom datasource
+    DatasourceProfile:
+      example:
+        isUserGenerated: true
+        datasource: github
+        handle: handle
+        nativeAppUrl: nativeAppUrl
+        url: url
+      properties:
+        datasource:
+          description: The datasource the profile is of.
+          example: github
+          type: string
+        handle:
+          description: The display name of the person in the given datasource.
+          type: string
+        url:
+          description: URL to view the user's profile.
+          type: string
+        nativeAppUrl:
+          description: "A deep link, if available, into the datasource's native application\
+            \ for the user's platform (i.e. slack://...)."
+          type: string
+        isUserGenerated:
+          description: For internal use only. True iff the data source profile was
+            manually added by a user from within Glean (aka not from the original
+            data source)
+          type: boolean
+      required:
+      - datasource
+      - handle
+    SharedDatasourceConfig:
+      allOf:
+      - $ref: '#/components/schemas/SharedDatasourceConfigNoInstance'
+      - $ref: '#/components/schemas/SharedDatasourceConfig_allOf'
+      description: Structure describing shared config properties of the datasource
+        (including multi-instance support)
+    BulkIndexTeamsRequest_allOf:
+      properties:
+        teams:
+          description: Batch of team information
+          items:
+            $ref: '#/components/schemas/TeamInfoDefinition'
+          type: array
+      required:
+      - teams
+      type: object
+      example: null
+    BulkIndexEmployeesRequest_allOf:
+      properties:
+        employees:
+          description: Batch of employee information
+          items:
+            $ref: '#/components/schemas/EmployeeInfoDefinition'
+          type: array
+      required:
+      - employees
+      type: object
+      example: null
+    BulkIndexDocumentsRequest_allOf:
+      properties:
+        datasource:
+          description: Datasource of the documents
+          type: string
+        documents:
+          description: Batch of documents for the datasource
+          items:
+            $ref: '#/components/schemas/DocumentDefinition'
+          type: array
+        disableStaleDocumentDeletionCheck:
+          description: True if older documents need to be force deleted after the
+            upload completes. Defaults to older documents being deleted asynchronously.
+            This must only be set when `isLastPage = true`
+          type: boolean
+      required:
+      - datasource
+      - documents
+      type: object
+      example: null
+    CustomDatasourceConfig_allOf:
+      properties:
+        identityDatasourceName:
+          description: "If the datasource uses another datasource for identity info,\
+            \ then the name of the datasource. The identity datasource must exist\
+            \ already."
+          type: string
+        productAccessGroup:
+          description: "If the datasource uses a specific product access group, then\
+            \ the name of that group."
+          type: string
+        isUserReferencedByEmail:
+          description: whether email is used to reference users in document ACLs and
+            in group memberships.
+          type: boolean
+        isEntityDatasource:
+          default: false
+          description: True if this datasource is used to push custom entities.
+          type: boolean
+        isTestDatasource:
+          default: false
+          description: True if this datasource will be used for testing purpose only.
+            Documents from such a datasource wouldn't have any effect on search rankings.
+          type: boolean
+      type: object
+      example: null
+    SharedDatasourceConfig_allOf:
+      properties:
+        datasourceName:
+          description: "The (non-unique) name of the datasource of which this config\
+            \ is an instance, e.g. \"jira\"."
+          type: string
+        instanceOnlyName:
+          description: "The instance of the datasource for this particular config,\
+            \ e.g. \"onprem\"."
+          type: string
+        instanceDescription:
+          description: "A human readable string identifying this instance as compared\
+            \ to its peers, e.g. \"github.com/askscio\" or \"github.askscio.com\""
+          type: string
+      type: object
+      example: null
+  securitySchemes:
+    BearerAuth:
+      scheme: bearer
+      type: http

@@ -1,0 +1,25 @@
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+
+linters:
+  enable:
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - revive
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - exportloopref
+    - staticcheck
+    - typecheck
+    - unconvert
+    - unused

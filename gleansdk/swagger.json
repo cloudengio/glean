@@ -1,0 +1,2764 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.9.0",
+    "title": "Glean Indexing API",
+    "contact": {
+      "email": "support@glean.com"
+    },
+    "description": "# Introduction\nIn addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.\n\n# Early Access\nPlease note that we are continually evolving the system so these APIs are considered “early access” and are subject to change.\n"
+  },
+  "servers": [
+    {
+      "url": "https://{domain}-be.glean.com/api/index/v1",
+      "variables": {
+        "domain": {
+          "default": "domain",
+          "description": "Email domain (without extension) that determines the deployment backend."
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Datasources",
+      "description": "Manage datasources."
+    },
+    {
+      "name": "Documents",
+      "description": "Index documents from a datasource."
+    },
+    {
+      "name": "People",
+      "description": "Index employee people data."
+    },
+    {
+      "name": "Permissions",
+      "description": "Manage users, groups and membership."
+    }
+  ],
+  "paths": {
+    "/indexdocument": {
+      "post": {
+        "summary": "Index document",
+        "description": "Adds a document to the index or updates an existing document.",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexDocumentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexDocumentRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/getdocumentcount": {
+      "post": {
+        "summary": "Get document count",
+        "description": "Fetches document count for the specified custom datasource.",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentCountRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "GetDocumentCountRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDocumentCountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/getdocumentstatus": {
+      "post": {
+        "summary": "Get document upload and indexing status",
+        "description": "Intended for debugging/validation. Fetches the current upload and indexing status of documents.",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDocumentStatusRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "GetDocumentStatusRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDocumentStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/bulkindexdocuments": {
+      "post": {
+        "summary": "Bulk index documents",
+        "description": "Replaces the documents in a datasource using paginated batch API calls.",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexDocumentsRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexDocumentsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/processalldocuments": {
+      "post": {
+        "summary": "Schedules the processing of uploaded documents",
+        "description": "Schedules the immediate processing of documents uploaded through the indexing API. By default the uploaded documents will be processed asynchronously but this API can be used to schedule processing of all documents on demand.\n",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessAllDocumentsRequest"
+              }
+            }
+          },
+          "x-exportParamName": "ProcessAllDocumentsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "429": {
+            "description": "The rate limit for invoking /processalldocuments has been hit"
+          }
+        }
+      }
+    },
+    "/deletedocument": {
+      "post": {
+        "summary": "Delete document",
+        "description": "Deletes the specified document from the index. Succeeds if document is not present.",
+        "tags": [
+          "Documents"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteDocumentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DeleteDocumentRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexuser": {
+      "post": {
+        "summary": "Index user",
+        "description": "Adds a datasource user or updates an existing user.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexUserRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexUserRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/getusercount": {
+      "post": {
+        "summary": "Get user count",
+        "description": "Fetches user count for the specified custom datasource.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUserCountRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "GetUserCountRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/bulkindexusers": {
+      "post": {
+        "summary": "Bulk index users",
+        "description": "Replaces the users in a datasource using paginated batch API calls.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexUsersRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexUsersRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexgroup": {
+      "post": {
+        "summary": "Index group",
+        "description": "Add or update a group in the datasource.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexGroupRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexGroupRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/bulkindexgroups": {
+      "post": {
+        "summary": "Bulk index groups",
+        "description": "Replaces the groups in a datasource using paginated batch API calls.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexGroupsRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexGroupsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexmembership": {
+      "post": {
+        "summary": "Index membership",
+        "description": "Add the memberships of a group in the datasource.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexMembershipRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexMembershipRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/bulkindexmemberships": {
+      "post": {
+        "summary": "Bulk index memberships for a group",
+        "description": "Replaces the memberships for a group in a datasource using paginated batch API calls.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexMembershipsRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexMembershipsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/processallmemberships": {
+      "post": {
+        "summary": "Schedules the processing of group memberships",
+        "description": "Schedules the immediate processing of all group memberships uploaded through the indexing API. By default the uploaded group memberships will be processed asynchronously but this API can be used to schedule processing of all memberships on demand.\n",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessAllMembershipsRequest"
+              }
+            }
+          },
+          "x-exportParamName": "ProcessAllMembershipsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/deleteuser": {
+      "post": {
+        "summary": "Delete user",
+        "description": "Delete the user from the datasource. Silently succeeds if user is not present.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DeleteUserRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/deletegroup": {
+      "post": {
+        "summary": "Delete group",
+        "description": "Delete group from the datasource. Silently succeeds if group is not present.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteGroupRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DeleteGroupRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/deletemembership": {
+      "post": {
+        "summary": "Delete membership",
+        "description": "Delete membership to a group in the specified datasource. Silently succeeds if membership is not present.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteMembershipRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DeleteMembershipRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/checkdocumentaccess": {
+      "post": {
+        "summary": "Check document access",
+        "description": "Check if a given user has access to access a document in a custom datasource",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckDocumentAccessRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "CheckDocumentAccessRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDocumentAccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/betausers": {
+      "post": {
+        "summary": "Beta users",
+        "description": "Allow the datasource be visible to the specified beta users. The default behaviour is datasource being visible to all users if it is enabled and not visible to any user if it is not enabled.",
+        "tags": [
+          "Permissions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GreenlistUsersRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "GreenlistUsersRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/adddatasource": {
+      "post": {
+        "summary": "Add datasource",
+        "description": "API to register a custom datasource type and its schema.",
+        "tags": [
+          "Datasources"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomDatasourceConfig"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DatasourceConfig"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          }
+        }
+      }
+    },
+    "/getdatasourceconfig": {
+      "post": {
+        "summary": "Get datasource config",
+        "description": "Fetches the datasource config for the specified custom datasource.",
+        "tags": [
+          "Datasources"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetDatasourceConfigRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "GetDatasourceConfigRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomDatasourceConfig"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexemployee": {
+      "post": {
+        "summary": "Index employee",
+        "description": "Adds an employee or updates information about an employee",
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexEmployeeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexEmployeeRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/bulkindexemployees": {
+      "post": {
+        "summary": "Bulk index employees",
+        "description": "Replaces all the currently indexed employees using paginated batch API calls.",
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexEmployeesRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexEmployeesRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexemployeelist": {
+      "post": {
+        "summary": "Bulk index employees",
+        "description": "Bulk upload details of all the employees. This deletes all employees uploaded in the prior batch. SOON TO BE DEPRECATED in favor of /bulkindexemployees.",
+        "deprecated": true,
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexEmployeeListRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexEmployeeListRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/deleteemployee": {
+      "post": {
+        "summary": "Delete employee",
+        "description": "Delete an employee. Silently succeeds if employee is not present.",
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteEmployeeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "DeleteEmployeeRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/indexteam": {
+      "post": {
+        "summary": "Index team",
+        "description": "Adds a team or updates information about a team",
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexTeamRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "IndexTeamRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/bulkindexteams": {
+      "post": {
+        "summary": "Bulk index teams",
+        "description": "Replaces all the currently indexed teams using paginated batch API calls.",
+        "tags": [
+          "People"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIndexTeamsRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-exportParamName": "BulkIndexTeamsRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Not Authorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "IndexDocumentRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /indexdocument API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "document": {
+            "description": "Document being added/updated",
+            "$ref": "#/components/schemas/DocumentDefinition"
+          }
+        },
+        "required": [
+          "document"
+        ]
+      },
+      "GetDocumentCountRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /getdocumentcount API call",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Datasource name for which document count is needed."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "GetDocumentCountResponse": {
+        "type": "object",
+        "description": "Describes the response body of the /getdocumentcount API call",
+        "properties": {
+          "documentCount": {
+            "type": "integer",
+            "description": "Number of documents corresponding to the specified custom datasource."
+          }
+        }
+      },
+      "GetDocumentStatusRequest": {
+        "type": "object",
+        "description": "Describes the request body for /getdocumentstatus API call",
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "description": "Datasource to get fetch document status for"
+          },
+          "objectType": {
+            "type": "string",
+            "description": "Object type of the document to get the status for"
+          },
+          "docId": {
+            "type": "string",
+            "description": "Document ID within the datasource to get the status for"
+          }
+        },
+        "required": [
+          "datasource",
+          "objectType",
+          "docId"
+        ]
+      },
+      "GetDocumentStatusResponse": {
+        "type": "object",
+        "description": "Describes the response body of the /getdocumentstatus API call",
+        "properties": {
+          "uploadStatus": {
+            "type": "string",
+            "description": "Upload status, enum of NOT_UPLOADED, UPLOADED, STATUS_UNKNOWN"
+          },
+          "lastUploadedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Time of last successful upload, in epoch seconds"
+          },
+          "indexingStatus": {
+            "type": "string",
+            "description": "Indexing status, enum of NOT_INDEXED, INDEXED, STATUS_UNKNOWN"
+          },
+          "lastIndexedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Time of last successful indexing, in epoch seconds"
+          }
+        }
+      },
+      "BulkIndexRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /bulkindexteams API call",
+        "required": [
+          "uploadId"
+        ],
+        "properties": {
+          "uploadId": {
+            "type": "string",
+            "description": "Unique id that must be used for this instance of datasource employees upload"
+          },
+          "isFirstPage": {
+            "type": "boolean",
+            "description": "true if this is the first page of the upload. Defaults to false"
+          },
+          "isLastPage": {
+            "type": "boolean",
+            "description": "true if this is the last page of the upload. Defaults to false"
+          },
+          "forceRestartUpload": {
+            "type": "boolean",
+            "description": "Flag to discard previous upload attempts and start from scratch. Must be specified with isFirstPage=true"
+          }
+        }
+      },
+      "BulkIndexTeamsRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /bulkindexteams API call",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BulkIndexRequest"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "teams": {
+                "description": "Batch of team information",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TeamInfoDefinition"
+                }
+              }
+            },
+            "required": [
+              "teams"
+            ]
+          }
+        ]
+      },
+      "BulkIndexEmployeesRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /bulkindexemployees API call",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BulkIndexRequest"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "employees": {
+                "description": "Batch of employee information",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EmployeeInfoDefinition"
+                }
+              }
+            },
+            "required": [
+              "employees"
+            ]
+          }
+        ]
+      },
+      "BulkIndexDocumentsRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /bulkindexdocuments API call",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BulkIndexRequest"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "datasource": {
+                "type": "string",
+                "description": "Datasource of the documents"
+              },
+              "documents": {
+                "description": "Batch of documents for the datasource",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DocumentDefinition"
+                }
+              },
+              "disableStaleDocumentDeletionCheck": {
+                "type": "boolean",
+                "description": "True if older documents need to be force deleted after the upload completes. Defaults to older documents being deleted asynchronously. This must only be set when `isLastPage = true`"
+              }
+            },
+            "required": [
+              "datasource",
+              "documents"
+            ]
+          }
+        ]
+      },
+      "ProcessAllDocumentsRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /processalldocuments API call",
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "description": "If provided, process documents only for this custom datasource. Otherwise all uploaded documents are processed."
+          }
+        }
+      },
+      "DeleteDocumentRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /deletedocument API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "datasource of the document"
+          },
+          "objectType": {
+            "type": "string",
+            "description": "object type of the document"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the document"
+          }
+        },
+        "required": [
+          "datasource",
+          "id",
+          "objectType"
+        ]
+      },
+      "IndexUserRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /indexuser API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the user is added"
+          },
+          "user": {
+            "description": "The user to be added or updated",
+            "$ref": "#/components/schemas/DatasourceUserDefinition"
+          }
+        },
+        "required": [
+          "datasource",
+          "user"
+        ]
+      },
+      "GetUserCountRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /getusercount API call",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Datasource name for which user count is needed."
+          }
+        }
+      },
+      "GetUserCountResponse": {
+        "type": "object",
+        "description": "Describes the response body of the /getusercount API call",
+        "properties": {
+          "userCount": {
+            "type": "integer",
+            "description": "Number of users corresponding to the specified custom datasource."
+          }
+        }
+      },
+      "BulkIndexUsersRequest": {
+        "type": "object",
+        "description": "Describes the request body for the /bulkindexusers API call",
+        "properties": {
+          "uploadId": {
+            "type": "string",
+            "description": "Unique id that must be used for this instance of datasource users upload"
+          },
+          "isFirstPage": {
+            "type": "boolean",
+            "description": "true if this is the first page of the upload. Defaults to false"
+          },
+          "isLastPage": {
+            "type": "boolean",
+            "description": "true if this is the last page of the upload. Defaults to false"
+          },
+          "forceRestartUpload": {
+            "type": "boolean",
+            "description": "Flag to discard previous upload attempts and start from scratch. Must be specified with isFirstPage=true"
+          },
+          "datasource": {
+            "type": "string",
+            "description": "datasource of the users"
+          },
+          "users": {
+            "description": "batch of users for the datasource",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceUserDefinition"
+            }
+          }
+        },
+        "required": [
+          "uploadId",
+          "datasource",
+          "users"
+        ]
+      },
+      "GreenlistUsersRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /betausers API call",
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "description": "Datasource which needs to be made visible to users specified in the `emails` field."
+          },
+          "emails": {
+            "type": "array",
+            "description": "The emails of the beta users",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "required": [
+          "datasource",
+          "emails"
+        ]
+      },
+      "DatasourceUserDefinition": {
+        "type": "object",
+        "description": "describes a user in the datasource",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "userId": {
+            "description": "To be supplied if the user id in the datasource is not the email",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "set to false if the user is a former employee or a bot"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "IndexGroupRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /indexgroup API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the group is added"
+          },
+          "group": {
+            "description": "The group to be added or updated",
+            "$ref": "#/components/schemas/DatasourceGroupDefinition"
+          }
+        },
+        "required": [
+          "datasource",
+          "group"
+        ]
+      },
+      "BulkIndexGroupsRequest": {
+        "type": "object",
+        "description": "Describes the request body for the /bulkindexgroups API call",
+        "properties": {
+          "uploadId": {
+            "type": "string",
+            "description": "Unique id that must be used for this instance of datasource groups upload"
+          },
+          "isFirstPage": {
+            "type": "boolean",
+            "description": "true if this is the first page of the upload. Defaults to false"
+          },
+          "isLastPage": {
+            "type": "boolean",
+            "description": "true if this is the last page of the upload. Defaults to false"
+          },
+          "forceRestartUpload": {
+            "type": "boolean",
+            "description": "Flag to discard previous upload attempts and start from scratch. Must be specified with isFirstPage=true"
+          },
+          "datasource": {
+            "type": "string",
+            "description": "datasource of the groups"
+          },
+          "groups": {
+            "description": "batch of groups for the datasource",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceGroupDefinition"
+            }
+          }
+        },
+        "required": [
+          "uploadId",
+          "datasource",
+          "groups"
+        ]
+      },
+      "DatasourceGroupDefinition": {
+        "type": "object",
+        "description": "describes a group in the datasource",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name of the group. Should be unique among all groups for the datasource, and cannot have spaces."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "IndexMembershipRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /indexmembership API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the membership is added"
+          },
+          "membership": {
+            "description": "The membership to be added or updated",
+            "$ref": "#/components/schemas/DatasourceMembershipDefinition"
+          }
+        },
+        "required": [
+          "datasource",
+          "membership"
+        ]
+      },
+      "BulkIndexMembershipsRequest": {
+        "type": "object",
+        "description": "Describes the request body for the /bulkindexmemberships API call",
+        "properties": {
+          "uploadId": {
+            "type": "string",
+            "description": "Unique id that must be used for this instance of datasource group memberships upload"
+          },
+          "isFirstPage": {
+            "type": "boolean",
+            "description": "true if this is the first page of the upload. Defaults to false"
+          },
+          "isLastPage": {
+            "type": "boolean",
+            "description": "true if this is the last page of the upload. Defaults to false"
+          },
+          "forceRestartUpload": {
+            "type": "boolean",
+            "description": "Flag to discard previous upload attempts and start from scratch. Must be specified with isFirstPage=true"
+          },
+          "datasource": {
+            "type": "string",
+            "description": "datasource of the memberships"
+          },
+          "group": {
+            "type": "string",
+            "description": "group who's memberships are specified"
+          },
+          "memberships": {
+            "description": "batch of memberships for the group",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceBulkMembershipDefinition"
+            }
+          }
+        },
+        "required": [
+          "uploadId",
+          "datasource",
+          "memberships"
+        ]
+      },
+      "ProcessAllMembershipsRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /processallmemberships API call",
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "description": "If provided, process group memberships only for this custom datasource. Otherwise all uploaded memberships are processed."
+          }
+        }
+      },
+      "DatasourceMembershipDefinition": {
+        "type": "object",
+        "description": "describes the membership row of a group. Only one of memberUserId and memberGroupName can be specified.",
+        "properties": {
+          "groupName": {
+            "description": "The group for which the membership is specified",
+            "type": "string"
+          },
+          "memberUserId": {
+            "description": "If the member is a user, then the email or datasource id for the user",
+            "type": "string"
+          },
+          "memberGroupName": {
+            "description": "If the member is a group, then the name of the member group",
+            "type": "string"
+          }
+        },
+        "required": [
+          "groupName"
+        ]
+      },
+      "DatasourceBulkMembershipDefinition": {
+        "type": "object",
+        "description": "describes the membership row of a group in the bulk uploaded. Only one of memberUserId and memberGroupName can be specified.",
+        "properties": {
+          "memberUserId": {
+            "description": "If the member is a user, then the email or datasource id for the user",
+            "type": "string"
+          },
+          "memberGroupName": {
+            "description": "If the member is a group, then the name of the member group",
+            "type": "string"
+          }
+        }
+      },
+      "DeleteUserRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /deleteuser API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the user is removed"
+          },
+          "email": {
+            "description": "The email of the user to be deleted",
+            "type": "string"
+          }
+        },
+        "required": [
+          "datasource",
+          "email"
+        ]
+      },
+      "DeleteGroupRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /deletegroup API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the group is removed"
+          },
+          "groupName": {
+            "description": "the name of the group to be deleted",
+            "type": "string"
+          }
+        },
+        "required": [
+          "datasource",
+          "groupName"
+        ]
+      },
+      "DeleteMembershipRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /deletemembership API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "datasource": {
+            "type": "string",
+            "description": "The datasource for which the membership is removed"
+          },
+          "membership": {
+            "description": "the name of the membership to be deleted",
+            "$ref": "#/components/schemas/DatasourceMembershipDefinition"
+          }
+        },
+        "required": [
+          "datasource",
+          "membership"
+        ]
+      },
+      "DeleteEmployeeRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /deleteemployee API call",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Version number for document for optimistic concurrency control. If absent or 0 then no version checks are done."
+          },
+          "employeeEmail": {
+            "description": "The deleted employee's email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeEmail"
+        ]
+      },
+      "DocumentDefinition": {
+        "type": "object",
+        "description": "Indexable document structure",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Document title, in plain text, if present."
+          },
+          "container": {
+            "type": "string",
+            "description": "The container for the content (Folder for example for file content)."
+          },
+          "datasource": {
+            "type": "string"
+          },
+          "objectType": {
+            "type": "string",
+            "description": "The type of the document (Case, KnowledgeArticle for Salesforce for example). It cannot have spaces or _"
+          },
+          "viewURL": {
+            "type": "string",
+            "description": "The permalink for viewing the document."
+          },
+          "id": {
+            "type": "string",
+            "description": "The datasource specific id for the document. This should not be more than 200 characters in length."
+          },
+          "summary": {
+            "$ref": "#/components/schemas/ContentDefinition"
+          },
+          "body": {
+            "$ref": "#/components/schemas/ContentDefinition"
+          },
+          "author": {
+            "$ref": "#/components/schemas/UserReferenceDefinition"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserReferenceDefinition",
+            "description": "The current owner of the document, if not the author."
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/DocumentPermissionsDefinition"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The creation time, in epoch seconds."
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The last update time, in epoch seconds."
+          },
+          "updatedBy": {
+            "$ref": "#/components/schemas/UserReferenceDefinition"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels associated with the document."
+          },
+          "interactions": {
+            "$ref": "#/components/schemas/DocumentInteractionsDefinition"
+          },
+          "status": {
+            "type": "string"
+          },
+          "additionalUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Additional variations of the url that this document points to."
+          },
+          "customProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomProperty"
+            },
+            "description": "Additional metadata properties of the document."
+          }
+        },
+        "required": [
+          "datasource"
+        ]
+      },
+      "ContentDefinition": {
+        "type": "object",
+        "description": "Describes text content or base64 encoded binary content",
+        "properties": {
+          "mimeType": {
+            "type": "string"
+          },
+          "textContent": {
+            "type": "string",
+            "description": "text content. Only one of textContent or binary content can be specified"
+          },
+          "binaryContent": {
+            "type": "string",
+            "description": "base64 encoded binary content. Only one of textContent or binary content can be specified"
+          }
+        },
+        "required": [
+          "mimeType"
+        ]
+      },
+      "UserReferenceDefinition": {
+        "type": "object",
+        "description": "Describes how a user is referenced in a document. The user can be referenced by email or by a datasource specific id.",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "datasourceUserId": {
+            "type": "string",
+            "description": "some datasources refer to the user by the datasource user id in the document"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "PermissionsGroupIntersectionDefinition": {
+        "type": "object",
+        "description": "describes a list of groups that are all required in a permissions constraint",
+        "properties": {
+          "requiredGroups": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DocumentPermissionsDefinition": {
+        "type": "object",
+        "description": "describes the access control details of the document",
+        "properties": {
+          "allowedUsers": {
+            "description": "List of users who can view the document",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserReferenceDefinition"
+            }
+          },
+          "allowedGroups": {
+            "description": "List of groups that can view the document",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedGroupIntersections": {
+            "description": "List of allowed group intersections. This describes a permissions constraint of the form ((GroupA AND GroupB AND GroupC) OR (GroupX AND GroupY) OR ...",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionsGroupIntersectionDefinition"
+            }
+          },
+          "allowAnonymousAccess": {
+            "description": "If true, then any Glean user can view the document",
+            "type": "boolean"
+          },
+          "allowAllDatasourceUsersAccess": {
+            "description": "If true, then any user who has an account in the datasource can view the document.",
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentInteractionsDefinition": {
+        "type": "object",
+        "description": "describes the interactions on the document",
+        "properties": {
+          "numViews": {
+            "type": "integer"
+          },
+          "numLikes": {
+            "type": "integer"
+          },
+          "numComments": {
+            "type": "integer"
+          }
+        }
+      },
+      "CheckDocumentAccessRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /checkdocumentaccess API call",
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "description": "Datasource of document to get check access for"
+          },
+          "objectType": {
+            "type": "string",
+            "description": "Object type of document to get check access for"
+          },
+          "docId": {
+            "type": "string",
+            "description": "ID of document to get check access for"
+          },
+          "userEmail": {
+            "type": "string",
+            "description": "Email of user to check access for"
+          }
+        },
+        "required": [
+          "datasource",
+          "objectType",
+          "docId",
+          "userEmail"
+        ]
+      },
+      "CheckDocumentAccessResponse": {
+        "type": "object",
+        "description": "Describes the response body of the /checkdocumentaccess API call",
+        "properties": {
+          "hasAccess": {
+            "type": "boolean",
+            "description": "If true, user has access to document for search"
+          }
+        }
+      },
+      "CustomProperty": {
+        "type": "object",
+        "description": "Describes the custom properties of the object.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "description": "Must either be a string or an array of strings. An integer, boolean, etc. is not valid. When OpenAPI Generator supports `oneOf`, we can semantically enforce this."
+          }
+        }
+      },
+      "DatasourceConfig": {
+        "$ref": "#/components/schemas/SharedDatasourceConfig"
+      },
+      "GetDatasourceConfigRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /getdatasourceconfig API call",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Datasource name for which config is needed."
+          }
+        }
+      },
+      "DatasourceConfigList": {
+        "description": "List of datasource configurations.",
+        "required": [
+          "datasourceConfig"
+        ],
+        "properties": {
+          "datasourceConfig": {
+            "type": "array",
+            "description": "Datasource configuration.",
+            "items": {
+              "$ref": "#/components/schemas/SharedDatasourceConfig"
+            }
+          }
+        }
+      },
+      "IndexEmployeeRequest": {
+        "type": "object",
+        "description": "Info about an employee and optional version for that info",
+        "properties": {
+          "employee": {
+            "description": "Info about the employee",
+            "$ref": "#/components/schemas/EmployeeInfoDefinition"
+          },
+          "version": {
+            "description": "Version number for the employee object. If absent or 0 then no version checks are done",
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "employee"
+        ]
+      },
+      "IndexEmployeeListRequest": {
+        "type": "object",
+        "description": "Describes the request body of the /indexemployeelist API call",
+        "properties": {
+          "employees": {
+            "description": "List of employee info and version.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IndexEmployeeRequest"
+            }
+          }
+        }
+      },
+      "StructuredLocation": {
+        "type": "object",
+        "description": "Detailed location with information about country, state, city etc.",
+        "properties": {
+          "deskLocation": {
+            "type": "string",
+            "description": "Desk number."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Location's timezone, e.g. UTC, PST."
+          },
+          "address": {
+            "type": "string",
+            "description": "Office address or name."
+          },
+          "city": {
+            "type": "string",
+            "description": "Name of the city."
+          },
+          "state": {
+            "type": "string",
+            "description": "State code."
+          },
+          "region": {
+            "type": "string",
+            "description": "Region information, e.g. NORAM, APAC."
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "ZIP Code for the address."
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name."
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "Alpha-2 or Alpha-3 ISO 3166 country code, e.g. US or USA."
+          }
+        }
+      },
+      "SocialNetworkDefinition": {
+        "type": "object",
+        "description": "Employee's social network profile",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Possible values are \"twitter\", \"linkedin\"."
+          },
+          "profileName": {
+            "type": "string",
+            "description": "Human-readable profile name."
+          },
+          "profileUrl": {
+            "type": "string",
+            "description": "Link to profile."
+          }
+        }
+      },
+      "AdditionalFieldDefinition": {
+        "type": "object",
+        "description": "Additional information about the employee.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key to reference this field, e.g. \"languages\"."
+          },
+          "value": {
+            "type": "array",
+            "description": "List of type string or HypertextField.\n\nHypertextField is defined as\n```\n{\n  anchor: string,    // Anchor text for the hypertext field.\n  hyperlink: string, // URL for the hypertext field.\n}\n```\nExample: ```{\"anchor\":\"Glean\",\"hyperlink\":\"https://glean.com\"}```\n\nWhen OpenAPI Generator supports oneOf, we will semantically enforce this in the docs.\n",
+            "items": {
+              "type": "object",
+              "description": "Either a string or HypertextField. When OpenAPI Generator supports oneOf, we can semantically enforce this in the docs."
+            }
+          }
+        }
+      },
+      "HypertextField": {
+        "type": "object",
+        "properties": {
+          "anchor": {
+            "type": "string",
+            "description": "Anchor text for the hypertext field."
+          },
+          "hyperlink": {
+            "type": "string",
+            "description": "URL for the hypertext field."
+          }
+        }
+      },
+      "EmployeeInfoDefinition": {
+        "type": "object",
+        "description": "Describes employee info",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The employee's email"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "The first name of the employee"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "The last name of the employee"
+          },
+          "preferredName": {
+            "type": "string",
+            "description": "The preferred name or nickname of the employee"
+          },
+          "id": {
+            "type": "string",
+            "description": "**[Advanced]** A unique universal internal identifier for the employee. This is solely used for understanding manager relationships along with `managerId`.\n"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "The employee's phone number."
+          },
+          "location": {
+            "type": "string",
+            "description": "The employee's location (city/office name etc).",
+            "deprecated": true
+          },
+          "structuredLocation": {
+            "description": "Detailed location with information about country, state, city etc.",
+            "$ref": "#/components/schemas/StructuredLocation"
+          },
+          "title": {
+            "type": "string",
+            "description": "The employee's role title."
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "The employee's profile pic"
+          },
+          "businessUnit": {
+            "type": "string",
+            "description": "Typically the highest level organizational unit; generally applies to bigger companies with multiple distinct businesses."
+          },
+          "department": {
+            "type": "string",
+            "description": "An organizational unit where everyone has a similar task, e.g. `Engineering`."
+          },
+          "datasourceProfiles": {
+            "type": "array",
+            "description": "The datasource profiles of the employee, e.g. `Slack`,`Github`.",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceProfile"
+            }
+          },
+          "teams": {
+            "type": "array",
+            "description": "Info about the employee's team(s)",
+            "items": {
+              "$ref": "#/components/schemas/EmployeeTeamInfo"
+            }
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date when the employee started"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "If a former employee, the last date of employment."
+          },
+          "bio": {
+            "type": "string",
+            "description": "Short biography or mission statement of the employee."
+          },
+          "pronoun": {
+            "type": "string",
+            "description": "She/her, He/his or other pronoun."
+          },
+          "alsoKnownAs": {
+            "type": "array",
+            "description": "Other names associated with the employee.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "profileUrl": {
+            "type": "string",
+            "description": "Link to internal company person profile."
+          },
+          "socialNetworks": {
+            "type": "array",
+            "description": "List of social network profiles.",
+            "items": {
+              "$ref": "#/components/schemas/SocialNetworkDefinition"
+            }
+          },
+          "managerEmail": {
+            "type": "string",
+            "description": "The email of the employee's manager"
+          },
+          "managerId": {
+            "type": "string",
+            "description": "**[Advanced]** A unique universal internal identifier for the employee's manager. This is solely used in conjunction with `id`.\n"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the employee, an enum of `CURRENT`, `FUTURE`, `EX`",
+            "default": "CURRENT"
+          },
+          "additionalFields": {
+            "type": "array",
+            "description": "List of additional fields with more information about the employee.",
+            "items": {
+              "$ref": "#/components/schemas/AdditionalFieldDefinition"
+            }
+          }
+        },
+        "required": [
+          "department",
+          "email"
+        ]
+      },
+      "EmployeeAndVersionDefinition": {
+        "type": "object",
+        "description": "describes info about an employee and optional version for that info",
+        "properties": {
+          "employee": {
+            "description": "Info about the employee",
+            "$ref": "#/components/schemas/EmployeeInfoDefinition"
+          },
+          "version": {
+            "description": "Version number for the employee object. If absent or 0 then no version checks are done",
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "info"
+        ]
+      },
+      "EmployeeTeamInfo": {
+        "type": "object",
+        "description": "Information about which team an employee belongs to",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "unique identifier for this team"
+          },
+          "name": {
+            "type": "string",
+            "description": "Team name"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link to internal company team page"
+          }
+        }
+      },
+      "TeamMember": {
+        "type": "object",
+        "description": "Information about a team's member",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The member's email",
+            "format": "email"
+          },
+          "relationship": {
+            "type": "string",
+            "description": "The member's relationship to the team, an enum of `MEMBER`, `MANAGER`, `LEAD`, `POINT_OF_CONTACT`, `OTHER`",
+            "default": "MEMBER"
+          },
+          "join_date": {
+            "type": "string",
+            "format": "date",
+            "description": "The member's start date"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "TeamEmail": {
+        "type": "object",
+        "description": "Information about a team's email",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "An email address"
+          },
+          "type": {
+            "type": "string",
+            "description": "An enum of `PRIMARY`, `SECONDARY`, `ONCALL`, `OTHER`",
+            "default": "OTHER"
+          }
+        },
+        "required": [
+          "email",
+          "type"
+        ]
+      },
+      "TeamInfoDefinition": {
+        "type": "object",
+        "description": "Information about an employee's team",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the team"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable team name"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of this team"
+          },
+          "businessUnit": {
+            "type": "string",
+            "description": "Typically the highest level organizational unit; generally applies to bigger companies with multiple distinct businesses."
+          },
+          "department": {
+            "type": "string",
+            "description": "An organizational unit where everyone has a similar task, e.g. `Engineering`."
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "A link to the team's photo"
+          },
+          "externalLink": {
+            "type": "string",
+            "format": "uri",
+            "description": "A link to an external team page. If set, team results will link to it.\n"
+          },
+          "emails": {
+            "type": "array",
+            "description": "The emails of the team",
+            "items": {
+              "$ref": "#/components/schemas/TeamEmail"
+            }
+          },
+          "datasourceProfiles": {
+            "type": "array",
+            "description": "The datasource profiles of the team",
+            "items": {
+              "$ref": "#/components/schemas/DatasourceProfile"
+            }
+          },
+          "members": {
+            "type": "array",
+            "description": "The members of the team",
+            "items": {
+              "$ref": "#/components/schemas/TeamMember"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "members",
+          "name"
+        ]
+      },
+      "IndexTeamRequest": {
+        "type": "object",
+        "description": "Info about a team and optional version for that info",
+        "properties": {
+          "team": {
+            "description": "Info about the team",
+            "$ref": "#/components/schemas/TeamInfoDefinition"
+          },
+          "version": {
+            "description": "Version number for the team object. If absent or 0 then no version checks are done",
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "team"
+        ]
+      },
+      "PropertyDefinition": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the property in the `DocumentMetadata` (e.g. 'createTime', 'updateTime', 'author', 'container'). In the future, this will support custom properties too."
+          },
+          "displayLabel": {
+            "type": "string",
+            "description": "The user friendly label for the property."
+          },
+          "displayLabelPlural": {
+            "type": "string",
+            "description": "The user friendly label for the property that will be used if a plural context."
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "DATE",
+              "INT",
+              "USERID",
+              "PICKLIST",
+              "TEXTLIST"
+            ],
+            "description": "The type of custom property - this governs the search and faceting behavior"
+          },
+          "uiOptions": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "SEARCH_RESULT",
+              "DOC_HOVERCARD"
+            ]
+          },
+          "hideUiFacet": {
+            "type": "boolean",
+            "description": "If true then the property will not show up as a facet in the UI."
+          },
+          "uiFacetOrder": {
+            "type": "integer",
+            "description": "Will be used to set the order of facets in the UI, if present. If set for one facet, must be set for all non-hidden UI facets. Must take on an integer value from 1 (shown at the top) to N (shown last), where N is the number of non-hidden UI facets. These facets will be ordered below the built-in \"Type\" and \"Tag\" operators."
+          },
+          "objectPropertyOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectPropertyOptions"
+            }
+          },
+          "group": {
+            "type": "string",
+            "description": "The unique identifier of the `PropertyGroup` to which this property belongs."
+          }
+        }
+      },
+      "ObjectPropertyOptions": {
+        "description": "Options for object properties.",
+        "properties": {
+          "subobjectProperties": {
+            "type": "array",
+            "description": "The properties of the sub-object. These properties represent a nested object. For example, if this property represents a postal address, the subobjectProperties might be named street, city, and state.",
+            "items": {
+              "$ref": "#/components/schemas/PropertyDefinition"
+            }
+          }
+        }
+      },
+      "PropertyGroup": {
+        "description": "A grouping for multiple PropertyDefinition. Grouped properties will be displayed together in the UI.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The unique identifier of the group."
+          },
+          "displayLabel": {
+            "type": "string",
+            "description": "The user-friendly group label to display."
+          }
+        }
+      },
+      "ObjectDefinition": {
+        "description": "The definition for an `DocumentMetadata.objectType` within a datasource.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier for this `DocumentMetadata.objectType`. If omitted, this definition is used as a default for all unmatched `DocumentMetadata.objectType`s in this datasource."
+          },
+          "displayLabel": {
+            "type": "string",
+            "description": "The user-friendly name of the object for display."
+          },
+          "docCategory": {
+            "type": "string",
+            "enum": [
+              "UNCATEGORIZED",
+              "TICKETS",
+              "CRM",
+              "PUBLISHED_CONTENT",
+              "COLLABORATIVE_CONTENT",
+              "QUESTION_ANSWER",
+              "MESSAGING",
+              "CODE_REPOSITORY",
+              "CHANGE_MANAGEMENT",
+              "PEOPLE",
+              "EMAIL",
+              "SSO",
+              "ATS",
+              "KNOWLEDGE_HUB",
+              "EXTERNAL_SHORTCUT"
+            ],
+            "description": "The document category of this object type."
+          },
+          "propertyDefinitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyDefinition"
+            }
+          },
+          "propertyGroups": {
+            "type": "array",
+            "description": "A list of `PropertyGroup`s belonging to this object type, which will group properties to be displayed together in the UI.",
+            "items": {
+              "$ref": "#/components/schemas/PropertyGroup"
+            }
+          }
+        }
+      },
+      "CanonicalizingRegexType": {
+        "description": "Regular expression to apply to an arbitrary string to transform it into a canonical string.",
+        "properties": {
+          "matchRegex": {
+            "type": "string",
+            "description": "Regular expression to match to an arbitrary string."
+          },
+          "rewriteRegex": {
+            "type": "string",
+            "description": "Regular expression to transform into a canonical string."
+          }
+        }
+      },
+      "ConnectorType": {
+        "type": "string",
+        "description": "The source from which document content was pulled, e.g. an API crawl or browser history",
+        "enum": [
+          "API_CRAWL",
+          "BROWSER_CRAWL",
+          "BROWSER_HISTORY",
+          "BUILTIN",
+          "FEDERATED_SEARCH",
+          "PUSH_API",
+          "WEB_CRAWL",
+          "NATIVE_HISTORY"
+        ]
+      },
+      "IconConfig": {
+        "description": "Defines how to render an icon",
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "iconType": {
+            "enum": [
+              "COLLECTION",
+              "CUSTOM",
+              "DATASOURCE",
+              "DATASOURCE_INSTANCE",
+              "FAVICON",
+              "FILE_TYPE",
+              "GLYPH",
+              "MIME_TYPE",
+              "PERSON",
+              "REACTIONS",
+              "URL"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "The filename for iconType.GLYPH icons"
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL to an image to be displayed for iconType.URL icons"
+          }
+        },
+        "example": {
+          "color": "#343CED",
+          "key": "person_icon",
+          "iconType": "GLYPH",
+          "name": "user"
+        }
+      },
+      "Quicklink": {
+        "description": "An action for a specific datasource that will show up in autocomplete and app card, e.g. \"Create new issue\" for jira",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full action name. Used in autocomplete"
+          },
+          "shortName": {
+            "type": "string",
+            "description": "Shortened name. Used in app card"
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL for the action"
+          },
+          "iconConfig": {
+            "$ref": "#/components/schemas/IconConfig",
+            "description": "The config for the icon for this quicklink"
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of this quicklink"
+          },
+          "scopes": {
+            "type": "array",
+            "description": "The scopes for which this quicklink is applicable",
+            "items": {
+              "type": "string",
+              "enum": [
+                "APP_CARD",
+                "AUTOCOMPLETE_EXACT_MATCH",
+                "AUTOCOMPLETE_FUZZY_MATCH",
+                "AUTOCOMPLETE_ZERO_QUERY",
+                "NEW_TAB_PAGE"
+              ]
+            }
+          }
+        }
+      },
+      "SharedDatasourceConfigNoInstance": {
+        "type": "object",
+        "description": "Structure describing shared config properties of a datasource with no multi-instance support.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier of datasource instance to which this config applies."
+          },
+          "suggestionText": {
+            "type": "string",
+            "description": "Example text for what to search for in this datasource"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The user-friendly instance label to display. If omitted, falls back to the title-cased `name`."
+          },
+          "homeUrl": {
+            "type": "string",
+            "description": "The URL of the landing page for this datasource instance. Should point to the most useful page for users, not the company marketing page."
+          },
+          "crawlerSeedUrls": {
+            "type": "array",
+            "description": "This only applies to WEB_CRAWL and BROWSER_CRAWL datasources. Defines the seed urls for crawling.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "iconDarkUrl": {
+            "type": "string",
+            "description": "The URL to an image to be displayed as an icon for this datasource instance in dark mode. Must have a transparency mask. SVG are recommended over PNG. Public, scio-authenticated and Base64 encoded data URLs are all valid (but not third-party-authenticated URLs)."
+          },
+          "iconUrl": {
+            "type": "string",
+            "description": "The URL to an image to be displayed as an icon for this datasource instance. Must have a transparency mask. SVG are recommended over PNG. Public, scio-authenticated and Base64 encoded data URLs are all valid (but not third-party-authenticated URLs)."
+          },
+          "objectDefinitions": {
+            "type": "array",
+            "description": "The list of top-level `objectType`s for the datasource.",
+            "items": {
+              "$ref": "#/components/schemas/ObjectDefinition"
+            }
+          },
+          "hideBuiltInFacets": {
+            "type": "array",
+            "description": "List of built-in facet types that should be hidden for the datasource.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "TYPE",
+                "TAG",
+                "AUTHOR",
+                "OWNER"
+              ]
+            }
+          },
+          "urlRegex": {
+            "type": "string",
+            "description": "Regular expression that matches URLs of documents of the datasource instance. The behavior for multiple matches is non-deterministic. **Note: urlRegex is a required field for non-entity datasources (ie. datasources where isEntityDatasource is false). Please add a regex as specific as possible to this datasource instance.**",
+            "example": "https://example-company.datasource.com/.*"
+          },
+          "canonicalizingURLRegex": {
+            "type": "array",
+            "description": "A list of regular expressions to apply to an arbitrary URL to transform it into a canonical URL for this datasource instance. Regexes are to be applied in the order specified in this list.",
+            "items": {
+              "$ref": "#/components/schemas/CanonicalizingRegexType"
+            }
+          },
+          "canonicalizingTitleRegex": {
+            "type": "array",
+            "description": "A list of regular expressions to apply to an arbitrary title to transform it into a title that will be displayed in the search results",
+            "items": {
+              "$ref": "#/components/schemas/CanonicalizingRegexType"
+            }
+          },
+          "redlistTitleRegex": {
+            "type": "string",
+            "description": "A regex that identifies titles that should not be indexed"
+          },
+          "connectorType": {
+            "$ref": "#/components/schemas/ConnectorType",
+            "description": "The content source type of the datasource instance."
+          },
+          "quicklinks": {
+            "type": "array",
+            "description": "List of actions for this datasource instance that will show up in autocomplete and app card, e.g. \"Create new issue\" for jira",
+            "items": {
+              "$ref": "#/components/schemas/Quicklink"
+            }
+          },
+          "renderConfigPreset": {
+            "type": "string",
+            "description": "The name of a render config to use for displaying results from this datasource. Any well known datasource name may be used to render the same as that source, e.g. `web` or `gdrive`."
+          },
+          "aliases": {
+            "type": "array",
+            "description": "Aliases that can be used as `app` operator-values.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "datasourceCategory": {
+            "type": "string",
+            "enum": [
+              "UNCATEGORIZED",
+              "TICKETS",
+              "CRM",
+              "PUBLISHED_CONTENT",
+              "COLLABORATIVE_CONTENT",
+              "QUESTION_ANSWER",
+              "MESSAGING",
+              "CODE_REPOSITORY",
+              "CHANGE_MANAGEMENT",
+              "PEOPLE",
+              "EMAIL",
+              "SSO",
+              "ATS",
+              "KNOWLEDGE_HUB",
+              "EXTERNAL_SHORTCUT"
+            ],
+            "default": "UNCATEGORIZED",
+            "description": "The type of this datasource. It is an important signal for relevance and must be specified and cannot be UNCATEGORIZED."
+          },
+          "isOnPrem": {
+            "type": "boolean",
+            "description": "Whether or not this datasource is hosted on-premise."
+          },
+          "trustUrlRegexForViewActivity": {
+            "type": "boolean",
+            "default": true,
+            "description": "True if browser activity is able to report the correct URL for VIEW events. Set this to true if the URLs reported by Chrome are constant throughout each page load. Set this to false if the page has Javascript that modifies the URL during or after the load."
+          },
+          "includeUtmSource": {
+            "type": "boolean",
+            "description": "If true, a utm_source query param will be added to outbound links to this datasource within Glean."
+          }
+        }
+      },
+      "CustomDatasourceConfig": {
+        "description": "Structure describing config properties of a custom datasource",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SharedDatasourceConfigNoInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "identityDatasourceName": {
+                "type": "string",
+                "description": "If the datasource uses another datasource for identity info, then the name of the datasource. The identity datasource must exist already."
+              },
+              "productAccessGroup": {
+                "type": "string",
+                "description": "If the datasource uses a specific product access group, then the name of that group."
+              },
+              "isUserReferencedByEmail": {
+                "type": "boolean",
+                "description": "whether email is used to reference users in document ACLs and in group memberships."
+              },
+              "isEntityDatasource": {
+                "type": "boolean",
+                "default": false,
+                "description": "True if this datasource is used to push custom entities."
+              },
+              "isTestDatasource": {
+                "type": "boolean",
+                "default": false,
+                "description": "True if this datasource will be used for testing purpose only. Documents from such a datasource wouldn't have any effect on search rankings."
+              }
+            }
+          }
+        ]
+      },
+      "DatasourceProfile": {
+        "required": [
+          "datasource",
+          "handle"
+        ],
+        "properties": {
+          "datasource": {
+            "type": "string",
+            "example": "github",
+            "description": "The datasource the profile is of."
+          },
+          "handle": {
+            "type": "string",
+            "description": "The display name of the person in the given datasource."
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to view the user's profile."
+          },
+          "nativeAppUrl": {
+            "type": "string",
+            "description": "A deep link, if available, into the datasource's native application for the user's platform (i.e. slack://...)."
+          },
+          "isUserGenerated": {
+            "type": "boolean",
+            "description": "For internal use only. True iff the data source profile was manually added by a user from within Glean (aka not from the original data source)"
+          }
+        }
+      },
+      "SharedDatasourceConfig": {
+        "description": "Structure describing shared config properties of the datasource (including multi-instance support)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SharedDatasourceConfigNoInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "datasourceName": {
+                "type": "string",
+                "description": "The (non-unique) name of the datasource of which this config is an instance, e.g. \"jira\"."
+              },
+              "instanceOnlyName": {
+                "type": "string",
+                "description": "The instance of the datasource for this particular config, e.g. \"onprem\"."
+              },
+              "instanceDescription": {
+                "type": "string",
+                "description": "A human readable string identifying this instance as compared to its peers, e.g. \"github.com/askscio\" or \"github.askscio.com\""
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}
