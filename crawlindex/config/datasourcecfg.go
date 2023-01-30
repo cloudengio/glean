@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"cloudeng.io/cmdutil"
+	"cloudeng.io/file/content"
 	"cloudeng.io/glean/gleansdk"
 )
 
@@ -78,4 +79,27 @@ func DatasourceForName(filename string, name string) (Datasource, error) {
 		return Datasource{}, fmt.Errorf("no datasource config found for %q in %q", name, filename)
 	}
 	return ds, nil
+}
+
+// Conversion represents the configuration for a single content conversion operation.
+type Conversion struct {
+	Type       content.Type
+	Converter  *Converter
+	Datasource *gleansdk.CustomDatasourceConfig
+}
+
+// ConfigForContentType returns a map from content type to all of the configuration
+// information that pertains to	that content type.
+func (d Datasource) ConfigForContentType() map[content.Type]Conversion {
+	cnvmap := make(map[content.Type]Conversion)
+	for _, c := range d.Converters {
+		for _, ft := range c.FromContentType {
+			cnvmap[content.Clean(ft)] = Conversion{
+				ft,
+				&c,
+				&d.DatasourceConfig.CustomDatasourceConfig,
+			}
+		}
+	}
+	return cnvmap
 }

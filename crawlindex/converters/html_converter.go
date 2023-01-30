@@ -6,7 +6,6 @@ package converters
 
 import (
 	"bytes"
-	"fmt"
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/content/processors"
@@ -16,8 +15,10 @@ import (
 	"cloudeng.io/text/textutil"
 )
 
+// HTML represents an html to glean document converter.
 type HTML struct{}
 
+// NewHTML returns a new install of HTML.
 func NewHTML() T {
 	return &HTML{}
 }
@@ -28,9 +29,8 @@ func (cnv *HTML) Type() content.Type {
 	return "text/html;charset=utf-8"
 }
 
-func (cnv *HTML) GleanDocument(datasource string, cfg *config.Converter, doc crawlindex.Document) (*gleansdk.DocumentDefinition, error) {
-	fmt.Printf("CFG: %v\n", cfg)
-	rwr, err := textutil.NewRewriteRules(cfg.ViewURLRewrites...)
+func (cnv *HTML) GleanDocument(datasource string, cfg config.Conversion, doc crawlindex.Document) (*gleansdk.DocumentDefinition, error) {
+	rwr, err := textutil.NewRewriteRules(cfg.Converter.ViewURLRewrites...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,14 +48,12 @@ func (cnv *HTML) GleanDocument(datasource string, cfg *config.Converter, doc cra
 	}
 	gd.SetTitle(title)
 
-	//	gd.Summary = &gleansdk.ContentDefinition{}
-	//	gd.Summary.SetMimeType(mimeType)
 	gd.Body = &gleansdk.ContentDefinition{}
 	gd.Body.SetMimeType(string(doc.Type))
 	gd.Body.SetTextContent(string(dl.Contents))
 
 	gd.Author = &gleansdk.UserReferenceDefinition{}
-	gd.Author.SetEmail(cfg.DefaultAuthor.Email)
+	gd.Author.SetEmail(cfg.Converter.DefaultAuthor.Email)
 
 	gd.Permissions = &gleansdk.DocumentPermissionsDefinition{}
 	gd.Permissions.SetAllowAnonymousAccess(true)

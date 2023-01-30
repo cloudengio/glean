@@ -19,13 +19,13 @@ import (
 
 type walker struct {
 	datasource string
-	cfg        map[content.Type]*config.Converter
+	cfg        map[content.Type]config.Conversion
 	cnvs       *content.Registry[converters.T]
 	wk         *filewalk.Walker
 	ch         chan<- Request
 }
 
-func newWalker(datasource string, cfg map[content.Type]*config.Converter, cnvs *content.Registry[converters.T], scanSize int, ch chan<- Request) *walker {
+func newWalker(datasource string, cfg map[content.Type]config.Conversion, cnvs *content.Registry[converters.T], scanSize int, ch chan<- Request) *walker {
 	sc := filewalk.LocalFilesystem(scanSize)
 	wk := filewalk.New(sc)
 	return &walker{

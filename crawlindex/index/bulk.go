@@ -33,16 +33,6 @@ type Indexer struct {
 	Converters  *content.Registry[converters.T]
 }
 
-func (idx *Indexer) createConverterConfig(converters config.Converters) map[content.Type]*config.Converter {
-	cnvmap := make(map[content.Type]*config.Converter)
-	for _, c := range converters {
-		for _, ft := range c.FromContentType {
-			cnvmap[content.Clean(ft)] = &c
-		}
-	}
-	return cnvmap
-}
-
 // Bulk indexes a datasource in bulk mode.
 func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags, datasource string) error {
 	cachePath := os.ExpandEnv(idx.Config.Cache.Path)
@@ -74,7 +64,7 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags, datasource string) 
 		forceRestart = true
 	}
 
-	cnvmap := idx.createConverterConfig(idx.Config.Converters)
+	cnvmap := idx.Config.ConfigForContentType()
 	if len(cnvmap) == 0 {
 		return fmt.Errorf("no converters specified/found in config file")
 	}

@@ -15,7 +15,7 @@ const GleanContentType = content.Type("glean/document")
 
 type T interface {
 	Type() content.Type
-	GleanDocument(datasource string, cfg *config.Converter, dl crawlindex.Document) (*gleansdk.DocumentDefinition, error)
+	GleanDocument(datasource string, cfg config.Conversion, dl crawlindex.Document) (*gleansdk.DocumentDefinition, error)
 }
 
 func CreateRegistry(converters ...T) (*content.Registry[T], error) {
