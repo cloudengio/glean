@@ -13,13 +13,16 @@ import (
 type Datasources struct{}
 
 func (ds Datasources) Download(ctx context.Context, values interface{}, args []string) error {
-	return datasources.Download(ctx, GlobalConfig, args[0], args[1])
+	d := datasources.T{GleanConfig: GlobalConfig}
+	return d.Download(ctx, args[0], args[1])
 }
 
 func (ds Datasources) Register(ctx context.Context, values interface{}, args []string) error {
-	return datasources.Register(ctx, GlobalConfig, values.(*datasources.Flags), args[0])
+	d := datasources.T{GleanConfig: GlobalConfig}
+	return d.Register(ctx, values.(*datasources.Flags), args[0])
 }
 
 func (ds Datasources) ShowConfig(ctx context.Context, values interface{}, args []string) error {
-	return datasources.ShowConfig(ctx, args[0])
+	d := datasources.T{GleanConfig: GlobalConfig}
+	return d.ShowConfig(ctx, args[0])
 }

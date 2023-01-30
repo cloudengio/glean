@@ -7,6 +7,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20230126191758-0a7a91af05dd
 	cloudeng.io/errors v0.0.8
 	cloudeng.io/file v0.0.0-20230126191758-0a7a91af05dd
+	cloudeng.io/glean/gleansdk v0.0.0-20230127175843-a2a64df2d47e
 	cloudeng.io/path v0.0.7
 	cloudeng.io/sync v0.0.8
 	gopkg.in/yaml.v3 v3.0.1

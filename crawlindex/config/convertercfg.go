@@ -16,8 +16,10 @@ type User struct {
 	Name   string `yaml:"name"`
 }
 
+// Converter represents the ability to convert from a set of content types to
+// to a Glean document ("glean/document")
 type Converter struct {
-	FromContentType []content.Type `yaml:"from_content_types"` // Content types that this converter can handle.
+	FromContentType []content.Type `yaml:"from_content_types,flow"` // Content types that this converter can handle.
 
 	ViewURLRewrites []string `yaml:"view_url_rewrites"` // Rewrite rules for viewurls specified as textutil.RewriteRules
 
@@ -29,4 +31,5 @@ type Converter struct {
 	CustomConfig yaml.Node `yaml:"custom"`
 }
 
+// Converters represents a set of converters.
 type Converters []Converter

@@ -7,15 +7,43 @@ package cmds
 import (
 	"context"
 
+	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/index"
+	"cloudeng.io/glean/gleancli/builtin"
 )
 
 type Index struct{}
 
+func newIndexer(configFile string, datasource string) (*index.Indexer, error) {
+	cfg, err := config.DatasourceForName(configFile, datasource)
+	if err != nil {
+		return nil, err
+	}
+	converters, err := builtin.Converters(cfg.Converters)
+	if err != nil {
+		return nil, err
+	}
+	indexer := &index.Indexer{
+		GleanConfig: GlobalConfig,
+		Config:      cfg,
+		Converters:  converters,
+	}
+	return indexer, nil
+}
+
 func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) error {
-	return index.Bulk(ctx, GlobalConfig, values.(*index.BulkFlags), args[0])
+	fv := values.(*index.BulkFlags)
+	datasource := args[0]
+	indexer, err := newIndexer(fv.ConfigFile, datasource)
+	if err != nil {
+		return err
+	}
+	return indexer.Bulk(ctx, fv, args[0])
 }
 
 func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) error {
-	return index.Stats(ctx, GlobalConfig, values.(*index.StatsFlags), args[0])
+	indexer := index.Indexer{
+		GleanConfig: GlobalConfig,
+	}
+	return indexer.Stats(ctx, values.(*index.StatsFlags), args[0])
 }

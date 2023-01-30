@@ -12,6 +12,7 @@ import (
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/crawlindex/converters"
 )
 
 // Extractors represents the set of available outlink extractors.
@@ -27,4 +28,11 @@ func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory {
 	return map[string]file.FSFactory{
 		"s3": &s3fs.Factory{Config: cfg.AWS},
 	}
+}
+
+// Converters returns the converters for the given configuration.
+func Converters(cfg config.Converters) (*content.Registry[converters.T], error) {
+	return converters.CreateRegistry(
+		converters.NewHTML(),
+	)
 }

@@ -19,12 +19,12 @@ import (
 )
 
 type GlobalFlags struct {
-	config.GleanConfigFlags
+	config.GleanFlags
 }
 
 var (
 	globalFlags  GlobalFlags
-	GlobalConfig config.GleanConfig
+	GlobalConfig config.Glean
 	cmdSet       *subcmd.CommandSetYAML
 )
 

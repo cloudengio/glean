@@ -20,11 +20,11 @@ type Flags struct {
 	config.FileFlags
 }
 
-type Datasource struct {
+type T struct {
 	GleanConfig config.Glean
 }
 
-func (d *Datasource) Download(ctx context.Context, instance, datasource string) error {
+func (d *T) Download(ctx context.Context, instance, datasource string) error {
 	ctx, client, err := d.GleanConfig.NewAPIClient(ctx, instance)
 	if err != nil {
 		return err
@@ -32,7 +32,7 @@ func (d *Datasource) Download(ctx context.Context, instance, datasource string) 
 	return downloadDataSource(ctx, client, datasource)
 }
 
-func (d *Datasource) Register(ctx context.Context, fv *Flags, datasource string) error {
+func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error {
 	cfg, err := config.DatasourceForName(fv.ConfigFile, datasource)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (d *Datasource) Register(ctx context.Context, fv *Flags, datasource string)
 	return internal.ParseGleanError(r, err)
 }
 
-func (d *Datasource) ShowConfig(ctx context.Context, filename string) error {
+func (d *T) ShowConfig(ctx context.Context, filename string) error {
 	var cfg config.Datasources
 	if err := cmdutil.ParseYAMLConfigFile(filename, &cfg); err != nil {
 		return err
