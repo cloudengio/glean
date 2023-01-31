@@ -25,7 +25,6 @@ type GlobalFlags struct {
 var (
 	globalFlags  GlobalFlags
 	GlobalConfig config.Glean
-	cmdSet       *subcmd.CommandSetYAML
 )
 
 func MustNew() *subcmd.CommandSetYAML {
