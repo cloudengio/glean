@@ -6,7 +6,7 @@ package index
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func httpBody(resp *http.Response) string {
 		return ""
 	}
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	return string(body)
 }
 
