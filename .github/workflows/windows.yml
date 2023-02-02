@@ -7,13 +7,18 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
         go-version: [1.19.x]
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
       - name: Set git to use LF
         run: |
           git config --global core.autocrlf false
@@ -22,15 +27,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
+      - name: Cache modules
+        uses: actions/cache@v3
         with:
-          go-version: ${{ matrix.go-version }}
-          cache: true
-          cache-dependency-path: gleancli/go.sum
+          path: |
+            ~\AppData\Local\go-build
+            ~\go\pkg\mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tools
+        run: |
+          go install cloudeng.io/citools/multimod@latest
 
       - name: Test
-        run: |
-          foreach ($dir in @("gleancli", "gleansdk")) {
-              cd $dir; go test --race --covermode=atomic ./...; cd ..;
-          }
+        run: multimod --config=.multimod.yml --test

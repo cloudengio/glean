@@ -22,7 +22,7 @@ func ParseGleanError(r *http.Response, err error) error {
 	oapiErr, ok := err.(*gleansdk.GenericOpenAPIError)
 	if !ok {
 		if r != nil {
-			return fmt.Errorf("%v: %v: %v\n", r.Request.URL, r.StatusCode, err)
+			return fmt.Errorf("%v: %v: %v", r.Request.URL, r.StatusCode, err)
 		}
 		return err
 	}

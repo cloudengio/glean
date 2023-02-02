@@ -59,7 +59,7 @@ func (cnv *HTML) GleanDocument(datasource string, cfg config.Conversion, doc cra
 	gd.Permissions.SetAllowAnonymousAccess(true)
 
 	gd.UpdatedAt = new(int64)
-	*gd.UpdatedAt = int64(dl.FileInfo.ModTime().Unix())
+	*gd.UpdatedAt = dl.FileInfo.ModTime().Unix()
 
 	return gd, nil
 }

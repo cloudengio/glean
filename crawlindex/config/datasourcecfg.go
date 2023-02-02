@@ -92,11 +92,11 @@ type Conversion struct {
 // information that pertains to	that content type.
 func (d Datasource) ConfigForContentType() map[content.Type]Conversion {
 	cnvmap := make(map[content.Type]Conversion)
-	for _, c := range d.Converters {
+	for i, c := range d.Converters {
 		for _, ft := range c.FromContentType {
 			cnvmap[content.Clean(ft)] = Conversion{
 				ft,
-				&c,
+				&d.Converters[i],
 				&d.DatasourceConfig.CustomDatasourceConfig,
 			}
 		}

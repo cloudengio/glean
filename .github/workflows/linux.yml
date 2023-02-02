@@ -7,25 +7,70 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     strategy:
       matrix:
-        go-version: [1.19.x]
+        go-version: [1.18.x, 1.19.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
-          cache: true
-          cache-dependency-path: gleancli/go.sum
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tools
+        run: |
+          go install cloudeng.io/citools/multimod@latest
 
       - name: Test
+        run: multimod --config=.multimod.yml --test
+
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.x
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tools
         run: |
-          for dir in ./gleansdk ./gleancli; do \
-            cd $dir; go test --race --covermode=atomic ./...; cd ..; \
-          done
+          go install cloudeng.io/citools/multimod@latest
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+          which multimod
+          which govulncheck
+          which golangci-lint
+
+      - name: Lint
+        run: multimod --config=.multimod.yml --lint
+
+      - name: Vulnerability
+        run: multimod --config=.multimod.yml --govuln
