@@ -2,9 +2,9 @@ name: macos
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   test:
@@ -14,18 +14,27 @@ jobs:
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
-          cache: true
-          cache-dependency-path: gleancli/go.sum
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install tools
+        run: |
+          go install cloudeng.io/citools/multimod@latest
 
       - name: Test
-        run: |
-          for dir in ./gleansdk ./gleancli; do \
-                cd $dir; go test --race --covermode=atomic ./...; cd ..; \
-          done
+        run: multimod --config=.multimod.yml --test
