@@ -1,3 +1,0 @@
-test_cmd: ["go", "test", "-failfast", "--covermode=atomic", "--vet=off", "-race", "./..."]
-lint_cmd: ["golangci-lint", "run", "./..."]
-govuln_cmd: ["govulncheck", "./..."]

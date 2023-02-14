@@ -1,0 +1,22 @@
+test:
+  [
+    "go",
+    "test",
+    "-failfast",
+    "--covermode=atomic",
+    "--vet=off",
+    "-race",
+    "./...",
+  ]
+lint: ["golangci-lint", "run", "./..."]
+govuln: ["govulncheck", "./..."]
+generate: ["go", "generate", "./..."]
+markdown: ["gomarkdown", "-overwrite", "./..."]
+annotate:
+  [
+    "goannotate",
+    "--config=${MULTIMOD_ROOT}/copyright-annotations.yaml",
+    "--annotation=cloudeng-copyright",
+  ]
+usage: ["gousage", "--overwrite", "./..."]
+update: ["go", "get", "-u", "./..."]
