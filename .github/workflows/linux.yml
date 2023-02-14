@@ -37,7 +37,7 @@ jobs:
           go install cloudeng.io/citools/multimod@latest
 
       - name: Test
-        run: multimod --config=.multimod.yml --test
+        run: multimod --config=.multimod.yaml test
 
   linting:
     runs-on: ubuntu-latest
@@ -65,12 +65,9 @@ jobs:
           go install cloudeng.io/citools/multimod@latest
           go install golang.org/x/vuln/cmd/govulncheck@latest
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
-          which multimod
-          which govulncheck
-          which golangci-lint
 
       - name: Lint
-        run: multimod --config=.multimod.yml --lint
+        run: multimod --config=.multimod.yaml lint
 
       - name: Vulnerability
-        run: multimod --config=.multimod.yml --govuln
+        run: multimod --config=.multimod.yaml govuln

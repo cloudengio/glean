@@ -1,0 +1,9 @@
+annotations:
+  - type: cloudeng.io/go/cmd/goannotate/annotators.EnsureCopyrightAndLicense
+    name: cloudeng-copyright
+    copyright: "// Copyright 2023 cloudeng llc. All rights reserved."
+    license: |
+      // Use of this source code is governed by the Apache-2.0
+      // license that can be found in the LICENSE file.
+options:
+  concurrency: 0
