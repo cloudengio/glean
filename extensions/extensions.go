@@ -2,6 +2,10 @@
 // Use of this source code is governed by the Apache-2.0
 // license that can be found in the LICENSE file.
 
+// Package extensions contains a set of subcmd extensions that can
+// be used by gleancli implementations. Each such extension is a
+// submodule so that its dependencies are imported only by
+// gleancli implementations that use it.
 package extensions
 
 import (

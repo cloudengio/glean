@@ -13,7 +13,7 @@ import (
 	"cloudeng.io/file/content"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
-	"cloudeng.io/glean/gleancli/builtin/extensions"
+	"cloudeng.io/glean/extensions"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/protocolsio"
