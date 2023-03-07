@@ -12,21 +12,20 @@ import (
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/glean/crawlindex/config"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/crawlindex/index"
 	"cloudeng.io/glean/gleancli/builtin"
-	"cloudeng.io/glean/gleancli/builtin/extensions"
 )
 
 type GlobalFlags struct {
-	config.GleanFlags
+	gleancfg.GleanFlags
 }
 
 var (
 	globalFlags  GlobalFlags
-	GlobalConfig config.Glean
+	GlobalConfig gleancfg.Glean
 )
 
 const baseCommands = `name: gleancli
@@ -77,9 +76,9 @@ commands:
           - datasource-name - the datasource to be indexed
 `
 
-var cmdExtensions []extensions.T
+var cmdExtensions []gleancfg.Extension
 
-func asSubcmdExtensions(exts []extensions.T) []subcmd.Extension {
+func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 	subext := []subcmd.Extension{}
 	for _, e := range exts {
 		subext = append(subext, e)
