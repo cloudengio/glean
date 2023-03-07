@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"cloudeng.io/cmdutil"
-	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/config"
 )
 
 const configSpec = `

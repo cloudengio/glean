@@ -3,6 +3,8 @@ cloudeng.io/algo v0.0.0-20221118174443-5eef698118a6/go.mod h1:dgJhQ6JXLysnBQG09/
 cloudeng.io/algo v0.0.0-20230304024356-5d6b315e83f0 h1:wMGXqS7huco5tL+VkRf+jUI8QMFXthegTvO6au6mk+0=
 cloudeng.io/algo v0.0.0-20230304024356-5d6b315e83f0/go.mod h1:80eC8gNGsJP8ZBw+xCIh1kIpt77az1W7fJ+zqLRiE64=
 cloudeng.io/algo v0.0.0-20230307023515-8a194fbc7867/go.mod h1:80eC8gNGsJP8ZBw+xCIh1kIpt77az1W7fJ+zqLRiE64=
+cloudeng.io/algo v0.0.0-20230307171818-e916b1b21441 h1:E8dmzVcJUncThYAr8Uvx+t2Ml58MVxFM3oCAA9GMbOU=
+cloudeng.io/algo v0.0.0-20230307171818-e916b1b21441/go.mod h1:80eC8gNGsJP8ZBw+xCIh1kIpt77az1W7fJ+zqLRiE64=
 cloudeng.io/aws v0.0.0-20230131001623-0f9cc3f76915 h1:D19ORFlZDJf6DFAAyh87+nm59kkf5XebBuQiuBfvZMY=
 cloudeng.io/aws v0.0.0-20230131001623-0f9cc3f76915/go.mod h1:Xa6AvzP0F3qGhWI7TlmFoYKcbagX5kjLsuQ0KhuRbRo=
 cloudeng.io/aws v0.0.0-20230210203143-e63188d27316 h1:e2d7Vew69YN7OK9Ka2JjCyyOwJ03pmmebrlu0VNSxS0=
@@ -19,6 +21,8 @@ cloudeng.io/cmdutil v0.0.0-20230210203143-e63188d27316 h1:Kl5z5uIEHS3U7DQxsR5lCG
 cloudeng.io/cmdutil v0.0.0-20230210203143-e63188d27316/go.mod h1:nX3v2San8WLgYYmtom/+1GxmfKh3wWSyvnLvoxUz784=
 cloudeng.io/cmdutil v0.0.0-20230307023515-8a194fbc7867 h1:67Hi3b9RITxZYn/v1VBFU7xVEEvY3cJcrOgFo6tXXsw=
 cloudeng.io/cmdutil v0.0.0-20230307023515-8a194fbc7867/go.mod h1:HOYjjVIvIbRF5li5EIzqyFYxlzPmxNskXO74HDICgk8=
+cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441 h1:0VKjkyZwk7/XVaGuWqIscPVBeiMwkadgaIabYaYs/wQ=
+cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441/go.mod h1:HOYjjVIvIbRF5li5EIzqyFYxlzPmxNskXO74HDICgk8=
 cloudeng.io/debug v0.0.0-20230105021008-948d22470af5/go.mod h1:UDKUtuaCh0+iaDe5+i70G3l3liexOPeU3h0lyUeAt+o=
 cloudeng.io/errors v0.0.7/go.mod h1:xWamLL6tn3roKI6MRRFkw1jUkJL9s7CJzFYfaxuhHZk=
 cloudeng.io/errors v0.0.8 h1:WEpTcAYnL2wsPm0qfMpXRupoO61DahxbD4doPKbsaGY=
@@ -36,12 +40,16 @@ cloudeng.io/glean/crawlindex v0.0.0-20230202202935-e2c8bc680798 h1:io7Pi45+sqVjF
 cloudeng.io/glean/crawlindex v0.0.0-20230202202935-e2c8bc680798/go.mod h1:akcp2RVG6u1+eI3xNi4pe4uvdprf2ELNeiCsMHQc8Yk=
 cloudeng.io/glean/crawlindex v0.0.0-20230214174059-258626c41c39 h1:v3RxrQEGuq2WzVUsm6gWXUQOnE4BxvpDbti2C0lzNxk=
 cloudeng.io/glean/crawlindex v0.0.0-20230214174059-258626c41c39/go.mod h1:wiZlH2lnU7JeC7IdiXxBNZ6TBii2WuXUdxctRVvYprU=
+cloudeng.io/glean/crawlindex v0.0.0-20230307182547-2bec2d47fac1 h1:78PAME3dr9DjY9H7Yyru3KDgToYAG92KBVFqIYtSD8I=
+cloudeng.io/glean/crawlindex v0.0.0-20230307182547-2bec2d47fac1/go.mod h1:O4aJmZXuGfuBhsLtUCEGw10JKdLIcXoMAIVHBr1IU7g=
 cloudeng.io/glean/gleansdk v0.0.0-20230127175843-a2a64df2d47e h1:i8HSXnMFaoUGh+uH7mPJKZfHufKhUfe7/xAEyupMYBw=
 cloudeng.io/glean/gleansdk v0.0.0-20230127175843-a2a64df2d47e/go.mod h1:VAh/yuFX9LNSDQRgwhcdCtqLxxJJ9n3rcVsXaYOnFkI=
 cloudeng.io/glean/gleansdk v0.0.0-20230202202935-e2c8bc680798 h1:JdtlQpa9zhYhQET1bzMYVx1XE05j+KYvmW6d1YmMHsQ=
 cloudeng.io/glean/gleansdk v0.0.0-20230202202935-e2c8bc680798/go.mod h1:VAh/yuFX9LNSDQRgwhcdCtqLxxJJ9n3rcVsXaYOnFkI=
 cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39 h1:38BSUVK84lwXpcABOU4x7KzpBIlT1tiqyx/jkm1jsbw=
 cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39/go.mod h1:tp8ctL6Nv8muWtznWPpSXCwFtmxFQvbxpyMEjsh9BeE=
+cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1 h1:ziM3XF3H5xOjkBLjinU/i5qS3gnwSEZg8KL2l7MonTU=
+cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1/go.mod h1:tp8ctL6Nv8muWtznWPpSXCwFtmxFQvbxpyMEjsh9BeE=
 cloudeng.io/io v0.0.0-20221118174443-5eef698118a6/go.mod h1:CY6DAchAGSB9tVTyZzbo54aJ9b+uOfYQ8frx3WPCRFY=
 cloudeng.io/net v0.0.0-20230210203143-e63188d27316 h1:HOjloAvk+ZUjkZAgjRspJpPsoSLXwnzUFdRRqHnzJfU=
 cloudeng.io/net v0.0.0-20230210203143-e63188d27316/go.mod h1:13BN0nf3e35fdeiFH0pgduqEhOgWLMvnhYtRYg4WKE8=

@@ -9,6 +9,7 @@ import (
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/file/content"
+	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
 )
 
@@ -42,19 +43,12 @@ type Datasource struct {
 
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	DatasourceConfig `yaml:"datasource_config"`
+	config.DatasourceConfig `yaml:"datasource_config"`
 }
 
 // Cache represents a cache configuration.
 type Cache struct {
 	Path string // Path is the location of the cache for this datasource.
-}
-
-// DatasourceConfig represents the configuration of the datasource with
-// Glean's API.
-type DatasourceConfig struct {
-	GleanInstance                   string `yaml:"glean_instance"`
-	gleansdk.CustomDatasourceConfig `yaml:",inline"`
 }
 
 // Datasources represents a list of named datasources.

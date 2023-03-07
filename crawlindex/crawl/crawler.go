@@ -13,6 +13,7 @@ import (
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/crawlcmd"
 	"cloudeng.io/file/crawl/outlinks"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/sync/errgroup"
 )
@@ -27,7 +28,7 @@ type Flags struct {
 // Crawler represents a crawler instance that contains global configuration
 // information.
 type Crawler struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 	Extractors  func() map[content.Type]outlinks.Extractor
 	FSForCrawl  func(config.Crawl) map[string]file.FSFactory
 }
