@@ -8,7 +8,8 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441
 	cloudeng.io/errors v0.0.8
 	cloudeng.io/file v0.0.0-20230307171818-e916b1b21441
-	cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39
+	cloudeng.io/glean/config v0.0.0-20230307190727-66038c4cb1a5
+	cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/text v0.0.11
 	cloudeng.io/webapi/operations v0.0.0-20230307052936-9f513698e82c

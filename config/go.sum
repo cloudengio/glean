@@ -1,14 +1,8 @@
 cloud.google.com/go/compute/metadata v0.2.0/go.mod h1:zFmK7XCadkQkj6TtorcaGlCW1hT1fIilQDwofLpJ20k=
-cloudeng.io/cmdutil v0.0.0-20230306215119-e71b407605cc h1:kH17sCvltLLtmaVOIcE7HsNL7PW07MN1OPg7JgljXV8=
-cloudeng.io/cmdutil v0.0.0-20230306215119-e71b407605cc/go.mod h1:HOYjjVIvIbRF5li5EIzqyFYxlzPmxNskXO74HDICgk8=
-cloudeng.io/cmdutil v0.0.0-20230307023515-8a194fbc7867 h1:67Hi3b9RITxZYn/v1VBFU7xVEEvY3cJcrOgFo6tXXsw=
-cloudeng.io/cmdutil v0.0.0-20230307023515-8a194fbc7867/go.mod h1:HOYjjVIvIbRF5li5EIzqyFYxlzPmxNskXO74HDICgk8=
 cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441 h1:0VKjkyZwk7/XVaGuWqIscPVBeiMwkadgaIabYaYs/wQ=
 cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441/go.mod h1:HOYjjVIvIbRF5li5EIzqyFYxlzPmxNskXO74HDICgk8=
 cloudeng.io/errors v0.0.8 h1:WEpTcAYnL2wsPm0qfMpXRupoO61DahxbD4doPKbsaGY=
 cloudeng.io/errors v0.0.8/go.mod h1:xWamLL6tn3roKI6MRRFkw1jUkJL9s7CJzFYfaxuhHZk=
-cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39 h1:38BSUVK84lwXpcABOU4x7KzpBIlT1tiqyx/jkm1jsbw=
-cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39/go.mod h1:tp8ctL6Nv8muWtznWPpSXCwFtmxFQvbxpyMEjsh9BeE=
 cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1 h1:ziM3XF3H5xOjkBLjinU/i5qS3gnwSEZg8KL2l7MonTU=
 cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1/go.mod h1:tp8ctL6Nv8muWtznWPpSXCwFtmxFQvbxpyMEjsh9BeE=
 cloudeng.io/text v0.0.11 h1:q3+p3gxwNdr/V+k4+77fj9QxVpUU8G7B4+v26m+sE8I=
@@ -28,11 +22,9 @@ golang.org/x/net v0.0.0-20190603091049-60506f45cf65/go.mod h1:HSz+uSET+XFnRR8LxR
 golang.org/x/net v0.0.0-20190620200207-3b0461eec859/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20210226172049-e18ecbb05110/go.mod h1:m0MpNAwzfU5UDzcl9v0D8zg8gWTRqZa9RBIspLL5mdg=
 golang.org/x/net v0.0.0-20220722155237-a158d28d115b/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
-golang.org/x/net v0.6.0 h1:L4ZwwTvKW9gr0ZMS1yrHD9GZhIuVjOBBnaKH+SPQK0Q=
 golang.org/x/net v0.6.0/go.mod h1:2Tu9+aMcznHK/AK1HMvgo6xiTLG5rD5rZLDS+rp2Bjs=
 golang.org/x/net v0.8.0 h1:Zrh2ngAOFYneWTAIAPethzeaQLuHwhuBkuV6ZiRnUaQ=
 golang.org/x/net v0.8.0/go.mod h1:QVkue5JL9kW//ek3r6jTKnTFis1tRmNAW2P1shuFdJc=
-golang.org/x/oauth2 v0.5.0 h1:HuArIo48skDwlrvM3sEdHXElYslAMsf3KwRkkW4MC4s=
 golang.org/x/oauth2 v0.5.0/go.mod h1:9/XBHVqLaWO3/BRHs5jbpYCnOZVjj5V0ndyaAM7KB4I=
 golang.org/x/oauth2 v0.6.0 h1:Lh8GPgSKBfWSwFvtuWOfeI3aAAnbXTSutYxJiOJFgIw=
 golang.org/x/oauth2 v0.6.0/go.mod h1:ycmewcwgD4Rpr3eZJLSB4Kyyljb3qDh40vJ8STE5HKw=
