@@ -11,10 +11,10 @@ import (
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/outlinks"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
-	"cloudeng.io/glean/gleancli/builtin/extensions"
-	"cloudeng.io/glean/gleancli/builtin/protocolsio"
+	"cloudeng.io/glean/extensions/protocolsio"
 )
 
 // Extractors represents the set of available outlink extractors.
@@ -41,8 +41,8 @@ func Converters(cfg config.Converters) (*content.Registry[converters.T], error) 
 }
 
 // APIExtensions returns the builtin API related commands.
-func APIExtensions(parents ...string) []extensions.T {
-	var exts []extensions.T
+func APIExtensions(parents ...string) []gleancfg.Extension {
+	var exts []gleancfg.Extension
 	exts = append(exts, protocolsio.Extension(parents...))
 	return exts
 }
