@@ -6,33 +6,32 @@
 // be used by gleancli implementations. Each such extension is a
 // submodule so that its dependencies are imported only by
 // gleancli implementations that use it.
-package extensions
+package config
 
 import (
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/glean/crawlindex/config"
 )
 
-type T interface {
+type Extension interface {
 	subcmd.Extension
-	SetGleanConfig(*config.Glean)
-	GleanConfig() *config.Glean
+	SetGleanConfig(*Glean)
+	GleanConfig() *Glean
 }
 
 type extension struct {
 	subcmd.Extension
-	cfg *config.Glean
+	cfg *Glean
 }
 
-func (e *extension) SetGleanConfig(cfg *config.Glean) {
+func (e *extension) SetGleanConfig(cfg *Glean) {
 	e.cfg = cfg
 }
 
-func (e *extension) GleanConfig() *config.Glean {
+func (e *extension) GleanConfig() *Glean {
 	return e.cfg
 }
 
-func New(name, spec string, appendFn func(cmdSet *subcmd.CommandSetYAML) error) T {
+func NewExtension(name, spec string, appendFn func(cmdSet *subcmd.CommandSetYAML) error) Extension {
 	return &extension{
 		Extension: subcmd.NewExtension(name, spec, appendFn),
 	}

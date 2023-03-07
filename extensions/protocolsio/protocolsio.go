@@ -11,9 +11,9 @@ import (
 
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/content"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
-	"cloudeng.io/glean/extensions"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/protocolsio"
@@ -63,9 +63,9 @@ const (
 `
 )
 
-func Extension(parents ...string) extensions.T {
+func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
-	return extensions.New(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
+	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
 		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunnerAndFlags(
 			c.scanDownloadsCmd, subcmd.MustRegisteredFlagSet(&ScanFlags{}))
 		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunnerAndFlags(
