@@ -37,7 +37,7 @@ func TestAPICrawlConfig(t *testing.T) {
 	}
 
 	var a1 api1
-	if present, err := config.ParseCrawlConfig(crawls, "api1", &a1); !present || err != nil {
+	if present, err := config.ParseAPICrawlConfig(crawls, "api1", &a1); !present || err != nil {
 		t.Fatalf("not present: %v, or err: %v", present, err)
 	}
 	if got, want := a1.Something, 1; got != want {
@@ -45,7 +45,7 @@ func TestAPICrawlConfig(t *testing.T) {
 	}
 
 	var a2 api2
-	if present, err := config.ParseCrawlConfig(crawls, "api2", &a2); !present || err != nil {
+	if present, err := config.ParseAPICrawlConfig(crawls, "api2", &a2); !present || err != nil {
 		t.Fatalf("not present: %v, or err: %v", present, err)
 	}
 	if got, want := a2.Else, 2; got != want {
