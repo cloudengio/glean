@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"cloudeng.io/cmdutil"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/internal"
 	"cloudeng.io/glean/gleansdk"
@@ -21,7 +22,7 @@ type Flags struct {
 }
 
 type T struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 }
 
 func (d *T) Download(ctx context.Context, instance, datasource string) error {

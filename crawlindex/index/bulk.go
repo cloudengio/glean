@@ -14,6 +14,7 @@ import (
 	"cloudeng.io/algo/container/circular"
 	"cloudeng.io/errors"
 	"cloudeng.io/file/content"
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
@@ -29,7 +30,7 @@ type BulkFlags struct {
 
 // Indexer represents a Glean indexer.
 type Indexer struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 	Config      config.Datasource
 	Converters  *content.Registry[converters.T]
 }
