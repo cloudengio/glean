@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/subcmd"
@@ -77,15 +76,6 @@ commands:
         arguments:
           - datasource-name - the datasource to be indexed
 `
-
-func split(s string) []string {
-	return strings.Split(strings.TrimSpace(s), "\n")
-}
-
-type crawlExtension struct {
-	Name string
-	Body []string
-}
 
 var cmdExtensions []extensions.T
 

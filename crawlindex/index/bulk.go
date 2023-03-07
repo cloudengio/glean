@@ -136,28 +136,28 @@ func WithBulkID(id string) BulkIndexOption {
 // bulkIndexer represents a bulk indexer.
 type bulkIndexer struct {
 	bulkOptions
-	id       string
-	req_size int
-	cfg      config.Datasource
-	client   *gleansdk.APIClient
-	docs     *circular.Buffer[gleansdk.DocumentDefinition]
+	id      string
+	reqSize int
+	cfg     config.Datasource
+	client  *gleansdk.APIClient
+	docs    *circular.Buffer[gleansdk.DocumentDefinition]
 }
 
 // bewBulkIndexer creates a new bulk indexer.
 func newBulkIndexer(client *gleansdk.APIClient, datasource config.Datasource, opts ...BulkIndexOption) *bulkIndexer {
 	b := &bulkIndexer{
-		id:       time.Now().Round(0).String(),
-		cfg:      datasource,
-		req_size: datasource.BulkIndex.RequestSize,
-		client:   client,
+		id:      time.Now().Round(0).String(),
+		cfg:     datasource,
+		reqSize: datasource.BulkIndex.RequestSize,
+		client:  client,
 	}
 	for _, fn := range opts {
 		fn(&b.bulkOptions)
 	}
-	if b.req_size == 0 {
-		b.req_size = 50
+	if b.reqSize == 0 {
+		b.reqSize = 50
 	}
-	b.docs = circular.NewBuffer[gleansdk.DocumentDefinition](b.req_size)
+	b.docs = circular.NewBuffer[gleansdk.DocumentDefinition](b.reqSize)
 	return b
 }
 
@@ -175,7 +175,7 @@ func (b *bulkIndexer) Run(ctx context.Context, ch <-chan Request) error {
 			return ctx.Err()
 		case req, ok := <-ch:
 			if !ok {
-				if err := b.finish(ctx); err != nil {
+				if err := b.finish(ctx, firstPage); err != nil {
 					return err
 				}
 				if duration > 0 && indexed > 0 {
@@ -215,12 +215,12 @@ func (b *bulkIndexer) sendAndTimeRequst(ctx context.Context, req gleansdk.BulkIn
 }
 
 // nextBulkRequest creates and returns a bulk index request
-// with exactly 0 or b.req_size documents. If the boolean return
+// with exactly 0 or b.reqSize documents. If the boolean return
 // value is false then zero documents are available (and up to
 // n_req may still be buffered).
 func (b *bulkIndexer) nextBulkRequest(firstPage bool) (gleansdk.BulkIndexDocumentsRequest, bool) {
 	var req gleansdk.BulkIndexDocumentsRequest
-	if b.docs.Len() < b.req_size {
+	if b.docs.Len() < b.reqSize {
 		return req, false
 	}
 	return b.nextRequest(firstPage)
@@ -228,7 +228,7 @@ func (b *bulkIndexer) nextBulkRequest(firstPage bool) (gleansdk.BulkIndexDocumen
 
 func (b *bulkIndexer) nextRequest(firstPage bool) (gleansdk.BulkIndexDocumentsRequest, bool) {
 	var req gleansdk.BulkIndexDocumentsRequest
-	docs := b.docs.Head(b.req_size)
+	docs := b.docs.Head(b.reqSize)
 	if len(docs) == 0 {
 		return req, false
 	}
@@ -236,7 +236,6 @@ func (b *bulkIndexer) nextRequest(firstPage bool) (gleansdk.BulkIndexDocumentsRe
 	req.SetIsFirstPage(firstPage)
 	if firstPage {
 		req.SetForceRestartUpload(b.forceRestart)
-		firstPage = false
 	}
 	req.SetIsLastPage(false)
 	req.SetUploadId(b.id)
@@ -247,15 +246,16 @@ func (b *bulkIndexer) nextRequest(firstPage bool) (gleansdk.BulkIndexDocumentsRe
 
 // finish will send any buffered documents and then the last
 // page.
-func (b *bulkIndexer) finish(ctx context.Context) error {
+func (b *bulkIndexer) finish(ctx context.Context, firstPage bool) error {
 	for {
-		bulkReq, ok := b.nextRequest(false)
+		bulkReq, ok := b.nextRequest(firstPage)
 		if !ok {
 			break
 		}
 		if err := b.sendAndTimeRequst(ctx, bulkReq); err != nil {
 			return err
 		}
+		firstPage = false
 	}
 	bulkReq := gleansdk.BulkIndexDocumentsRequest{}
 	bulkReq.SetDatasource(b.cfg.CustomDatasourceConfig.GetName())
