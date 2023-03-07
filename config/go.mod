@@ -3,8 +3,8 @@ module cloudeng.io/glean/config
 go 1.20
 
 require (
-	cloudeng.io/cmdutil v0.0.0-20230307023515-8a194fbc7867
-	cloudeng.io/glean/gleansdk v0.0.0-20230214174059-258626c41c39
+	cloudeng.io/cmdutil v0.0.0-20230307171818-e916b1b21441
+	cloudeng.io/glean/gleansdk v0.0.0-20230307182547-2bec2d47fac1
 )
 
 require (
