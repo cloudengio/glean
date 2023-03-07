@@ -85,7 +85,7 @@ func (cmd *command) new(fv CommonFlags, datasource string) (*protocolsiocmd.Comm
 	}
 	node, ok := cfg.APICrawls[cmdName]
 	if !ok {
-		return nil, fmt.Errorf("%v does not contain a configuration for %v\n", datasource, cmdName)
+		return nil, fmt.Errorf("%v does not contain a configuration for %v", datasource, cmdName)
 	}
 	cmd.cacheRoot = cfg.Cache.Path
 	c := &protocolsiocmd.Command{}
