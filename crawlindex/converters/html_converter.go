@@ -6,13 +6,16 @@ package converters
 
 import (
 	"bytes"
+	"context"
+	"fmt"
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/content/processors"
-	"cloudeng.io/glean/crawlindex"
+	"cloudeng.io/file/download"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/text/textutil"
+	"cloudeng.io/webapi/operations"
 )
 
 // HTML represents an html to glean document converter.
@@ -29,16 +32,25 @@ func (cnv *HTML) Type() content.Type {
 	return "text/html;charset=utf-8"
 }
 
-func (cnv *HTML) GleanDocument(datasource string, cfg config.Conversion, doc crawlindex.Document) (*gleansdk.DocumentDefinition, error) {
-	rwr, err := textutil.NewRewriteRules(cfg.Converter.ViewURLRewrites...)
-	if err != nil {
-		return nil, err
+func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
+	var gd gleansdk.DocumentDefinition
+	if ctype != cfg.Type {
+		return gd, fmt.Errorf("htmlConverter: expected %v, not %v", cfg.Type, ctype)
+	}
+	var obj content.Object[download.Result, *operations.Response]
+	if err := obj.Decode(data); err != nil {
+		return gd, fmt.Errorf("htmlConverter: converter: failed to decode object data: %v", err)
 	}
 
-	gd := &gleansdk.DocumentDefinition{}
+	rwr, err := textutil.NewRewriteRules(cfg.Converter.ViewURLRewrites...)
+	if err != nil {
+		return gd, err
+	}
+
 	gd.Datasource = datasource
 
-	dl := doc.Download
+	dl := obj.Value
+
 	gd.SetId(dl.Name)
 	gd.SetViewURL(rwr.ReplaceAllStringFirst(dl.Name))
 
@@ -49,7 +61,7 @@ func (cnv *HTML) GleanDocument(datasource string, cfg config.Conversion, doc cra
 	gd.SetTitle(title)
 
 	gd.Body = &gleansdk.ContentDefinition{}
-	gd.Body.SetMimeType(string(doc.Type))
+	gd.Body.SetMimeType(string(obj.Type))
 	gd.Body.SetTextContent(string(dl.Contents))
 
 	gd.Author = &gleansdk.UserReferenceDefinition{}

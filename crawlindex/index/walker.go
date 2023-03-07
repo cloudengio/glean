@@ -11,7 +11,6 @@ import (
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/filewalk"
-	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
@@ -63,12 +62,13 @@ func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, 
 			}
 		}
 		for _, file := range contents.Files {
-			dl, err := crawlindex.ReadDocument(prefix, file.Name)
+			path := filepath.Join(prefix, file.Name)
+			ctype, obj, err := content.ReadBinary(path)
 			if err != nil {
-				fmt.Printf("failed to read file: %v: %v\n", filepath.Join(prefix, file.Name), err)
+				fmt.Printf("failed to read file: %v: %v\n", path, err)
 				continue
 			}
-			gd, err := w.convert(dl)
+			gd, err := w.convert(ctx, ctype, obj)
 			if err != nil {
 				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name), err)
 				continue
@@ -79,12 +79,12 @@ func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, 
 	}
 }
 
-func (w *walker) convert(doc crawlindex.Document) (*gleansdk.DocumentDefinition, error) {
-	converter, err := w.cnvs.LookupConverters(doc.Type, converters.GleanContentType)
+func (w *walker) convert(ctx context.Context, ctype content.Type, obj []byte) (gleansdk.DocumentDefinition, error) {
+	converter, err := w.cnvs.LookupConverters(ctype, converters.GleanContentType)
 	if err != nil {
-		return nil, fmt.Errorf("no content converters found for %v to %v", doc.Type, converters.GleanContentType)
+		return gleansdk.DocumentDefinition{}, fmt.Errorf("no content converters found for %v to %v", ctype, converters.GleanContentType)
 	}
-	return converter.GleanDocument(w.datasource, w.cfg[content.Clean(doc.Type)], doc)
+	return converter.Convert(ctx, w.datasource, w.cfg[content.Clean(ctype)], ctype, obj)
 }
 
 func (w *walker) Run(ctx context.Context, dir string) error {

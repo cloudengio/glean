@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/subcmd"
@@ -16,6 +17,8 @@ import (
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/crawlindex/index"
+	"cloudeng.io/glean/gleancli/builtin"
+	"cloudeng.io/glean/gleancli/builtin/extensions"
 )
 
 type GlobalFlags struct {
@@ -27,8 +30,7 @@ var (
 	GlobalConfig config.Glean
 )
 
-func MustNew() *subcmd.CommandSetYAML {
-	cmdSet := subcmd.MustFromYAML(`name: gleancli
+const baseCommands = `name: gleancli
 summary: command line for working with the Glean API
 commands:
   - name: datasources
@@ -40,9 +42,9 @@ commands:
           - glean-instance-name - the name of the glean instance to use
           - datasource-name     - the datasource to be downloaded
       - name: register
-        summary: add the named datasource to a glean instance using the configuration defined in the datasource configuration file specified using the --datasource-config flag.
+        summary: add the named datasource to a glean instance using the configuration defined in the datasource configuration file specified using the --datasource-configs flag.
         arguments:
-          - datasource-name - the datasource to be downloaded
+          - datasource-name - the datasource to be registered
       - name: show-config
         summary: load and display the specified config file
         arguments:
@@ -56,6 +58,12 @@ commands:
         arguments:
           - datasource-name - the datasource to be crawled
 
+  - name: api
+    summary: API releated commands
+    commands:
+      {{range subcmdExtension "APIExtensions"}}
+      {{.}}{{end}}
+
   - name: index
     summary: crawl a web site or filesystem
     commands:
@@ -68,7 +76,34 @@ commands:
         summary: display statistics for the specified datasource
         arguments:
           - datasource-name - the datasource to be indexed
-`)
+`
+
+func split(s string) []string {
+	return strings.Split(strings.TrimSpace(s), "\n")
+}
+
+type crawlExtension struct {
+	Name string
+	Body []string
+}
+
+var cmdExtensions []extensions.T
+
+func asSubcmdExtensions(exts []extensions.T) []subcmd.Extension {
+	subext := []subcmd.Extension{}
+	for _, e := range exts {
+		subext = append(subext, e)
+	}
+	return subext
+}
+
+func MustNew() *subcmd.CommandSetYAML {
+
+	apiExtensions := builtin.APIExtensions("api")
+	cmdExtensions = append(cmdExtensions, apiExtensions...)
+
+	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
+		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(apiExtensions)...))
 
 	var ds Datasources
 	cmdSet.Set("datasources", "download").MustRunnerAndFlags(
@@ -91,6 +126,8 @@ commands:
 	cmdSet.Set("index", "stats").MustRunnerAndFlags(
 		idx.stats, subcmd.MustRegisteredFlagSet(&index.StatsFlags{}))
 
+	cmdSet.MustAddExtensions()
+
 	globals := subcmd.GlobalFlagSet()
 	globals.MustRegisterFlagStruct(&globalFlags, nil, nil)
 	cmdSet.WithGlobalFlags(globals)
@@ -108,5 +145,10 @@ func mainWrapper(ctx context.Context, cmdRunner func(ctx context.Context) error)
 		}
 		fmt.Printf("warning: %q not found\n", globalFlags.Config)
 	}
+
+	for _, ext := range cmdExtensions {
+		ext.SetGleanConfig(&GlobalConfig)
+	}
+
 	return cmdRunner(ctx)
 }

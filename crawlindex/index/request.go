@@ -12,6 +12,6 @@ import "cloudeng.io/glean/gleansdk"
 // flag is never set, the indexer will assume that the indexing operation
 // is complete when its input channel is closed.
 type Request struct {
-	Documents []*gleansdk.DocumentDefinition
+	Documents []gleansdk.DocumentDefinition
 	LastPage  bool
 }

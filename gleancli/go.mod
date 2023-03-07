@@ -10,12 +10,14 @@ require (
 )
 
 require (
+	cloudeng.io/algo v0.0.0-20230304024356-5d6b315e83f0 // indirect
 	cloudeng.io/errors v0.0.8 // indirect
 	cloudeng.io/glean/gleansdk v0.0.0-20230202202935-e2c8bc680798 // indirect
 	cloudeng.io/net v0.0.0-20230210203143-e63188d27316 // indirect
 	cloudeng.io/path v0.0.8 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
+	cloudeng.io/webapi/operations v0.0.0-20230216181629-d134dcf04ae1 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.4 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.12 // indirect

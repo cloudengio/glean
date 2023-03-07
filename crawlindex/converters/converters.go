@@ -5,8 +5,9 @@
 package converters
 
 import (
+	"context"
+
 	"cloudeng.io/file/content"
-	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleansdk"
 )
@@ -15,7 +16,7 @@ const GleanContentType = content.Type("glean/document")
 
 type T interface {
 	Type() content.Type
-	GleanDocument(datasource string, cfg config.Conversion, dl crawlindex.Document) (*gleansdk.DocumentDefinition, error)
+	Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error)
 }
 
 func CreateRegistry(converters ...T) (*content.Registry[T], error) {
