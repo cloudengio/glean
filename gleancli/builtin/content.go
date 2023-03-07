@@ -13,6 +13,8 @@ import (
 	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
+	"cloudeng.io/glean/gleancli/builtin/extensions"
+	"cloudeng.io/glean/gleancli/builtin/protocolsio"
 )
 
 // Extractors represents the set of available outlink extractors.
@@ -34,5 +36,13 @@ func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory {
 func Converters(cfg config.Converters) (*content.Registry[converters.T], error) {
 	return converters.CreateRegistry(
 		converters.NewHTML(),
+		protocolsio.NewConverter(),
 	)
+}
+
+// APIExtensions returns the builtin API related commands.
+func APIExtensions(parents ...string) []extensions.T {
+	var exts []extensions.T
+	exts = append(exts, protocolsio.Extension(parents...))
+	return exts
 }

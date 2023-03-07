@@ -5,16 +5,19 @@
 package converters_test
 
 import (
+	"bytes"
+	"context"
+	"encoding/gob"
 	"testing"
 	"time"
 
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/download"
-	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations"
 )
 
 const htmlExample = `
@@ -32,21 +35,30 @@ const htmlExample = `
 `
 
 func TestConverter(t *testing.T) {
-
+	ctx := context.Background()
 	ds := converters.NewHTML()
+	ctype := content.Type("text/html;charset=utf-8")
 	modTime := time.Now()
 	dl := download.Result{
 		Name:     "foo",
 		Contents: []byte(htmlExample),
 		FileInfo: file.NewInfo("foo", 100, 0600, modTime, file.InfoOption{}),
 	}
-	crawled := crawlindex.Document{
-		Time:     modTime,
-		Type:     content.Type("text/html;charset=utf-8"),
-		Download: &dl,
+	resp := &operations.Response{}
+	obj := content.Object[download.Result, *operations.Response]{
+		Type:     ctype,
+		Value:    dl,
+		Response: resp,
 	}
+	buf := &bytes.Buffer{}
+	enc := gob.NewEncoder(buf)
+	if err := enc.Encode(obj); err != nil {
+		t.Fatal(err)
+	}
+
 	dsURL := "https://example.com"
 	cfg := config.Conversion{
+		Type: ctype,
 		Converter: &config.Converter{
 			ViewURLRewrites: []string{"s%(.*)%https://example.com/$1%"},
 		},
@@ -55,7 +67,7 @@ func TestConverter(t *testing.T) {
 			HomeUrl: &dsURL,
 		},
 	}
-	gd, err := ds.GleanDocument("text/html", cfg, crawled)
+	gd, err := ds.Convert(ctx, "text/html", cfg, ctype, buf.Bytes())
 	if err != nil {
 		t.Fatal(err)
 	}

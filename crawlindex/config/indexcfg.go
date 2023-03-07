@@ -11,6 +11,7 @@ type BulkIndex struct {
 	ForceDeletion  bool `yaml:"force_deletion"`  // Glean's force deletion flag
 	ForceRestart   bool `yaml:"force_restart"`   // Glean's force restart flag
 	ReaddirEntries int  `yaml:"readdir_entries"` // number of entries per Readdir call.
+	RequestSize    int  `yaml:"request_size"`    // number of documents to include in a single request in a single bulk index request.
 }
 
 // IncrementalIndex represents the configuration info for incremental, document

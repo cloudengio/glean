@@ -12,6 +12,10 @@ import (
 	"cloudeng.io/glean/gleansdk"
 )
 
+type DatasourceName struct {
+	Datasource string `subcmd:"datasource,,name of the datasource"`
+}
+
 // FileFlags represents a command line flag for the datasource config file.
 type FileFlags struct {
 	ConfigFile string `subcmd:"datasource-configs,,datasource config file"`
@@ -22,8 +26,11 @@ type FileFlags struct {
 type Datasource struct {
 	Datasource string // Datasource name.
 
-	Crawls []Crawl // File/download orientend Crawls that obtain data for this datasource.
-	APIS   []API   // API based 'crawls' that obtain data for this datasource.
+	Crawls []Crawl `yaml:"crawls,omitempty"`
+	// File/download orientend Crawls that obtain data for this datasource.
+
+	// API based 'crawls' that obtain data for this datasource.
+	APICrawls APICrawls `yaml:"api_crawls,omitempty"`
 
 	// Bulk index configuration for this datasource.
 	*BulkIndex `yaml:"bulk_index,omitempty"`

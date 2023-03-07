@@ -4,30 +4,39 @@
 
 package crawlindex
 
-import (
-	"time"
-
-	"cloudeng.io/file/content"
-	"cloudeng.io/file/download"
-)
-
-// Document represents a downloaded document, whether it be a file, a http get
-// or the result of a Rest API call.
-type Document struct {
-	Time     time.Time
-	Type     content.Type
-	Download *download.Result
-	// Fill in for http downloads, API Calls etc.
+/*
+type objectWrapper struct {
+	Type  content.Type
+	Value any
 }
 
-func (d Document) WriteToFile(dir, file string) error {
-	return WriteDocument(d, dir, file)
-}
-
-func NewDownloadDocument(d *download.Result, ctype content.Type) Document {
-	return Document{
-		Time:     time.Now(),
-		Type:     ctype,
-		Download: d,
+func WriteObject(path string, ctype content.Type, object any) error {
+	ow := objectWrapper{
+		Type:  ctype,
+		Value: object,
 	}
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		return err
+	}
+	wr, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer wr.Close()
+	enc := gob.NewEncoder(wr)
+	return enc.Encode(ow)
 }
+
+func ReadObject(path string) (ctype content.Type, object any, err error) {
+	rd, err := os.Open(path)
+	if err != nil {
+		return "", nil, err
+	}
+	defer rd.Close()
+	enc := gob.NewDecoder(rd)
+	ow := objectWrapper{}
+	err = enc.Decode(&ow)
+	return ow.Type, ow.Value, err
+}
+*/

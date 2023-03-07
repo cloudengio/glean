@@ -7,6 +7,7 @@ package index
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -21,10 +22,14 @@ func httpBody(resp *http.Response) string {
 
 func handleHTTPError(resp *http.Response, err error) error {
 	if err != nil {
-		return fmt.Errorf("err: %v, HTTP response: %v", err, httpBody(resp))
+		body := httpBody(resp)
+		log.Printf("err: %v, HTTP response: %v ", err, body)
+		return fmt.Errorf("err: %v, HTTP response: %v", err, body)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected HTTP status code: %v", resp.Status)
+		body := httpBody(resp)
+		log.Printf("unexpected HTTP status code: %v, HTTP response: %v", resp.Status, body)
+		return fmt.Errorf("unexpected HTTP status code: %v, HTTP response: %v", resp.Status, body)
 	}
 	return nil
 }
