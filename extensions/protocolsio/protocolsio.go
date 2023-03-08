@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/content"
@@ -83,16 +84,8 @@ func (cmd *command) new(fv CommonFlags, datasource string) (*protocolsiocmd.Comm
 	if err != nil {
 		return nil, err
 	}
-	node, ok := cfg.APICrawls[cmdName]
-	if !ok {
-		return nil, fmt.Errorf("%v does not contain a configuration for %v", datasource, cmdName)
-	}
-	cmd.cacheRoot = cfg.Cache.Path
-	c := &protocolsiocmd.Command{}
-	if err := node.Decode(&c.Config); err != nil {
-		return nil, err
-	}
-	return c, nil
+	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
+	return protocolsiocmd.NewCommand(cfg.APICrawls, cmdName)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
@@ -119,7 +112,7 @@ func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, ar
 	if err != nil {
 		return err
 	}
-	return c.ScanDownloaded(ctx, &fv.ScanFlags)
+	return c.ScanDownloaded(ctx, cmd.cacheRoot, &fv.ScanFlags)
 }
 
 type converter struct {

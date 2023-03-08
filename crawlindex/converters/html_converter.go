@@ -15,7 +15,6 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/text/textutil"
-	"cloudeng.io/webapi/operations"
 )
 
 // HTML represents an html to glean document converter.
@@ -34,10 +33,10 @@ func (cnv *HTML) Type() content.Type {
 
 func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
 	var gd gleansdk.DocumentDefinition
-	if ctype != cfg.Type {
+	if content.Clean(ctype) != cfg.Type {
 		return gd, fmt.Errorf("htmlConverter: expected %v, not %v", cfg.Type, ctype)
 	}
-	var obj content.Object[download.Result, *operations.Response]
+	var obj content.Object[[]byte, download.Result]
 	if err := obj.Decode(data); err != nil {
 		return gd, fmt.Errorf("htmlConverter: converter: failed to decode object data: %v", err)
 	}
@@ -47,22 +46,23 @@ func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conv
 		return gd, err
 	}
 
+	contents := obj.Value
 	gd.Datasource = datasource
 
-	dl := obj.Value
+	dl := obj.Response
 
 	gd.SetId(dl.Name)
 	gd.SetViewURL(rwr.ReplaceAllStringFirst(dl.Name))
 
 	var title string
-	if doc, err := htmlProc.Parse(bytes.NewReader(dl.Contents)); err == nil {
+	if doc, err := htmlProc.Parse(bytes.NewReader(contents)); err == nil {
 		title = doc.Title()
 	}
 	gd.SetTitle(title)
 
 	gd.Body = &gleansdk.ContentDefinition{}
 	gd.Body.SetMimeType(string(obj.Type))
-	gd.Body.SetTextContent(string(dl.Contents))
+	gd.Body.SetTextContent(string(contents))
 
 	gd.Author = &gleansdk.UserReferenceDefinition{}
 	gd.Author.SetEmail(cfg.Converter.DefaultAuthor.Email)

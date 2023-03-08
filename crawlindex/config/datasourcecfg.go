@@ -11,6 +11,7 @@ import (
 	"cloudeng.io/file/content"
 	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations/apicrawlcmd"
 )
 
 type DatasourceName struct {
@@ -31,7 +32,7 @@ type Datasource struct {
 	// File/download orientend Crawls that obtain data for this datasource.
 
 	// API based 'crawls' that obtain data for this datasource.
-	APICrawls APICrawls `yaml:"api_crawls,omitempty"`
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty"`
 
 	// Bulk index configuration for this datasource.
 	*BulkIndex `yaml:"bulk_index,omitempty"`
