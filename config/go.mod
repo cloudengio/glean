@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	cloudeng.io/file v0.0.0-20230308193913-96785d52f310 // indirect
+	cloudeng.io/file v0.0.0-20230309184059-9263072b1423 // indirect
 	cloudeng.io/path v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
