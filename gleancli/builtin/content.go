@@ -7,6 +7,8 @@
 package builtin
 
 import (
+	"fmt"
+
 	"cloudeng.io/aws/s3fs"
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
@@ -32,12 +34,18 @@ func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory {
 	}
 }
 
-// Converters returns the converters for the given configuration.
-func Converters(cfg config.Converters) (*content.Registry[converters.T], error) {
-	return converters.CreateRegistry(
+//	MustConverters returns the available converters, it will panic
+//
+// on encountering an error.
+func MustConverters() *content.Registry[converters.T] {
+	cnv, err := converters.CreateRegistry(
 		converters.NewHTML(),
 		protocolsio.NewConverter(),
 	)
+	if err != nil {
+		panic(fmt.Errorf("failed to load converters: %v", err))
+	}
+	return cnv
 }
 
 // APIExtensions returns the builtin API related commands.

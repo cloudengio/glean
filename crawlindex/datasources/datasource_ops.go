@@ -34,7 +34,7 @@ func (d *T) Download(ctx context.Context, instance, datasource string) error {
 }
 
 func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error {
-	cfg, err := config.DatasourceForName(fv.ConfigFile, datasource)
+	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error {
 
 func (d *T) ShowConfig(ctx context.Context, filename string) error {
 	var cfg config.Datasources
-	if err := cmdutil.ParseYAMLConfigFile(filename, &cfg); err != nil {
+	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
 		return err
 	}
 	buf, err := yaml.Marshal(cfg)

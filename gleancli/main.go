@@ -7,9 +7,15 @@ package main
 import (
 	"context"
 
+	"cloudeng.io/glean/gleancli/builtin"
 	"cloudeng.io/glean/gleancli/cmds"
 )
 
 func main() {
-	cmds.MustNew().MustDispatch(context.Background())
+	cmds.MustNew(
+		cmds.WithConverters(builtin.MustConverters()),
+		cmds.WithFSForCrawl(builtin.FSForCrawl),
+		cmds.WithOutlinkExtractors(builtin.Extractors),
+		cmds.WithAPIExtensions(builtin.APIExtensions("api")),
+	).MustDispatch(context.Background())
 }

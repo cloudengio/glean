@@ -18,7 +18,7 @@ type StatsFlags struct {
 }
 
 func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags, datasource string) error {
-	cfg, err := config.DatasourceForName(fv.ConfigFile, datasource)
+	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return err
 	}

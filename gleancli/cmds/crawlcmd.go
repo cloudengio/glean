@@ -8,16 +8,17 @@ import (
 	"context"
 
 	"cloudeng.io/glean/crawlindex/crawl"
-	"cloudeng.io/glean/gleancli/builtin"
 )
 
-type Crawl struct{}
+type Crawl struct {
+	options
+}
 
 func (cmd *Crawl) Run(ctx context.Context, values interface{}, args []string) error {
 	crawler := crawl.Crawler{
-		GleanConfig: GlobalConfig,
-		Extractors:  builtin.Extractors,
-		FSForCrawl:  builtin.FSForCrawl,
+		GleanConfig: globalConfig,
+		Extractors:  cmd.extractors,
+		FSForCrawl:  cmd.fsForCrawl,
 	}
 	return crawler.Run(ctx, values.(*crawl.Flags), args[0])
 }

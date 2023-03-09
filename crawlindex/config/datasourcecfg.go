@@ -5,6 +5,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 
 	"cloudeng.io/cmdutil"
@@ -67,12 +68,12 @@ func (d Datasources) ConfigForName(name string) (Datasource, bool) {
 
 // DatasourceForName returns the datasource configuration for the named datasource
 // read from the specified config file.
-func DatasourceForName(filename string, name string) (Datasource, error) {
+func DatasourceForName(ctx context.Context, filename string, name string) (Datasource, error) {
 	if len(filename) == 0 {
 		return Datasource{}, fmt.Errorf("no datasource config file specified")
 	}
 	var cfg Datasources
-	if err := cmdutil.ParseYAMLConfigFile(filename, &cfg); err != nil {
+	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
 		fmt.Printf("oops: %v\n", filename)
 		return Datasource{}, err
 	}
