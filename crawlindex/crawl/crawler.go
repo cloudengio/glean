@@ -34,7 +34,7 @@ type Crawler struct {
 }
 
 func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
-	cfg, err := config.DatasourceForName(fv.ConfigFile, datasource)
+	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return err
 	}

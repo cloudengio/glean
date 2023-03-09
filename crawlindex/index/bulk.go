@@ -18,6 +18,7 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations/apicrawlcmd"
 )
 
 // BulkFlags represents the flags to the bulk indexing command.
@@ -71,7 +72,8 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags, datasource string) 
 		return fmt.Errorf("no converters specified/found in config file")
 	}
 
-	walker := newWalker(idx.Config.CustomDatasourceConfig.GetName(), cnvmap, idx.Converters, idx.Config.BulkIndex.ReaddirEntries, reqCh)
+	checkpointDirs := apicrawlcmd.CheckpointPaths(idx.Config.APICrawls)
+	walker := newWalker(idx.Config.CustomDatasourceConfig.GetName(), cnvmap, idx.Converters, checkpointDirs, idx.Config.BulkIndex.ReaddirEntries, reqCh)
 	indexer := newBulkIndexer(client, idx.Config,
 		WithForceDelete(forceDeletion),
 		WithForceRestart(forceRestart),

@@ -17,7 +17,6 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
-	"cloudeng.io/webapi/operations"
 )
 
 const htmlExample = `
@@ -41,15 +40,12 @@ func TestConverter(t *testing.T) {
 	modTime := time.Now()
 	dl := download.Result{
 		Name:     "foo",
-		Contents: []byte(htmlExample),
 		FileInfo: file.NewInfo("foo", 100, 0600, modTime, file.InfoOption{}),
 	}
-	resp := &operations.Response{}
-	obj := content.Object[download.Result, *operations.Response]{
-		Type:     ctype,
-		Value:    dl,
-		Response: resp,
-	}
+	var obj content.Object[[]byte, download.Result]
+	obj.Value = []byte(htmlExample)
+	obj.Response = dl
+
 	buf := &bytes.Buffer{}
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(obj); err != nil {

@@ -16,7 +16,6 @@ import (
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/crawlindex/index"
-	"cloudeng.io/glean/gleancli/builtin"
 )
 
 type GlobalFlags struct {
@@ -25,7 +24,7 @@ type GlobalFlags struct {
 
 var (
 	globalFlags  GlobalFlags
-	GlobalConfig gleancfg.Glean
+	globalConfig gleancfg.Glean
 )
 
 const baseCommands = `name: gleancli
@@ -86,13 +85,16 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 	return subext
 }
 
-func MustNew() *subcmd.CommandSetYAML {
+func MustNew(opts ...Option) *subcmd.CommandSetYAML {
+	var options options
+	for _, fn := range opts {
+		fn(&options)
+	}
 
-	apiExtensions := builtin.APIExtensions("api")
-	cmdExtensions = append(cmdExtensions, apiExtensions...)
+	cmdExtensions = append(cmdExtensions, options.apiExtensions...)
 
 	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
-		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(apiExtensions)...))
+		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.apiExtensions)...))
 
 	var ds Datasources
 	cmdSet.Set("datasources", "download").MustRunnerAndFlags(
@@ -104,11 +106,11 @@ func MustNew() *subcmd.CommandSetYAML {
 	cmdSet.Set("datasources", "show-config").MustRunnerAndFlags(
 		ds.ShowConfig, subcmd.MustRegisteredFlagSet(&struct{}{}))
 
-	var cc Crawl
+	cc := Crawl{options: options}
 	cmdSet.Set("crawl", "run").MustRunnerAndFlags(
 		cc.Run, subcmd.MustRegisteredFlagSet(&crawl.Flags{}))
 
-	var idx Index
+	idx := Index{options: options}
 	cmdSet.Set("index", "bulk").MustRunnerAndFlags(
 		idx.bulk, subcmd.MustRegisteredFlagSet(&index.BulkFlags{}))
 
@@ -120,24 +122,31 @@ func MustNew() *subcmd.CommandSetYAML {
 	globals := subcmd.GlobalFlagSet()
 	globals.MustRegisterFlagStruct(&globalFlags, nil, nil)
 	cmdSet.WithGlobalFlags(globals)
-	cmdSet.WithMain(mainWrapper)
+	if options.useGleanConfig {
+		globalConfig = options.gleanConfig
+	}
+	cmdSet.WithMain(func(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
+		return mainWrapper(ctx, !options.useGleanConfig, cmdRunner)
+	})
 	return cmdSet
 }
 
-func mainWrapper(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
+func mainWrapper(ctx context.Context, loadConfig bool, cmdRunner func(ctx context.Context) error) error {
 	ctx, cancel := context.WithCancel(ctx)
 	cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
-	err := cmdutil.ParseYAMLConfigFile(globalFlags.Config, &GlobalConfig)
-	if err != nil {
-		if !errors.Is(err, os.ErrNotExist) {
-			return err
+
+	if loadConfig {
+		err := cmdutil.ParseYAMLConfigFile(ctx, globalFlags.Config, &globalConfig)
+		if err != nil {
+			if !errors.Is(err, os.ErrNotExist) {
+				return err
+			}
+			fmt.Printf("warning: %q not found\n", globalFlags.Config)
 		}
-		fmt.Printf("warning: %q not found\n", globalFlags.Config)
 	}
 
 	for _, ext := range cmdExtensions {
-		ext.SetGleanConfig(&GlobalConfig)
+		ext.SetGleanConfig(&globalConfig)
 	}
-
 	return cmdRunner(ctx)
 }

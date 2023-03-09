@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/filewalk"
@@ -16,15 +17,28 @@ import (
 	"cloudeng.io/glean/gleansdk"
 )
 
+type skipdirs []string
+
+func (sd skipdirs) skip(dir string) bool {
+	dir = filepath.Clean(dir)
+	for _, s := range sd {
+		if strings.HasSuffix(dir, s) {
+			return true
+		}
+	}
+	return false
+}
+
 type walker struct {
 	datasource string
 	cfg        map[content.Type]config.Conversion
 	cnvs       *content.Registry[converters.T]
+	skip       skipdirs
 	wk         *filewalk.Walker
 	ch         chan<- Request
 }
 
-func newWalker(datasource string, cfg map[content.Type]config.Conversion, cnvs *content.Registry[converters.T], scanSize int, ch chan<- Request) *walker {
+func newWalker(datasource string, cfg map[content.Type]config.Conversion, cnvs *content.Registry[converters.T], skip skipdirs, scanSize int, ch chan<- Request) *walker {
 	sc := filewalk.LocalFilesystem(scanSize)
 	wk := filewalk.New(sc)
 	return &walker{
@@ -33,11 +47,12 @@ func newWalker(datasource string, cfg map[content.Type]config.Conversion, cnvs *
 		cfg:        cfg,
 		cnvs:       cnvs,
 		ch:         ch,
+		skip:       skip,
 	}
 }
 
 func (w *walker) dirs(ctx context.Context, prefix string, info *filewalk.Info, err error) (bool, []filewalk.Info, error) {
-	return false, nil, nil
+	return w.skip.skip(prefix), nil, nil
 }
 
 func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {

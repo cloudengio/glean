@@ -5,12 +5,14 @@
 package config
 
 import (
+	"context"
 	"fmt"
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/file/content"
 	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations/apicrawlcmd"
 )
 
 type DatasourceName struct {
@@ -31,7 +33,7 @@ type Datasource struct {
 	// File/download orientend Crawls that obtain data for this datasource.
 
 	// API based 'crawls' that obtain data for this datasource.
-	APICrawls APICrawls `yaml:"api_crawls,omitempty"`
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty"`
 
 	// Bulk index configuration for this datasource.
 	*BulkIndex `yaml:"bulk_index,omitempty"`
@@ -66,12 +68,12 @@ func (d Datasources) ConfigForName(name string) (Datasource, bool) {
 
 // DatasourceForName returns the datasource configuration for the named datasource
 // read from the specified config file.
-func DatasourceForName(filename string, name string) (Datasource, error) {
+func DatasourceForName(ctx context.Context, filename string, name string) (Datasource, error) {
 	if len(filename) == 0 {
 		return Datasource{}, fmt.Errorf("no datasource config file specified")
 	}
 	var cfg Datasources
-	if err := cmdutil.ParseYAMLConfigFile(filename, &cfg); err != nil {
+	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
 		fmt.Printf("oops: %v\n", filename)
 		return Datasource{}, err
 	}
