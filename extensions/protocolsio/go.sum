@@ -12,6 +12,8 @@ cloudeng.io/glean/config v0.0.0-20230307213337-d1583cc10057 h1:b+FO2YQgREuGpQPXd
 cloudeng.io/glean/config v0.0.0-20230307213337-d1583cc10057/go.mod h1:DBxGCL8YQnyBI1UhTgIg7CffAwFNZ3qgpLaRVdZra8E=
 cloudeng.io/glean/crawlindex v0.0.0-20230307213337-d1583cc10057 h1:To+NfmmvkgYVxUmjrHXfGM8R96ghRezcjTAVNRLJSTM=
 cloudeng.io/glean/crawlindex v0.0.0-20230307213337-d1583cc10057/go.mod h1:AP+Wuzb6OYoUdgXr1MI+0oV/GNYXnWJdH6oFME6c4AY=
+cloudeng.io/glean/crawlindex v0.0.0-20230309194432-96d1e1ac104b h1:i+XrEI2iD6kAXIF8cHcKXTzXF86I4aY0//WJU1xdJgM=
+cloudeng.io/glean/crawlindex v0.0.0-20230309194432-96d1e1ac104b/go.mod h1:SnRBq+Hu+WawQ14/r+Z6QYXN1nsJDoZkWAvjyEtLfo0=
 cloudeng.io/glean/gleansdk v0.0.0-20230307213337-d1583cc10057 h1:48vC7ViEI3tmSgotween9dXMy4QcfcUjt0UhnuM83cE=
 cloudeng.io/glean/gleansdk v0.0.0-20230307213337-d1583cc10057/go.mod h1:IDzV6ZQ+sZt8rTsW5gm3M5LTVYG6TYqlsYG6JzupDo8=
 cloudeng.io/net v0.0.0-20230309184059-9263072b1423 h1:vk9KfLf6Pp7UMYqJtUwIDv4bc21nbmjbiUMftrQkalc=

@@ -6,7 +6,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20230309184059-9263072b1423
 	cloudeng.io/file v0.0.0-20230309184059-9263072b1423
 	cloudeng.io/glean/config v0.0.0-20230307213337-d1583cc10057
-	cloudeng.io/glean/crawlindex v0.0.0-20230307213337-d1583cc10057
+	cloudeng.io/glean/crawlindex v0.0.0-20230309194432-96d1e1ac104b
 	cloudeng.io/glean/gleansdk v0.0.0-20230307213337-d1583cc10057
 	cloudeng.io/webapi/operations v0.0.0-20230308055554-e5fc3219a959
 	cloudeng.io/webapi/protocolsio v0.0.0-20230308055554-e5fc3219a959

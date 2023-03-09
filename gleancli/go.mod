@@ -7,7 +7,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20230309184059-9263072b1423
 	cloudeng.io/file v0.0.0-20230309184059-9263072b1423
 	cloudeng.io/glean/config v0.0.0-20230307213337-d1583cc10057
-	cloudeng.io/glean/crawlindex v0.0.0-20230307213337-d1583cc10057
+	cloudeng.io/glean/crawlindex v0.0.0-20230309194432-96d1e1ac104b
 	cloudeng.io/glean/extensions/protocolsio v0.0.0-20230307213337-d1583cc10057
 )
 
