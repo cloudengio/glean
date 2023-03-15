@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	cloudeng.io/cmdutil v0.0.0-20230314235058-45ee90f9cff7
-	cloudeng.io/glean/gleansdk v0.0.0-20230309211840-7b6febc6a9e8
+	cloudeng.io/glean/gleansdk v0.0.0-20230315223944-dad97cce0cf4
 )
 
 require (

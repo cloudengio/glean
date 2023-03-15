@@ -6,15 +6,15 @@ require (
 	cloudeng.io/aws v0.0.0-20230314235058-45ee90f9cff7
 	cloudeng.io/cmdutil v0.0.0-20230314235058-45ee90f9cff7
 	cloudeng.io/file v0.0.0-20230314235058-45ee90f9cff7
-	cloudeng.io/glean/config v0.0.0-20230309211840-7b6febc6a9e8
-	cloudeng.io/glean/crawlindex v0.0.0-20230309211840-7b6febc6a9e8
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20230309211840-7b6febc6a9e8
+	cloudeng.io/glean/config v0.0.0-20230315223944-dad97cce0cf4
+	cloudeng.io/glean/crawlindex v0.0.0-20230315223944-dad97cce0cf4
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20230315223944-dad97cce0cf4
 )
 
 require (
 	cloudeng.io/algo v0.0.0-20230314235058-45ee90f9cff7 // indirect
 	cloudeng.io/errors v0.0.8 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20230309211840-7b6febc6a9e8 // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20230315223944-dad97cce0cf4 // indirect
 	cloudeng.io/net v0.0.0-20230314235058-45ee90f9cff7 // indirect
 	cloudeng.io/os v0.0.0-20230314235058-45ee90f9cff7 // indirect
 	cloudeng.io/path v0.0.8 // indirect
