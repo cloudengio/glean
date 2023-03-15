@@ -41,7 +41,7 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 
 	// Initialize the cache storage for crawled files.
 	if len(cfg.Cache.Path) == 0 {
-		return fmt.Errorf("no path specified for the cache to stored downloaded files")
+		return fmt.Errorf("no path spepdatcified for the cache to stored downloaded files")
 	}
 
 	cachePath := os.ExpandEnv(cfg.Cache.Path)

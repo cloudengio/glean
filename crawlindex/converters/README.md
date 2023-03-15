@@ -32,7 +32,7 @@ HTML represents an html to glean document converter.
 ### Methods
 
 ```go
-func (cnv *HTML) GleanDocument(datasource string, cfg config.Conversion, doc crawlindex.Document) (*gleansdk.DocumentDefinition, error)
+func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error)
 ```
 
 
@@ -47,7 +47,7 @@ func (cnv *HTML) Type() content.Type
 ```go
 type T interface {
 	Type() content.Type
-	GleanDocument(datasource string, cfg config.Conversion, dl crawlindex.Document) (*gleansdk.DocumentDefinition, error)
+	Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error)
 }
 ```
 

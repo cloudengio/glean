@@ -79,18 +79,19 @@ func Extension(parents ...string) gleancfg.Extension {
 
 type command struct{ cacheRoot string }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
+func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv protocolsiocmd.CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}
 	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	return protocolsiocmd.NewCommand(cfg.APICrawls, cmdName)
+
+	return protocolsiocmd.NewCommand(ctx, cfg.APICrawls, cmdName, pfv.ProtocolsConfig)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
@@ -99,7 +100,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 
 func (cmd *command) getCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*GetFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.Datasource)
+	c, err := cmd.new(ctx, fv.CommonFlags, fv.GetFlags.CommonFlags, fv.Datasource)
 	if err != nil {
 		return err
 	}
@@ -108,7 +109,7 @@ func (cmd *command) getCmd(ctx context.Context, values interface{}, args []strin
 
 func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*ScanFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, fv.ScanFlags.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}

@@ -50,7 +50,7 @@ WithForceRestart sets the force restart options.
 ### Type Indexer
 ```go
 type Indexer struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 	Config      config.Datasource
 	Converters  *content.Registry[converters.T]
 }
@@ -75,7 +75,7 @@ func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags, datasource string
 ### Type Request
 ```go
 type Request struct {
-	Documents []*gleansdk.DocumentDefinition
+	Documents []gleansdk.DocumentDefinition
 	LastPage  bool
 }
 ```

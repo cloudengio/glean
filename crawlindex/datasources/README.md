@@ -17,7 +17,7 @@ type Flags struct {
 ### Type T
 ```go
 type T struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 }
 ```
 

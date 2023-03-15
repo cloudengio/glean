@@ -9,7 +9,7 @@ import cloudeng.io/glean/crawlindex/crawl
 ### Type Crawler
 ```go
 type Crawler struct {
-	GleanConfig config.Glean
+	GleanConfig gleancfg.Glean
 	Extractors  func() map[content.Type]outlinks.Extractor
 	FSForCrawl  func(config.Crawl) map[string]file.FSFactory
 }

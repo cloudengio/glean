@@ -8,11 +8,11 @@ Package builtin provides the set of builtin resources for a given instance
 of the Glean CLI.
 
 ## Functions
-### Func Converters
+### Func APIExtensions
 ```go
-func Converters(cfg config.Converters) (*content.Registry[converters.T], error)
+func APIExtensions(parents ...string) []gleancfg.Extension
 ```
-Converters returns the converters for the given configuration.
+APIExtensions returns the builtin API related commands.
 
 ### Func Extractors
 ```go
@@ -26,6 +26,14 @@ func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory
 ```
 FSForCrawl returns a map of filesystem schemes to filesystem factories for
 use when creating crawling requests.
+
+### Func MustConverters
+```go
+func MustConverters() *content.Registry[converters.T]
+```
+    MustConverters returns the available converters, it will panic
+
+on encountering an error.
 
 
 

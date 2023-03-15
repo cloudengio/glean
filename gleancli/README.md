@@ -14,5 +14,3 @@ global flags: [--config=$HOME/.glean.yaml]
     -config string
       glean config file (default "$HOME/.glean.yaml")
 
-flag: help requested
-

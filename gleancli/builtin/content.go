@@ -16,6 +16,7 @@ import (
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
+	"cloudeng.io/glean/extensions/protocolsio"
 )
 
 // Extractors represents the set of available outlink extractors.
@@ -40,7 +41,7 @@ func MustConverters() *content.Registry[converters.T] {
 	cnv, err := converters.CreateRegistry(
 		converters.NewHTML(),
 		// Uncomment to add protocols.io support.
-		//protocolsio.NewConverter(),
+		protocolsio.NewConverter(),
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to load converters: %v", err))
@@ -52,6 +53,6 @@ func MustConverters() *content.Registry[converters.T] {
 func APIExtensions(parents ...string) []gleancfg.Extension {
 	var exts []gleancfg.Extension
 	// Uncomment to add protocols.io support.
-	//exts = append(exts, protocolsio.Extension(parents...))
+	exts = append(exts, protocolsio.Extension(parents...))
 	return exts
 }
