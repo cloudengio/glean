@@ -9,7 +9,7 @@ require (
 	cloudeng.io/glean/crawlindex v0.0.0-20230309211840-7b6febc6a9e8
 	cloudeng.io/glean/gleansdk v0.0.0-20230309211840-7b6febc6a9e8
 	cloudeng.io/webapi/operations v0.0.0-20230315172443-60f4854a6126
-	cloudeng.io/webapi/protocolsio v0.0.0-20230308055554-e5fc3219a959
+	cloudeng.io/webapi/protocolsio v0.0.0-20230315172443-60f4854a6126
 )
 
 require (
@@ -37,5 +37,6 @@ require (
 	golang.org/x/oauth2 v0.6.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.29.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

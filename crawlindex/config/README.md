@@ -6,21 +6,13 @@ import cloudeng.io/glean/crawlindex/config
 
 
 ## Types
-### Type API
-```go
-type API struct {
-}
-```
-API is the configuration for an API based crawl. It is currently only a
-placeholder.
-
-
 ### Type BulkIndex
 ```go
 type BulkIndex struct {
 	ForceDeletion  bool `yaml:"force_deletion"`  // Glean's force deletion flag
 	ForceRestart   bool `yaml:"force_restart"`   // Glean's force restart flag
 	ReaddirEntries int  `yaml:"readdir_entries"` // number of entries per Readdir call.
+	RequestSize    int  `yaml:"request_size"`    // number of documents to include in a single request in a single bulk index request.
 }
 ```
 BulkIndex represents the configuration info for a Glean builk index
@@ -89,8 +81,10 @@ Crawl represents a single crawl that contributes data to a datasource.
 type Datasource struct {
 	Datasource string // Datasource name.
 
-	Crawls []Crawl // File/download orientend Crawls that obtain data for this datasource.
-	APIS   []API   // API based 'crawls' that obtain data for this datasource.
+	Crawls []Crawl `yaml:"crawls,omitempty"`
+
+	// API based 'crawls' that obtain data for this datasource.
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty"`
 
 	// Bulk index configuration for this datasource.
 	*BulkIndex `yaml:"bulk_index,omitempty"`
@@ -102,7 +96,7 @@ type Datasource struct {
 
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	DatasourceConfig `yaml:"datasource_config"`
+	config.DatasourceConfig `yaml:"datasource_config"`
 }
 ```
 Datasource represents a single datasource or corpus to be crawled and
@@ -111,7 +105,7 @@ indexed.
 ### Functions
 
 ```go
-func DatasourceForName(filename string, name string) (Datasource, error)
+func DatasourceForName(ctx context.Context, filename string, name string) (Datasource, error)
 ```
 DatasourceForName returns the datasource configuration for the named
 datasource read from the specified config file.
@@ -129,15 +123,12 @@ configuration information that pertains to that content type.
 
 
 
-### Type DatasourceConfig
+### Type DatasourceName
 ```go
-type DatasourceConfig struct {
-	GleanInstance                   string `yaml:"glean_instance"`
-	gleansdk.CustomDatasourceConfig `yaml:",inline"`
+type DatasourceName struct {
+	Datasource string `subcmd:"datasource,,name of the datasource"`
 }
 ```
-DatasourceConfig represents the configuration of the datasource with Glean's
-API.
 
 
 ### Type Datasources
@@ -163,41 +154,6 @@ type FileFlags struct {
 }
 ```
 FileFlags represents a command line flag for the datasource config file.
-
-
-### Type Glean
-```go
-type Glean []struct {
-	Name string `yaml:"name"`
-	Auth struct {
-		BearerToken string `yaml:"token"`
-	}
-	API struct {
-		Domain string `yaml:"domain"`
-	}
-}
-```
-
-### Methods
-
-```go
-func (c Glean) NewAPIClient(ctx context.Context, name string) (context.Context, *gleansdk.APIClient, error)
-```
-
-
-```go
-func (c Glean) String() string
-```
-
-
-
-
-### Type GleanFlags
-```go
-type GleanFlags struct {
-	Config string `subcmd:"config,$HOME/.glean.yaml,'glean config file'"`
-}
-```
 
 
 ### Type IncrementalIndex

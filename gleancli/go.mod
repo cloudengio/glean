@@ -21,7 +21,7 @@ require (
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
 	cloudeng.io/webapi/operations v0.0.0-20230315172443-60f4854a6126 // indirect
-	cloudeng.io/webapi/protocolsio v0.0.0-20230308055554-e5fc3219a959 // indirect
+	cloudeng.io/webapi/protocolsio v0.0.0-20230315172443-60f4854a6126 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.17 // indirect
@@ -46,5 +46,6 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.29.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

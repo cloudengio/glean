@@ -5,19 +5,10 @@ import cloudeng.io/glean/gleancli/cmds
 ```
 
 
-## Variables
-### GlobalConfig
-```go
-GlobalConfig config.Glean
-
-```
-
-
-
 ## Functions
 ### Func MustNew
 ```go
-func MustNew() *subcmd.CommandSetYAML
+func MustNew(opts ...Option) *subcmd.CommandSetYAML
 ```
 
 
@@ -25,7 +16,9 @@ func MustNew() *subcmd.CommandSetYAML
 ## Types
 ### Type Crawl
 ```go
-type Crawl struct{}
+type Crawl struct {
+	// contains filtered or unexported fields
+}
 ```
 
 ### Methods
@@ -64,15 +57,51 @@ func (ds Datasources) ShowConfig(ctx context.Context, values interface{}, args [
 ### Type GlobalFlags
 ```go
 type GlobalFlags struct {
-	config.GleanFlags
+	gleancfg.GleanFlags
 }
 ```
 
 
 ### Type Index
 ```go
-type Index struct{}
+type Index struct {
+	// contains filtered or unexported fields
+}
 ```
+
+
+### Type Option
+```go
+type Option func(o *options)
+```
+
+### Functions
+
+```go
+func WithAPIExtensions(extensions []gleancfg.Extension) Option
+```
+
+
+```go
+func WithConverters(converters *content.Registry[converters.T]) Option
+```
+
+
+```go
+func WithFSForCrawl(fsForCrawl func(cfg config.Crawl) map[string]file.FSFactory) Option
+```
+
+
+```go
+func WithGleanConfig(cfg gleancfg.Glean) Option
+```
+
+
+```go
+func WithOutlinkExtractors(extractors func() map[content.Type]outlinks.Extractor) Option
+```
+
+
 
 
 
