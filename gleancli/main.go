@@ -13,7 +13,8 @@ import (
 
 func main() {
 	cmds.MustNew(
-		cmds.WithConverters(builtin.MustConverters()),
+		cmds.WithDocumentConverters(builtin.MustDocumentConverters()),
+		cmds.WithUserConverters(builtin.MustUserConverters()),
 		cmds.WithFSForCrawl(builtin.FSForCrawl),
 		cmds.WithOutlinkExtractors(builtin.Extractors),
 		cmds.WithAPIExtensions(builtin.APIExtensions("api")),

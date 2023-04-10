@@ -16,12 +16,13 @@ import (
 type Option func(o *options)
 
 type options struct {
-	apiExtensions  []gleancfg.Extension
-	extractors     func() map[content.Type]outlinks.Extractor
-	fsForCrawl     func(cfg config.Crawl) map[string]file.FSFactory
-	converters     *content.Registry[converters.T]
-	gleanConfig    gleancfg.Glean
-	useGleanConfig bool
+	apiExtensions      []gleancfg.Extension
+	extractors         func() map[content.Type]outlinks.Extractor
+	fsForCrawl         func(cfg config.Crawl) map[string]file.FSFactory
+	documentConverters *content.Registry[converters.Document]
+	userConverters     *content.Registry[converters.User]
+	gleanConfig        gleancfg.Glean
+	useGleanConfig     bool
 }
 
 func WithAPIExtensions(extensions []gleancfg.Extension) Option {
@@ -42,9 +43,15 @@ func WithOutlinkExtractors(extractors func() map[content.Type]outlinks.Extractor
 	}
 }
 
-func WithConverters(converters *content.Registry[converters.T]) Option {
+func WithDocumentConverters(converters *content.Registry[converters.Document]) Option {
 	return func(o *options) {
-		o.converters = converters
+		o.documentConverters = converters
+	}
+}
+
+func WithUserConverters(converters *content.Registry[converters.User]) Option {
+	return func(o *options) {
+		o.userConverters = converters
 	}
 }
 

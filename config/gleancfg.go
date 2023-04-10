@@ -49,5 +49,5 @@ func (c Glean) NewAPIClient(ctx context.Context, name string) (context.Context, 
 			return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration()), nil
 		}
 	}
-	return ctx, nil, fmt.Errorf("failed to find config for %s", name)
+	return ctx, nil, fmt.Errorf("Glean.NewAPIClient: failed to find config for %q", name)
 }
