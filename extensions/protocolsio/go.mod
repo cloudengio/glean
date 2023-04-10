@@ -8,7 +8,7 @@ require (
 	cloudeng.io/glean/config v0.0.0-20230315223944-dad97cce0cf4
 	cloudeng.io/glean/crawlindex v0.0.0-20230315223944-dad97cce0cf4
 	cloudeng.io/glean/gleansdk v0.0.0-20230315223944-dad97cce0cf4
-	cloudeng.io/webapi/operations v0.0.0-20230315172443-60f4854a6126
+	cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8
 	cloudeng.io/webapi/protocolsio v0.0.0-20230315172443-60f4854a6126
 )
 
