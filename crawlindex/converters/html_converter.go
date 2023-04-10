@@ -21,7 +21,7 @@ import (
 type HTML struct{}
 
 // NewHTML returns a new install of HTML.
-func NewHTML() T {
+func NewHTML() Document {
 	return &HTML{}
 }
 
@@ -31,7 +31,7 @@ func (cnv *HTML) Type() content.Type {
 	return "text/html;charset=utf-8"
 }
 
-func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
+func (cnv *HTML) Convert(_ context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
 	var gd gleansdk.DocumentDefinition
 	if content.Clean(ctype) != cfg.Type {
 		return gd, fmt.Errorf("htmlConverter: expected %v, not %v", cfg.Type, ctype)

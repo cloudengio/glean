@@ -12,18 +12,59 @@ import (
 	"cloudeng.io/glean/gleansdk"
 )
 
-const GleanContentType = content.Type("glean/document")
+const (
+	GleanDocumentType = content.Type("glean/document")
+	GleanUserType     = content.Type("glean/user")
+)
 
-type T interface {
+type ignoreError struct {
+	ctype content.Type
+}
+
+func (e ignoreError) Error() string {
+	return "ignore content type: " + string(e.ctype)
+}
+
+func (e ignoreError) Is(target error) bool {
+	_, ok := target.(ignoreError)
+	return ok
+}
+
+func IgnoreContentType(ctype content.Type) error {
+	return ignoreError{ctype: ctype}
+}
+
+func IsIgnoreContentType(err error) bool {
+	_, ok := err.(ignoreError)
+	return ok
+}
+
+type Document interface {
 	Type() content.Type
 	Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error)
 }
 
-func CreateRegistry(converters ...T) (*content.Registry[T], error) {
-	reg := content.NewRegistry[T]()
+func CreateDocumentRegistry(converters ...Document) (*content.Registry[Document], error) {
+	reg := content.NewRegistry[Document]()
 	for _, cnv := range converters {
 		from := cnv.Type()
-		if err := reg.RegisterConverters(from, GleanContentType, cnv); err != nil {
+		if err := reg.RegisterConverters(from, GleanDocumentType, cnv); err != nil {
+			return nil, err
+		}
+	}
+	return reg, nil
+}
+
+type User interface {
+	Type() content.Type
+	Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DatasourceUserDefinition, error)
+}
+
+func CreateUserRegistry(converters ...User) (*content.Registry[User], error) {
+	reg := content.NewRegistry[User]()
+	for _, cnv := range converters {
+		from := cnv.Type()
+		if err := reg.RegisterConverters(from, GleanUserType, cnv); err != nil {
 			return nil, err
 		}
 	}

@@ -32,30 +32,35 @@ func (sd skipdirs) skip(dir string) bool {
 type walker struct {
 	datasource string
 	cfg        map[content.Type]config.Conversion
-	cnvs       *content.Registry[converters.T]
+	docCnv     *content.Registry[converters.Document]
+	empCnv     *content.Registry[converters.User]
 	skip       skipdirs
 	wk         *filewalk.Walker
 	ch         chan<- Request
 }
 
-func newWalker(datasource string, cfg map[content.Type]config.Conversion, cnvs *content.Registry[converters.T], skip skipdirs, scanSize int, ch chan<- Request) *walker {
+func newWalker(datasource string, cfg map[content.Type]config.Conversion, docCnv *content.Registry[converters.Document], empCnv *content.Registry[converters.User], skip skipdirs, scanSize int, ch chan<- Request) *walker {
 	sc := filewalk.LocalFilesystem(scanSize)
 	wk := filewalk.New(sc)
 	return &walker{
 		datasource: datasource,
 		wk:         wk,
 		cfg:        cfg,
-		cnvs:       cnvs,
+		docCnv:     docCnv,
+		empCnv:     empCnv,
 		ch:         ch,
 		skip:       skip,
 	}
 }
 
-func (w *walker) dirs(ctx context.Context, prefix string, info *filewalk.Info, err error) (bool, []filewalk.Info, error) {
+func (w *walker) dirs(_ context.Context, prefix string, _ *filewalk.Info, err error) (bool, []filewalk.Info, error) {
+	if err != nil {
+		return false, nil, err
+	}
 	return w.skip.skip(prefix), nil, nil
 }
 
-func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {
+func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {
 	children := make([]filewalk.Info, 0, 10)
 	var req Request
 	for {
@@ -78,28 +83,48 @@ func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, 
 		}
 		for _, file := range contents.Files {
 			path := filepath.Join(prefix, file.Name)
-			ctype, obj, err := content.ReadBinary(path)
+			ctype, data, err := content.ReadObjectFile(path)
 			if err != nil {
 				fmt.Printf("failed to read file: %v: %v\n", path, err)
 				continue
 			}
-			gd, err := w.convert(ctx, ctype, obj)
+			gd, ok, err := w.convertDocument(ctx, ctype, data)
 			if err != nil {
 				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name), err)
 				continue
 			}
-			req.Documents = append(req.Documents, gd)
+			if ok {
+				req.Documents = append(req.Documents, gd)
+			}
+			ge, ok, err := w.convertUser(ctx, ctype, data)
+			if err != nil {
+				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name), err)
+				continue
+			}
+			if ok {
+				req.Users = append(req.Users, ge)
+			}
 		}
 		children = append(children, contents.Children...)
 	}
 }
 
-func (w *walker) convert(ctx context.Context, ctype content.Type, obj []byte) (gleansdk.DocumentDefinition, error) {
-	converter, err := w.cnvs.LookupConverters(ctype, converters.GleanContentType)
+func (w *walker) convertDocument(ctx context.Context, ctype content.Type, obj []byte) (gleansdk.DocumentDefinition, bool, error) {
+	converter, err := w.docCnv.LookupConverters(ctype, converters.GleanDocumentType)
 	if err != nil {
-		return gleansdk.DocumentDefinition{}, fmt.Errorf("no content converters found for %v to %v", ctype, converters.GleanContentType)
+		return gleansdk.DocumentDefinition{}, false, nil
 	}
-	return converter.Convert(ctx, w.datasource, w.cfg[content.Clean(ctype)], ctype, obj)
+	doc, err := converter.Convert(ctx, w.datasource, w.cfg[content.Clean(ctype)], ctype, obj)
+	return doc, true, err
+}
+
+func (w *walker) convertUser(ctx context.Context, ctype content.Type, obj []byte) (gleansdk.DatasourceUserDefinition, bool, error) {
+	converter, err := w.empCnv.LookupConverters(ctype, converters.GleanUserType)
+	if err != nil {
+		return gleansdk.DatasourceUserDefinition{}, false, nil
+	}
+	user, err := converter.Convert(ctx, w.datasource, w.cfg[content.Clean(ctype)], ctype, obj)
+	return user, true, err
 }
 
 func (w *walker) Run(ctx context.Context, dir string) error {

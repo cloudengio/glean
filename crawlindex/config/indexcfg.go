@@ -8,10 +8,11 @@ import "time"
 
 // BulkIndex represents the configuration info for a Glean builk index operation.
 type BulkIndex struct {
-	ForceDeletion  bool `yaml:"force_deletion"`  // Glean's force deletion flag
-	ForceRestart   bool `yaml:"force_restart"`   // Glean's force restart flag
-	ReaddirEntries int  `yaml:"readdir_entries"` // number of entries per Readdir call.
-	RequestSize    int  `yaml:"request_size"`    // number of documents to include in a single request in a single bulk index request.
+	ForceDeletion       bool `yaml:"force_deletion"`        // Glean's force deletion flag
+	ForceRestart        bool `yaml:"force_restart"`         // Glean's force restart flag
+	ReaddirEntries      int  `yaml:"readdir_entries"`       // number of entries per Readdir call.
+	DocumentRequestSize int  `yaml:"document_request_size"` // number of documents to include in a single request in a single bulk index request.
+	EmployeeRequestSize int  `yaml:"employee_request_size"` // number of employees to include in a single request in a single bulk index request.
 }
 
 // IncrementalIndex represents the configuration info for incremental, document
