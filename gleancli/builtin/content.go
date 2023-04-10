@@ -16,7 +16,6 @@ import (
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
-	"cloudeng.io/glean/extensions/benchling"
 	"cloudeng.io/glean/extensions/protocolsio"
 )
 
@@ -43,7 +42,7 @@ func MustDocumentConverters() *content.Registry[converters.Document] {
 		// Uncomment to add protocols.io support.
 		protocolsio.NewDocumentConverter(),
 		// Uncomment to add benchling support.
-		benchling.NewDocumentConverter(),
+		//benchling.NewDocumentConverter(),
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to load document converters: %v", err))
