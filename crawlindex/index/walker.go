@@ -53,11 +53,14 @@ func newWalker(datasource string, cfg map[content.Type]config.Conversion, docCnv
 	}
 }
 
-func (w *walker) dirs(ctx context.Context, prefix string, info *filewalk.Info, err error) (bool, []filewalk.Info, error) {
+func (w *walker) dirs(_ context.Context, prefix string, _ *filewalk.Info, err error) (bool, []filewalk.Info, error) {
+	if err != nil {
+		return false, nil, err
+	}
 	return w.skip.skip(prefix), nil, nil
 }
 
-func (w *walker) files(ctx context.Context, prefix string, info *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {
+func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {
 	children := make([]filewalk.Info, 0, 10)
 	var req Request
 	for {

@@ -38,7 +38,7 @@ type Indexer struct {
 }
 
 // Bulk indexes a datasource in bulk mode.
-func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags, datasource string) error {
+func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 	cachePath := os.ExpandEnv(idx.Config.Cache.Path)
 	if len(cachePath) == 0 {
 		return fmt.Errorf("no path specified for the cache to be indexed")

@@ -123,7 +123,7 @@ func (c *converter) Type() content.Type {
 	return protocolsio.ContentType
 }
 
-func (c *converter) Convert(ctx context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
+func (c *converter) Convert(_ context.Context, _ string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
 	var gd gleansdk.DocumentDefinition
 	if ctype != cfg.Type {
 		return gd, fmt.Errorf("htmlConverter: expected %v, not %v", cfg.Type, ctype)
@@ -168,6 +168,6 @@ func (c *converter) Convert(ctx context.Context, datasourceName string, cfg conf
 	return gd, nil
 }
 
-func NewConverter() converters.Document {
+func NewDocumentConverter() converters.Document {
 	return &converter{}
 }

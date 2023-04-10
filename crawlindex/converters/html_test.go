@@ -5,9 +5,7 @@
 package converters_test
 
 import (
-	"bytes"
 	"context"
-	"encoding/gob"
 	"testing"
 	"time"
 
@@ -46,9 +44,8 @@ func TestConverter(t *testing.T) {
 	obj.Value = []byte(htmlExample)
 	obj.Response = dl
 
-	buf := &bytes.Buffer{}
-	enc := gob.NewEncoder(buf)
-	if err := enc.Encode(obj); err != nil {
+	buf, err := obj.Encode(content.GOBObjectEncoding, content.GOBObjectEncoding)
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -63,7 +60,7 @@ func TestConverter(t *testing.T) {
 			HomeUrl: &dsURL,
 		},
 	}
-	gd, err := ds.Convert(ctx, "text/html", cfg, ctype, buf.Bytes())
+	gd, err := ds.Convert(ctx, "text/html", cfg, ctype, buf)
 	if err != nil {
 		t.Fatal(err)
 	}

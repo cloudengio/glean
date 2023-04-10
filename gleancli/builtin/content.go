@@ -41,7 +41,7 @@ func MustDocumentConverters() *content.Registry[converters.Document] {
 	cnv, err := converters.CreateDocumentRegistry(
 		converters.NewHTML(),
 		// Uncomment to add protocols.io support.
-		protocolsio.NewConverter(),
+		protocolsio.NewDocumentConverter(),
 		// Uncomment to add benchling support.
 		benchling.NewDocumentConverter(),
 	)
@@ -55,7 +55,7 @@ func MustDocumentConverters() *content.Registry[converters.Document] {
 // it will panic on encountering an error.
 func MustUserConverters() *content.Registry[converters.User] {
 	cnv, err := converters.CreateUserRegistry(
-		benchling.NewUserConverter(),
+	//benchling.NewUserConverter(),
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to load employee converters: %v", err))
@@ -69,7 +69,7 @@ func APIExtensions(parents ...string) []gleancfg.Extension {
 	// Uncomment to add protocols.io, benchling etc. support.
 	exts = append(exts,
 		protocolsio.Extension(parents...),
-		benchling.Extension(parents...),
+		//benchling.Extension(parents...),
 	)
 	return exts
 }

@@ -38,7 +38,7 @@ func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) e
 	if err != nil {
 		return err
 	}
-	return indexer.Bulk(ctx, fv, args[0])
+	return indexer.Bulk(ctx, fv)
 }
 
 func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) error {
