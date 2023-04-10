@@ -16,6 +16,7 @@ import (
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
+	"cloudeng.io/glean/extensions/benchling"
 	"cloudeng.io/glean/extensions/protocolsio"
 )
 
@@ -34,17 +35,30 @@ func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory {
 	}
 }
 
-//	MustConverters returns the available converters, it will panic
-//
-// on encountering an error.
-func MustConverters() *content.Registry[converters.T] {
-	cnv, err := converters.CreateRegistry(
+// MustDocumentConverters returns the available converters,
+// it will panic on encountering an error.
+func MustDocumentConverters() *content.Registry[converters.Document] {
+	cnv, err := converters.CreateDocumentRegistry(
 		converters.NewHTML(),
 		// Uncomment to add protocols.io support.
 		protocolsio.NewConverter(),
+		// Uncomment to add benchling support.
+		benchling.NewDocumentConverter(),
 	)
 	if err != nil {
-		panic(fmt.Errorf("failed to load converters: %v", err))
+		panic(fmt.Errorf("failed to load document converters: %v", err))
+	}
+	return cnv
+}
+
+// MustUserConverters returns the available converters,
+// it will panic on encountering an error.
+func MustUserConverters() *content.Registry[converters.User] {
+	cnv, err := converters.CreateUserRegistry(
+		benchling.NewUserConverter(),
+	)
+	if err != nil {
+		panic(fmt.Errorf("failed to load employee converters: %v", err))
 	}
 	return cnv
 }
@@ -52,7 +66,10 @@ func MustConverters() *content.Registry[converters.T] {
 // APIExtensions returns the builtin API related commands.
 func APIExtensions(parents ...string) []gleancfg.Extension {
 	var exts []gleancfg.Extension
-	// Uncomment to add protocols.io support.
-	exts = append(exts, protocolsio.Extension(parents...))
+	// Uncomment to add protocols.io, benchling etc. support.
+	exts = append(exts,
+		protocolsio.Extension(parents...),
+		benchling.Extension(parents...),
+	)
 	return exts
 }

@@ -168,6 +168,6 @@ func (c *converter) Convert(ctx context.Context, datasourceName string, cfg conf
 	return gd, nil
 }
 
-func NewConverter() converters.T {
+func NewConverter() converters.Document {
 	return &converter{}
 }

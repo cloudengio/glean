@@ -17,15 +17,16 @@ type Index struct {
 	options
 }
 
-func newIndexer(ctx context.Context, configFile string, converters *content.Registry[converters.T], datasource string) (*index.Indexer, error) {
+func newIndexer(ctx context.Context, configFile string, documentConverters *content.Registry[converters.Document], userConverters *content.Registry[converters.User], datasource string) (*index.Indexer, error) {
 	cfg, err := config.DatasourceForName(ctx, configFile, datasource)
 	if err != nil {
 		return nil, err
 	}
 	indexer := &index.Indexer{
-		GleanConfig: globalConfig,
-		Config:      cfg,
-		Converters:  converters,
+		GleanConfig:        globalConfig,
+		Config:             cfg,
+		DocumentConverters: documentConverters,
+		UserConverters:     userConverters,
 	}
 	return indexer, nil
 }
@@ -33,7 +34,7 @@ func newIndexer(ctx context.Context, configFile string, converters *content.Regi
 func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*index.BulkFlags)
 	datasource := args[0]
-	indexer, err := newIndexer(ctx, fv.ConfigFile, cmd.converters, datasource)
+	indexer, err := newIndexer(ctx, fv.ConfigFile, cmd.documentConverters, cmd.userConverters, datasource)
 	if err != nil {
 		return err
 	}

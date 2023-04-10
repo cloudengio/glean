@@ -21,7 +21,7 @@ import (
 type HTML struct{}
 
 // NewHTML returns a new install of HTML.
-func NewHTML() T {
+func NewHTML() Document {
 	return &HTML{}
 }
 
