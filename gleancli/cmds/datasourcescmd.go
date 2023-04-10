@@ -12,7 +12,7 @@ import (
 
 type Datasources struct{}
 
-func (ds Datasources) Download(ctx context.Context, values interface{}, args []string) error {
+func (ds Datasources) Download(ctx context.Context, _ interface{}, args []string) error {
 	d := datasources.T{GleanConfig: globalConfig}
 	return d.Download(ctx, args[0], args[1])
 }
@@ -22,7 +22,7 @@ func (ds Datasources) Register(ctx context.Context, values interface{}, args []s
 	return d.Register(ctx, values.(*datasources.Flags), args[0])
 }
 
-func (ds Datasources) ShowConfig(ctx context.Context, values interface{}, args []string) error {
+func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []string) error {
 	d := datasources.T{GleanConfig: globalConfig}
 	return d.ShowConfig(ctx, args[0])
 }
