@@ -22,7 +22,7 @@ type CommonFlags struct {
 type CrawlFlags struct {
 	CommonFlags
 	benchlingcmd.CrawlFlags
-	Entities string `subcmd:"entities,'users,entries,folders,projects','comma seperated list of entities to crawl: users, entries, folders, projects'"`
+	Entities string `subcmd:"entities,'users,entries,folders,projects','comma separated list of entities to crawl: users, entries, folders, projects'"`
 }
 
 type IndexFlags struct {
@@ -83,8 +83,5 @@ func (cmd *command) indexCmd(ctx context.Context, values interface{}, args []str
 	if err != nil {
 		return err
 	}
-	if err := c.CreateIndexableDocuments(ctx, cmd.cacheRoot, fv.IndexFlags); err != nil {
-		return err
-	}
-	return nil
+	return c.CreateIndexableDocuments(ctx, cmd.cacheRoot, fv.IndexFlags)
 }

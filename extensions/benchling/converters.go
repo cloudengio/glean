@@ -25,12 +25,7 @@ func (c *docConverter) Type() content.Type {
 	return benchling.DocumentType
 }
 
-var (
-	trueVal  = true
-	falseVal = false
-)
-
-func (c *docConverter) Convert(ctx context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
+func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
 	var gd gleansdk.DocumentDefinition
 	switch ctype {
 	case benchling.DocumentType:
@@ -45,6 +40,7 @@ func (c *docConverter) Convert(ctx context.Context, datasourceName string, cfg c
 	}
 	doc := obj.Value
 
+	gd.SetDatasource(datasourceName)
 	gd.SetId(*doc.Entry.Id)
 	gd.SetViewURL(*doc.Entry.WebURL)
 	gd.SetTitle(*doc.Entry.Name)
@@ -75,6 +71,7 @@ func (c *docConverter) Convert(ctx context.Context, datasourceName string, cfg c
 	// Allow benchling users to view benchling results.
 	gd.Permissions = &gleansdk.DocumentPermissionsDefinition{}
 	gd.Permissions.SetAllowAllDatasourceUsersAccess(true)
+	gd.Permissions.AllowedUsers = make([]gleansdk.UserReferenceDefinition, 0, len(doc.Users))
 	return gd, nil
 }
 
@@ -84,7 +81,7 @@ func (c *userConverter) Type() content.Type {
 	return benchling.UserType
 }
 
-func (c *userConverter) Convert(ctx context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DatasourceUserDefinition, error) {
+func (c *userConverter) Convert(_ context.Context, _ string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DatasourceUserDefinition, error) {
 	var gd gleansdk.DatasourceUserDefinition
 	switch ctype {
 	case benchling.UserType:
@@ -104,7 +101,7 @@ func (c *userConverter) Convert(ctx context.Context, datasourceName string, cfg 
 	}
 	gd.SetName(*usr.Name)
 	gd.SetEmail(*usr.Email)
-	active := !(usr.IsSuspended != nil && *usr.IsSuspended == true)
+	active := !(usr.IsSuspended != nil && *usr.IsSuspended)
 	gd.SetIsActive(active)
 	gd.SetUserId(*usr.Id)
 	return gd, nil
