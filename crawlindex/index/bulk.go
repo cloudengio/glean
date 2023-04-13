@@ -86,7 +86,8 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		WithForceDelete(forceDeletion),
 		WithForceRestart(forceRestart),
 		WithBulkID(fv.UploadID),
-		WithReqSizes(idx.Config.BulkIndex.DocumentRequestSize, idx.Config.BulkIndex.EmployeeRequestSize),
+		WithReqSizes(idx.Config.BulkIndex.DocumentRequestSize, idx.Config.BulkIndex.UserRequestSize),
+		WithUsers(idx.Config.BulkIndex.UserRequestSize > 0),
 		WithDryRun(fv.DryRun),
 	)
 
@@ -124,6 +125,7 @@ type bulkOptions struct {
 	id                     string
 	dryRun                 bool
 	docReqSize, empReqSize int
+	users                  bool
 }
 
 // WithForceDelete disables the deletion of too many documents test.
@@ -151,6 +153,12 @@ func WithBulkID(id string) BulkIndexOption {
 func WithDryRun(v bool) BulkIndexOption {
 	return func(o *bulkOptions) {
 		o.dryRun = v
+	}
+}
+
+func WithUsers(v bool) BulkIndexOption {
+	return func(o *bulkOptions) {
+		o.users = v
 	}
 }
 
@@ -184,8 +192,9 @@ func newBulkIndexer(client *gleansdk.APIClient, datasource config.Datasource, op
 	b := &bulkIndexer{
 		documentIndexer: newBulkDocumentIndexer(
 			options, client, datasourceName),
-		userIndexer: newBulkUserIndexer(
-			options, client, datasourceName),
+	}
+	if options.users {
+		b.userIndexer = newBulkUserIndexer(options, client, datasourceName)
 	}
 	return b
 }
@@ -203,11 +212,18 @@ func (b *bulkIndexer) Run(ctx context.Context, ch <-chan Request) error {
 				if err := b.finish(ctx); err != nil {
 					return err
 				}
-				timings(then, b.documentIndexer.indexed, b.userIndexer.indexed)
+				if b.userIndexer != nil {
+					timings(then, b.documentIndexer.indexed, b.userIndexer.indexed)
+				} else {
+					timings(then, b.documentIndexer.indexed, 0)
+				}
 				return nil
 			}
 			if err := b.documentIndexer.handleDocuments(ctx, req.Documents); err != nil {
 				return err
+			}
+			if b.userIndexer == nil {
+				continue
 			}
 			if err := b.userIndexer.handleUsers(ctx, req.Users); err != nil {
 				return err
@@ -230,6 +246,9 @@ func timings(then time.Time, docs, employees int) {
 func (b *bulkIndexer) finish(ctx context.Context) error {
 	if err := b.documentIndexer.finish(ctx); err != nil {
 		return err
+	}
+	if b.userIndexer == nil {
+		return nil
 	}
 	return b.userIndexer.finish(ctx)
 }
