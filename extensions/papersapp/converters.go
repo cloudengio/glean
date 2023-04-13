@@ -44,9 +44,9 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 	gd.SetDatasource(datasourceName)
 	gd.SetId(doc.Item.ID)
 
-	viewUrl := fmt.Sprintf("%s/library/%v/all/(sidepanel:details)?item_id=%v&collection_id=%v",
+	viewURL := fmt.Sprintf("%s/library/%v/all/(sidepanel:details)?item_id=%v&collection_id=%v",
 		*cfg.Datasource.HomeUrl, doc.Collection.ID, doc.Item.ID, doc.Collection.ID)
-	gd.SetViewURL(viewUrl)
+	gd.SetViewURL(viewURL)
 	gd.SetContainer(doc.Collection.Name)
 
 	gd.Permissions = &gleansdk.DocumentPermissionsDefinition{}
