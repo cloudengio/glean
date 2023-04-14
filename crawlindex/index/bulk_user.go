@@ -68,6 +68,7 @@ func (idx *bulkUserIndexer) handleNextRequest(ctx context.Context, atleast, atmo
 	if len(users) == 0 {
 		return true, nil
 	}
+	req.SetDatasource(idx.datasource)
 	req.SetIsFirstPage(idx.firstPage)
 	if idx.firstPage {
 		req.SetForceRestartUpload(idx.forceRestart)
@@ -82,8 +83,8 @@ func (idx *bulkUserIndexer) handleNextRequest(ctx context.Context, atleast, atmo
 		fmt.Printf("user: would index %v users, %v invocations\n", len(req.Users), idx.invocations+1)
 	} else {
 		resp, err := idx.client.PermissionsApi.BulkindexusersPost(ctx).BulkIndexUsersRequest(req).Execute()
-		if err != nil {
-			return true, handleHTTPError(resp, err)
+		if err := handleHTTPError(resp, err); err != nil {
+			return true, fmt.Errorf("user: request: %v", err)
 		}
 	}
 
