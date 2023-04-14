@@ -47,3 +47,14 @@ func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) 
 	}
 	return indexer.Stats(ctx, values.(*index.StatsFlags), args[0])
 }
+
+func (cmd *Index) query(ctx context.Context, values interface{}, args []string) error {
+	indexer := index.Indexer{
+		GleanConfig: globalConfig,
+	}
+	var query []string
+	if len(args) > 1 {
+		query = args[1:]
+	}
+	return indexer.Query(ctx, values.(*index.QueryFlags), query)
+}
