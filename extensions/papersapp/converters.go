@@ -44,9 +44,9 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 	gd.SetDatasource(datasourceName)
 	gd.SetId(doc.Item.ID)
 
-	viewUrl := fmt.Sprintf("%s/library/%v/all/(sidepanel:details)?item_id=%v&collection_id=%v",
+	viewURL := fmt.Sprintf("%s/library/%v/all/(sidepanel:details)?item_id=%v&collection_id=%v",
 		*cfg.Datasource.HomeUrl, doc.Collection.ID, doc.Item.ID, doc.Collection.ID)
-	gd.SetViewURL(viewUrl)
+	gd.SetViewURL(viewURL)
 	gd.SetContainer(doc.Collection.Name)
 
 	gd.Permissions = &gleansdk.DocumentPermissionsDefinition{}
@@ -70,12 +70,17 @@ func (c *docConverter) article(cfg config.Conversion, gd *gleansdk.DocumentDefin
 	gd.SetTitle(article.Title)
 
 	summary := &strings.Builder{}
-	for _, author := range article.Authors {
-		summary.WriteString(author)
-		summary.WriteRune('\n')
+	if len(article.Authors) > 0 {
+		summary.WriteString(article.Authors[0])
 	}
+	if len(article.Authors) > 1 {
+		summary.WriteString(", ")
+		summary.WriteString(article.Authors[len(article.Authors)-1])
+	}
+	summary.WriteString(": ")
 	summary.WriteString(article.Journal)
-	summary.WriteRune('\n')
+	summary.WriteString(" ")
+	summary.WriteString(fmt.Sprint("%v", article.Year))
 	str := summary.String()
 	gd.SetSummary(gleansdk.ContentDefinition{
 		MimeType:    "text/plain",
