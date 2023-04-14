@@ -80,7 +80,7 @@ func (c *docConverter) article(cfg config.Conversion, gd *gleansdk.DocumentDefin
 	summary.WriteString(": ")
 	summary.WriteString(article.Journal)
 	summary.WriteString(" ")
-	summary.WriteString(fmt.Sprint("%v", article.Year))
+	summary.WriteString(fmt.Sprintf("%v", article.Year))
 	str := summary.String()
 	gd.SetSummary(gleansdk.ContentDefinition{
 		MimeType:    "text/plain",
