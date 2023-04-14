@@ -70,12 +70,17 @@ func (c *docConverter) article(cfg config.Conversion, gd *gleansdk.DocumentDefin
 	gd.SetTitle(article.Title)
 
 	summary := &strings.Builder{}
-	for _, author := range article.Authors {
-		summary.WriteString(author)
-		summary.WriteRune('\n')
+	if len(article.Authors) > 0 {
+		summary.WriteString(article.Authors[0])
 	}
+	if len(article.Authors) > 1 {
+		summary.WriteString(", ")
+		summary.WriteString(article.Authors[len(article.Authors)-1])
+	}
+	summary.WriteString(": ")
 	summary.WriteString(article.Journal)
-	summary.WriteRune('\n')
+	summary.WriteString(" ")
+	summary.WriteString(fmt.Sprintf("%v", article.Year))
 	str := summary.String()
 	gd.SetSummary(gleansdk.ContentDefinition{
 		MimeType:    "text/plain",
