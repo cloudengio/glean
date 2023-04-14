@@ -106,13 +106,14 @@ func (idx *bulkUserIndexer) finish(ctx context.Context) error {
 		return nil
 	}
 	bulkReq := gleansdk.BulkIndexUsersRequest{}
+	bulkReq.SetDatasource(idx.datasource)
 	bulkReq.SetIsFirstPage(false)
 	bulkReq.SetIsLastPage(true)
 	bulkReq.SetUploadId(idx.id)
 	bulkReq.Users = []gleansdk.DatasourceUserDefinition{}
 	resp, err := idx.client.PermissionsApi.BulkindexusersPost(ctx).BulkIndexUsersRequest(bulkReq).Execute()
 	if err := handleHTTPError(resp, err); err != nil {
-		return fmt.Errorf("employee last page request: %v", err)
+		return fmt.Errorf("user: last page request: %v", err)
 	}
 	return nil
 }
