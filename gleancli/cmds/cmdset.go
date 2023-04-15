@@ -36,12 +36,12 @@ commands:
       - name: download
         summary: download and display the configuration for the specified data source from its glean instance
         arguments:
-          - glean-instance-name: the name of the glean instance to use
-          - datasource-name:     the datasource to be downloaded
+          - glean-instance-name - the name of the glean instance to use
+          - datasource-name     - the datasource to be downloaded
       - name: register
         summary: add the named datasource to a glean instance using the configuration defined in the datasource configuration file specified using the --datasource-configs flag.
         arguments:
-          - datasource-name: the datasource to be registered
+          - datasource-name - the datasource to be registered
       - name: show-config
         summary: load and display the specified config file
         arguments:
@@ -53,7 +53,7 @@ commands:
       - name: run
         summary: run the crawls for a datasource
         arguments:
-          - datasource-name: the datasource to be crawled
+          - datasource-name - the datasource to be crawled
 
   - name: api
     summary: API releated commands
@@ -67,18 +67,18 @@ commands:
       - name: bulk
         summary: index the results of a prior crawl as a single bulk update
         arguments:
-          - datasource-name: the datasource to be indexed
+          - datasource-name - the datasource to be indexed
 
       - name: stats
         summary: display statistics for the specified datasource
         arguments:
-          - datasource-name: the datasource to be indexed
+          - datasource-name - the datasource to be indexed
 
       - name: query
         summary: run the specified query against the specified datasource
         arguments:
-          - datasource-name: the datasource to be indexed
-          - ...
+          - datasource-name - the name of the glean instance to use
+          - query           - the query to run
 `
 
 var cmdExtensions []gleancfg.Extension
@@ -122,6 +122,9 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 
 	cmdSet.Set("index", "stats").MustRunnerAndFlags(
 		idx.stats, subcmd.MustRegisteredFlagSet(&index.StatsFlags{}))
+
+	cmdSet.Set("index", "query").MustRunnerAndFlags(
+		idx.query, subcmd.MustRegisteredFlagSet(&index.QueryFlags{}))
 
 	cmdSet.MustAddExtensions()
 

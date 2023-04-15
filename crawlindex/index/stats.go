@@ -22,7 +22,7 @@ func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags, datasource string
 	if err != nil {
 		return err
 	}
-	ctx, client, err := idx.GleanConfig.NewAPIClient(ctx, cfg.GleanInstance)
+	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
 	if err != nil {
 		return err
 	}

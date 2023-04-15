@@ -44,7 +44,7 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		return fmt.Errorf("no path specified for the cache to be indexed")
 	}
 
-	ctx, client, err := idx.GleanConfig.NewAPIClient(ctx, idx.Config.GleanInstance)
+	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, idx.Config.GleanInstance)
 	if err != nil {
 		return err
 	}

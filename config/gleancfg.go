@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strings"
 
+	"cloudeng.io/glean/gleanclientsdk"
 	"cloudeng.io/glean/gleansdk"
 )
 
@@ -19,7 +20,8 @@ type GleanFlags struct {
 type Glean []struct {
 	Name string `yaml:"name"`
 	Auth struct {
-		BearerToken string `yaml:"token"`
+		BearerToken       string `yaml:"indexing_token"`
+		ClientBearerToken string `yaml:"client_token"`
 	}
 	API struct {
 		Domain string `yaml:"domain"`
@@ -38,7 +40,7 @@ func (c Glean) String() string {
 	return out.String()
 }
 
-func (c Glean) NewAPIClient(ctx context.Context, name string) (context.Context, *gleansdk.APIClient, error) {
+func (c Glean) NewIndexingAPIClient(ctx context.Context, name string) (context.Context, *gleansdk.APIClient, error) {
 	for _, cfg := range c {
 		if cfg.Name == name {
 			templateVars := map[string]string{
@@ -49,5 +51,19 @@ func (c Glean) NewAPIClient(ctx context.Context, name string) (context.Context, 
 			return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration()), nil
 		}
 	}
-	return ctx, nil, fmt.Errorf("Glean.NewAPIClient: failed to find config for %q", name)
+	return ctx, nil, fmt.Errorf("Glean.NewIndexingAPIClient: failed to find config for %q", name)
+}
+
+func (c Glean) NewClientAPIClient(ctx context.Context, name string) (context.Context, *gleanclientsdk.APIClient, error) {
+	for _, cfg := range c {
+		if cfg.Name == name {
+			templateVars := map[string]string{
+				"domain": cfg.API.Domain,
+			}
+			ctx = context.WithValue(ctx, gleanclientsdk.ContextAccessToken, cfg.Auth.ClientBearerToken)
+			ctx = context.WithValue(ctx, gleanclientsdk.ContextServerVariables, templateVars)
+			return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration()), nil
+		}
+	}
+	return ctx, nil, fmt.Errorf("Glean.NewClientAPIClient: failed to find config for %q", name)
 }

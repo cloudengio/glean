@@ -52,9 +52,5 @@ func (cmd *Index) query(ctx context.Context, values interface{}, args []string) 
 	indexer := index.Indexer{
 		GleanConfig: globalConfig,
 	}
-	var query []string
-	if len(args) > 1 {
-		query = args[1:]
-	}
-	return indexer.Query(ctx, values.(*index.QueryFlags), query)
+	return indexer.Query(ctx, values.(*index.QueryFlags), args[0], args[1])
 }
