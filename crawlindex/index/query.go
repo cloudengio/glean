@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"strings"
 	"time"
 
 	"cloudeng.io/glean/crawlindex/config"
@@ -80,16 +81,27 @@ func (idx *Indexer) indexingStatus(ctx context.Context, cfg config.Datasource, r
 		return err
 	}
 	for _, r := range results {
+		docid := r.Document.GetId()
+		if idx := strings.Index(docid, "_etr_"); idx != -1 {
+			docid = docid[idx+1:]
+		}
 		sr := gleansdk.NewGetDocumentStatusRequest(cfg.DatasourceConfig.Name,
-			r.Document.GetDocType(),
-			r.Document.GetId())
+			strings.ToLower(r.Document.GetDocType()),
+			docid)
 
-		fmt.Printf("%v: %v - %v\n", cfg.DatasourceConfig.Name, r.Document.GetId(), r.Document.GetDocType())
 		resp, _, err := client.DocumentsApi.GetdocumentstatusPost(ctx).GetDocumentStatusRequest(*sr).Execute()
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%v: %v: %v %v %v\n", r.GetUrl(), r.Document.GetId(), resp.GetIndexingStatus(), resp.GetLastUploadedAt(), resp.GetLastIndexedAt())
+		uploaded := time.Unix(resp.GetLastUploadedAt(), 0)
+		indexed := time.Unix(resp.GetLastIndexedAt(), 0)
+		if resp.GetIndexingStatus() == "INDEXED" {
+			fmt.Printf("%v: %v\t%v\t%v\t(%v) - %v : %v\n",
+				docid, resp.GetIndexingStatus(), uploaded, indexed, indexed.Sub(uploaded), r.Document.GetDocType(), r.Document.GetId())
+		} else {
+			fmt.Printf("WARNING: %v: %v - %v : %v\n",
+				docid, resp.GetIndexingStatus(), r.Document.GetDocType(), r.Document.GetId())
+		}
 		time.Sleep(time.Second)
 	}
 	return nil
