@@ -1,7 +1,7 @@
 /*
-Glean Client API - Platform Preview
+Glean Client API
 
-# Introduction These are all the APIs used by Glean to implement the Glean client. These are available as platform preview for implementing a custom client to the Glean system.  # Usage guidelines A subset of these endpoints are also in the developer ready section, which is available for public use. The rest of the endpoints are subject to prior agreement with Glean before usage. Please contact support@glean.com if you would like to use an API that is not currently available in the developer ready section. 
+# Introduction These are the public APIs to enable implementing a custom client interface to the Glean system.  # Usage guidelines This API is evolving fast. Glean will provide advance notice of any planned backwards incompatible changes along with a 6-month sunset period for anything that requires developers to adopt the new versions. 
 
 API version: 0.9.0
 Contact: support@glean.com
@@ -37,11 +37,11 @@ type Permissions struct {
 	// TODO--deprecate in favor of the read and write properties. True if the user has access to the Generated Qna feature on SERP
 	CanAccessGeneratedQna *bool `json:"canAccessGeneratedQna,omitempty"`
 	// Describes the read permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject
-	Read *map[string][]SchemasReadPermission `json:"read,omitempty"`
+	Read *map[string][]ReadPermission `json:"read,omitempty"`
 	// Describes the write permissions levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject
 	Write *map[string][]WritePermission `json:"write,omitempty"`
 	// Describes the grant permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject
-	Grant *map[string][]SchemasGrantPermission `json:"grant,omitempty"`
+	Grant *map[string][]GrantPermission `json:"grant,omitempty"`
 	// DEPRECATED - The role for the user
 	// Deprecated
 	Role *string `json:"role,omitempty"`
@@ -290,9 +290,9 @@ func (o *Permissions) SetCanAccessGeneratedQna(v bool) {
 }
 
 // GetRead returns the Read field value if set, zero value otherwise.
-func (o *Permissions) GetRead() map[string][]SchemasReadPermission {
+func (o *Permissions) GetRead() map[string][]ReadPermission {
 	if o == nil || IsNil(o.Read) {
-		var ret map[string][]SchemasReadPermission
+		var ret map[string][]ReadPermission
 		return ret
 	}
 	return *o.Read
@@ -300,7 +300,7 @@ func (o *Permissions) GetRead() map[string][]SchemasReadPermission {
 
 // GetReadOk returns a tuple with the Read field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Permissions) GetReadOk() (*map[string][]SchemasReadPermission, bool) {
+func (o *Permissions) GetReadOk() (*map[string][]ReadPermission, bool) {
 	if o == nil || IsNil(o.Read) {
 		return nil, false
 	}
@@ -316,8 +316,8 @@ func (o *Permissions) HasRead() bool {
 	return false
 }
 
-// SetRead gets a reference to the given map[string][]SchemasReadPermission and assigns it to the Read field.
-func (o *Permissions) SetRead(v map[string][]SchemasReadPermission) {
+// SetRead gets a reference to the given map[string][]ReadPermission and assigns it to the Read field.
+func (o *Permissions) SetRead(v map[string][]ReadPermission) {
 	o.Read = &v
 }
 
@@ -354,9 +354,9 @@ func (o *Permissions) SetWrite(v map[string][]WritePermission) {
 }
 
 // GetGrant returns the Grant field value if set, zero value otherwise.
-func (o *Permissions) GetGrant() map[string][]SchemasGrantPermission {
+func (o *Permissions) GetGrant() map[string][]GrantPermission {
 	if o == nil || IsNil(o.Grant) {
-		var ret map[string][]SchemasGrantPermission
+		var ret map[string][]GrantPermission
 		return ret
 	}
 	return *o.Grant
@@ -364,7 +364,7 @@ func (o *Permissions) GetGrant() map[string][]SchemasGrantPermission {
 
 // GetGrantOk returns a tuple with the Grant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Permissions) GetGrantOk() (*map[string][]SchemasGrantPermission, bool) {
+func (o *Permissions) GetGrantOk() (*map[string][]GrantPermission, bool) {
 	if o == nil || IsNil(o.Grant) {
 		return nil, false
 	}
@@ -380,8 +380,8 @@ func (o *Permissions) HasGrant() bool {
 	return false
 }
 
-// SetGrant gets a reference to the given map[string][]SchemasGrantPermission and assigns it to the Grant field.
-func (o *Permissions) SetGrant(v map[string][]SchemasGrantPermission) {
+// SetGrant gets a reference to the given map[string][]GrantPermission and assigns it to the Grant field.
+func (o *Permissions) SetGrant(v map[string][]GrantPermission) {
 	o.Grant = &v
 }
 

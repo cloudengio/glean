@@ -1,7 +1,7 @@
 /*
-Glean Client API - Platform Preview
+Glean Client API
 
-# Introduction These are all the APIs used by Glean to implement the Glean client. These are available as platform preview for implementing a custom client to the Glean system.  # Usage guidelines A subset of these endpoints are also in the developer ready section, which is available for public use. The rest of the endpoints are subject to prior agreement with Glean before usage. Please contact support@glean.com if you would like to use an API that is not currently available in the developer ready section. 
+# Introduction These are the public APIs to enable implementing a custom client interface to the Glean system.  # Usage guidelines This API is evolving fast. Glean will provide advance notice of any planned backwards incompatible changes along with a 6-month sunset period for anything that requires developers to adopt the new versions. 
 
 API version: 0.9.0
 Contact: support@glean.com
@@ -42,7 +42,7 @@ var (
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
-// APIClient manages communication with the Glean Client API - Platform Preview API v0.9.0
+// APIClient manages communication with the Glean Client API API v0.9.0
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -54,29 +54,17 @@ type APIClient struct {
 
 	AnnouncementsApi *AnnouncementsApiService
 
-	AnswerBoardsApi *AnswerBoardsApiService
-
 	AnswersApi *AnswersApiService
 
 	AuthenticationApi *AuthenticationApiService
 
 	CollectionsApi *CollectionsApiService
 
-	DisplayableListsApi *DisplayableListsApiService
-
-	ImagesApi *ImagesApiService
-
-	InsightsApi *InsightsApiService
-
-	PermissionsApi *PermissionsApiService
-
 	PinsApi *PinsApiService
 
 	SearchApi *SearchApiService
 
 	ShortcutsApi *ShortcutsApiService
-
-	UserApi *UserApiService
 
 	VerificationApi *VerificationApiService
 }
@@ -99,18 +87,12 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	// API Services
 	c.ActivityApi = (*ActivityApiService)(&c.common)
 	c.AnnouncementsApi = (*AnnouncementsApiService)(&c.common)
-	c.AnswerBoardsApi = (*AnswerBoardsApiService)(&c.common)
 	c.AnswersApi = (*AnswersApiService)(&c.common)
 	c.AuthenticationApi = (*AuthenticationApiService)(&c.common)
 	c.CollectionsApi = (*CollectionsApiService)(&c.common)
-	c.DisplayableListsApi = (*DisplayableListsApiService)(&c.common)
-	c.ImagesApi = (*ImagesApiService)(&c.common)
-	c.InsightsApi = (*InsightsApiService)(&c.common)
-	c.PermissionsApi = (*PermissionsApiService)(&c.common)
 	c.PinsApi = (*PinsApiService)(&c.common)
 	c.SearchApi = (*SearchApiService)(&c.common)
 	c.ShortcutsApi = (*ShortcutsApiService)(&c.common)
-	c.UserApi = (*UserApiService)(&c.common)
 	c.VerificationApi = (*VerificationApiService)(&c.common)
 
 	return c

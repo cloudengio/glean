@@ -1,6 +1,6 @@
 # \VerificationApi
 
-All URIs are relative to *https://domain-be.glean.com/api/v1*
+All URIs are relative to *https://domain-be.glean.com/rest/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -70,7 +70,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[actAsBearerToken](../README.md#actAsBearerToken), [cookieAuth](../README.md#cookieAuth)
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -144,7 +144,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[actAsBearerToken](../README.md#actAsBearerToken), [cookieAuth](../README.md#cookieAuth)
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 
@@ -216,7 +216,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-[actAsBearerToken](../README.md#actAsBearerToken), [cookieAuth](../README.md#cookieAuth)
+[BearerAuth](../README.md#BearerAuth)
 
 ### HTTP request headers
 

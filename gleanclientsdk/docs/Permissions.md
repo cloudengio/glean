@@ -12,9 +12,9 @@ Name | Type | Description | Notes
 **EditDocumentTags** | **bool** | TODO--deprecate in favor of the read and write properties. Add and remove existing UGC tags on any document. | 
 **CanCreateAnnoucements** | **bool** | TODO--deprecate in favor of the read and write properties. True is the user can create/update/delete announcements. | 
 **CanAccessGeneratedQna** | Pointer to **bool** | TODO--deprecate in favor of the read and write properties. True if the user has access to the Generated Qna feature on SERP | [optional] 
-**Read** | Pointer to [**map[string][]SchemasReadPermission**](array.md) | Describes the read permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject | [optional] 
+**Read** | Pointer to [**map[string][]ReadPermission**](array.md) | Describes the read permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject | [optional] 
 **Write** | Pointer to [**map[string][]WritePermission**](array.md) | Describes the write permissions levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject | [optional] 
-**Grant** | Pointer to [**map[string][]SchemasGrantPermission**](array.md) | Describes the grant permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject | [optional] 
+**Grant** | Pointer to [**map[string][]GrantPermission**](array.md) | Describes the grant permission levels that a user has for permissioned features. Key must be PermissionedFeatureOrObject | [optional] 
 **Role** | Pointer to **string** | DEPRECATED - The role for the user | [optional] 
 **Roles** | Pointer to **[]string** | The roles a user has. | [optional] 
 **IsModified** | Pointer to **bool** | True if this user was given additional permissions beyond what they&#39;re granted via their permission role | [optional] 
@@ -215,20 +215,20 @@ HasCanAccessGeneratedQna returns a boolean if a field has been set.
 
 ### GetRead
 
-`func (o *Permissions) GetRead() map[string][]SchemasReadPermission`
+`func (o *Permissions) GetRead() map[string][]ReadPermission`
 
 GetRead returns the Read field if non-nil, zero value otherwise.
 
 ### GetReadOk
 
-`func (o *Permissions) GetReadOk() (*map[string][]SchemasReadPermission, bool)`
+`func (o *Permissions) GetReadOk() (*map[string][]ReadPermission, bool)`
 
 GetReadOk returns a tuple with the Read field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRead
 
-`func (o *Permissions) SetRead(v map[string][]SchemasReadPermission)`
+`func (o *Permissions) SetRead(v map[string][]ReadPermission)`
 
 SetRead sets Read field to given value.
 
@@ -265,20 +265,20 @@ HasWrite returns a boolean if a field has been set.
 
 ### GetGrant
 
-`func (o *Permissions) GetGrant() map[string][]SchemasGrantPermission`
+`func (o *Permissions) GetGrant() map[string][]GrantPermission`
 
 GetGrant returns the Grant field if non-nil, zero value otherwise.
 
 ### GetGrantOk
 
-`func (o *Permissions) GetGrantOk() (*map[string][]SchemasGrantPermission, bool)`
+`func (o *Permissions) GetGrantOk() (*map[string][]GrantPermission, bool)`
 
 GetGrantOk returns a tuple with the Grant field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetGrant
 
-`func (o *Permissions) SetGrant(v map[string][]SchemasGrantPermission)`
+`func (o *Permissions) SetGrant(v map[string][]GrantPermission)`
 
 SetGrant sets Grant field to given value.
 
