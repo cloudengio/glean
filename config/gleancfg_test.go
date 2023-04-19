@@ -19,7 +19,8 @@ const configSpec = `
     domain: glean-dev
 - name: another-instance
   auth:
-    token: "another token"
+    indexing_token: "another token"
+    client_token: "client token"
   api:
     domain: another-instance.com
 `
@@ -33,6 +34,12 @@ func TestConfig(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 	if got, want := cfg[1].Name, "another-instance"; got != want {
+		t.Errorf("got %v, want %v", got, want)
+	}
+	if got, want := cfg[1].Auth.BearerToken, "another token"; got != want {
+		t.Errorf("got %v, want %v", got, want)
+	}
+	if got, want := cfg[1].Auth.ClientBearerToken, "client token"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 }
