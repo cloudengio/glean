@@ -43,7 +43,6 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 	doc := obj.Value
 	gd.SetDatasource(datasourceName)
 	gd.SetId(doc.Item.ID)
-
 	viewURL := fmt.Sprintf("%s/library/%v/all/(sidepanel:details)?item_id=%v&collection_id=%v",
 		*cfg.Datasource.HomeUrl, doc.Collection.ID, doc.Item.ID, doc.Collection.ID)
 	gd.SetViewURL(viewURL)
@@ -68,6 +67,7 @@ func (c *docConverter) article(cfg config.Conversion, gd *gleansdk.DocumentDefin
 	article := item.Article
 
 	gd.SetTitle(article.Title)
+	gd.SetObjectType("article")
 
 	summary := &strings.Builder{}
 	if len(article.Authors) > 0 {
