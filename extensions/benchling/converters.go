@@ -83,7 +83,7 @@ func (c *userConverter) Type() content.Type {
 	return benchling.UserType
 }
 
-func (c *userConverter) Convert(_ context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DatasourceUserDefinition, error) {
+func (c *userConverter) Convert(_ context.Context, _ string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DatasourceUserDefinition, error) {
 	var gd gleansdk.DatasourceUserDefinition
 	switch ctype {
 	case benchling.UserType:
