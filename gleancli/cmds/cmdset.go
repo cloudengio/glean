@@ -90,11 +90,11 @@ commands:
         arguments:
           - datasource-name - the name of the datasource to use
 
-      #- name: delete
-      #  summary: delete indexed documents returned by a query based on their type
-      #  arguments:
-      #    - datasource-name - the name of the datasource to use
-      #    - query           - the query to be used to find documents to be deleted
+      - name: delete
+        summary: delete indexed documents returned by a query based on their type
+        arguments:
+          - datasource-name - the name of the datasource to use
+          - query           - the query to be used to find documents to be deleted
  `
 
 var cmdExtensions []gleancfg.Extension
@@ -141,6 +141,9 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 
 	cmdSet.Set("index", "query").MustRunnerAndFlags(
 		idx.query, subcmd.MustRegisteredFlagSet(&index.QueryFlags{}))
+
+	cmdSet.Set("index", "delete").MustRunnerAndFlags(
+		idx.delete, subcmd.MustRegisteredFlagSet(&index.DeleteFlags{}))
 
 	cmdSet.Set("index", "delete-all").MustRunnerAndFlags(
 		idx.deleteAll, subcmd.MustRegisteredFlagSet(&index.DeleteAllFlags{}))
