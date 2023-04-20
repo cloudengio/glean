@@ -6,17 +6,18 @@ require (
 	cloudeng.io/aws v0.0.0-20230408225100-e6b3b9644e60
 	cloudeng.io/cmdutil v0.0.0-20230408225100-e6b3b9644e60
 	cloudeng.io/file v0.0.0-20230408225100-e6b3b9644e60
-	cloudeng.io/glean/config v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/crawlindex v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/extensions/benchling v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20230414172102-974cb02bfac8
+	cloudeng.io/glean/config v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/crawlindex v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/extensions/benchling v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20230420172619-126fcc4fd5eb
 )
 
 require (
 	cloudeng.io/algo v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/errors v0.0.8 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20230414172102-974cb02bfac8 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20230420172619-126fcc4fd5eb // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20230420170050-873948c78c90 // indirect
 	cloudeng.io/net v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/os v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/path v0.0.8 // indirect
@@ -41,13 +42,13 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.27 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.26 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.14.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.31.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.32.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.12.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.9 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/deepmap/oapi-codegen v1.12.4 // indirect
-	github.com/getkin/kin-openapi v0.115.0 // indirect
+	github.com/getkin/kin-openapi v0.116.0 // indirect
 	github.com/go-openapi/errors v0.20.3 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/strfmt v0.21.7 // indirect
