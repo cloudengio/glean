@@ -11,12 +11,12 @@ import (
 	"cloudeng.io/glean/gleansdk"
 )
 
-// ProcessNow represents the flags to the indexing process now command.
-type ProcessNow struct {
+// ProcessNowFlags represents the flags to the indexing process now command.
+type ProcessNowFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) ProcessNow(ctx context.Context, fv *DeleteFlags, datasource string, query string) error {
+func (idx *Indexer) ProcessNow(ctx context.Context, fv *ProcessNowFlags, datasource string) error {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return err
