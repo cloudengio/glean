@@ -80,6 +80,11 @@ commands:
           - datasource-name - the name of the datasource to use
           - query           - the query to run
 
+      - name: process-now
+        summary: request processing of all documents in the specified datasource as soon as possible.
+        arguments:
+          - datasource-name - the name of the datasource to process
+
       - name: delete-all
         summary: delete all of the documents from a datasource
         arguments:
@@ -139,6 +144,9 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 
 	cmdSet.Set("index", "delete-all").MustRunnerAndFlags(
 		idx.deleteAll, subcmd.MustRegisteredFlagSet(&index.DeleteAllFlags{}))
+
+	cmdSet.Set("index", "process-now").MustRunnerAndFlags(
+		idx.processNow, subcmd.MustRegisteredFlagSet(&index.ProcessNowFlags{}))
 
 	cmdSet.MustAddExtensions()
 
