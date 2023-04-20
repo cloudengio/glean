@@ -73,7 +73,29 @@ commands:
         summary: display statistics for the specified datasource
         arguments:
           - datasource-name - the datasource to be indexed
-`
+
+      - name: query
+        summary: run the specified query against the specified datasource
+        arguments:
+          - datasource-name - the name of the datasource to use
+          - query           - the query to run
+
+      - name: process-now
+        summary: request processing of all documents in the specified datasource as soon as possible.
+        arguments:
+          - datasource-name - the name of the datasource to process
+
+      - name: delete-all
+        summary: delete all of the documents from a datasource
+        arguments:
+          - datasource-name - the name of the datasource to use
+
+      - name: delete
+        summary: delete indexed documents returned by a query based on their type
+        arguments:
+          - datasource-name - the name of the datasource to use
+          - query           - the query to be used to find documents to be deleted
+ `
 
 var cmdExtensions []gleancfg.Extension
 
@@ -116,6 +138,18 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 
 	cmdSet.Set("index", "stats").MustRunnerAndFlags(
 		idx.stats, subcmd.MustRegisteredFlagSet(&index.StatsFlags{}))
+
+	cmdSet.Set("index", "query").MustRunnerAndFlags(
+		idx.query, subcmd.MustRegisteredFlagSet(&index.QueryFlags{}))
+
+	cmdSet.Set("index", "delete").MustRunnerAndFlags(
+		idx.delete, subcmd.MustRegisteredFlagSet(&index.DeleteFlags{}))
+
+	cmdSet.Set("index", "delete-all").MustRunnerAndFlags(
+		idx.deleteAll, subcmd.MustRegisteredFlagSet(&index.DeleteAllFlags{}))
+
+	cmdSet.Set("index", "process-now").MustRunnerAndFlags(
+		idx.processNow, subcmd.MustRegisteredFlagSet(&index.ProcessNowFlags{}))
 
 	cmdSet.MustAddExtensions()
 

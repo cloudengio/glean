@@ -5,16 +5,17 @@ go 1.20
 require (
 	cloudeng.io/cmdutil v0.0.0-20230408225100-e6b3b9644e60
 	cloudeng.io/file v0.0.0-20230408225100-e6b3b9644e60
-	cloudeng.io/glean/config v0.0.0-20230315233431-3e23653bac92
-	cloudeng.io/glean/crawlindex v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/gleansdk v0.0.0-20230315233431-3e23653bac92
-	cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8
-	cloudeng.io/webapi/protocolsio v0.0.0-20230410172045-aa7c883cebf8
+	cloudeng.io/glean/config v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/crawlindex v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/gleansdk v0.0.0-20230420170050-873948c78c90
+	cloudeng.io/webapi/operations v0.0.0-20230413233803-c159995f85f6
+	cloudeng.io/webapi/protocolsio v0.0.0-20230413233803-c159995f85f6
 )
 
 require (
 	cloudeng.io/aws v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/errors v0.0.8 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20230420172619-126fcc4fd5eb // indirect
 	cloudeng.io/net v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/os v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/path v0.0.8 // indirect

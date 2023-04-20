@@ -5,16 +5,17 @@ go 1.20
 require (
 	cloudeng.io/cmdutil v0.0.0-20230408225100-e6b3b9644e60
 	cloudeng.io/file v0.0.0-20230408225100-e6b3b9644e60
-	cloudeng.io/glean/config v0.0.0-20230410231110-bef0a339aed6
-	cloudeng.io/glean/crawlindex v0.0.0-20230414172102-974cb02bfac8
-	cloudeng.io/glean/gleansdk v0.0.0-20230410231110-bef0a339aed6
-	cloudeng.io/webapi/benchling v0.0.0-20230410172045-aa7c883cebf8
-	cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8
+	cloudeng.io/glean/config v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/crawlindex v0.0.0-20230420172619-126fcc4fd5eb
+	cloudeng.io/glean/gleansdk v0.0.0-20230420170050-873948c78c90
+	cloudeng.io/webapi/benchling v0.0.0-20230413233803-c159995f85f6
+	cloudeng.io/webapi/operations v0.0.0-20230413233803-c159995f85f6
 )
 
 require (
 	cloudeng.io/aws v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/errors v0.0.8 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20230420172619-126fcc4fd5eb // indirect
 	cloudeng.io/net v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/os v0.0.0-20230408225100-e6b3b9644e60 // indirect
 	cloudeng.io/path v0.0.8 // indirect
@@ -34,7 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.9 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/deepmap/oapi-codegen v1.12.4 // indirect
-	github.com/getkin/kin-openapi v0.115.0 // indirect
+	github.com/getkin/kin-openapi v0.116.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect

@@ -47,3 +47,31 @@ func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) 
 	}
 	return indexer.Stats(ctx, values.(*index.StatsFlags), args[0])
 }
+
+func (cmd *Index) query(ctx context.Context, values interface{}, args []string) error {
+	indexer := index.Indexer{
+		GleanConfig: globalConfig,
+	}
+	return indexer.Query(ctx, values.(*index.QueryFlags), args[0], args[1])
+}
+
+func (cmd *Index) delete(ctx context.Context, values interface{}, args []string) error {
+	indexer := index.Indexer{
+		GleanConfig: globalConfig,
+	}
+	return indexer.Delete(ctx, values.(*index.DeleteFlags), args[0], args[1])
+}
+
+func (cmd *Index) deleteAll(ctx context.Context, values interface{}, args []string) error {
+	indexer := index.Indexer{
+		GleanConfig: globalConfig,
+	}
+	return indexer.DeleteAll(ctx, values.(*index.DeleteAllFlags), args[0])
+}
+
+func (cmd *Index) processNow(ctx context.Context, values interface{}, args []string) error {
+	indexer := index.Indexer{
+		GleanConfig: globalConfig,
+	}
+	return indexer.ProcessNow(ctx, values.(*index.ProcessNowFlags), args[0])
+}
