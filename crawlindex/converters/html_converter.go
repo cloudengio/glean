@@ -47,7 +47,8 @@ func (cnv *HTML) Convert(_ context.Context, datasource string, cfg config.Conver
 	}
 
 	contents := obj.Value
-	gd.Datasource = datasource
+	gd.SetDatasource(datasource)
+	gd.SetObjectType("html")
 
 	dl := obj.Response
 
