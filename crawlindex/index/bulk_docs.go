@@ -68,7 +68,6 @@ func (idx *bulkDocumentIndexer) handleNextRequest(ctx context.Context, atleast, 
 	}
 	req.SetIsLastPage(false)
 	req.SetUploadId(idx.id)
-	req.SetDisableStaleDocumentDeletionCheck(idx.forceDeletion)
 	req.Documents = docs
 
 	fmt.Printf("documents: sending request with %v (req size: %v)\n", len(req.Documents), idx.docReqSize)
@@ -104,6 +103,7 @@ func (idx *bulkDocumentIndexer) finish(ctx context.Context) error {
 	bulkReq.SetIsFirstPage(false)
 	bulkReq.SetIsLastPage(true)
 	bulkReq.SetUploadId(idx.id)
+	bulkReq.SetDisableStaleDocumentDeletionCheck(idx.forceDeletion)
 	bulkReq.Documents = []gleansdk.DocumentDefinition{}
 	resp, err := idx.client.DocumentsApi.BulkindexdocumentsPost(ctx).BulkIndexDocumentsRequest(bulkReq).Execute()
 	if err := handleHTTPError(resp, err); err != nil {
