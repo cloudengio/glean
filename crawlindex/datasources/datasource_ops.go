@@ -26,7 +26,7 @@ type T struct {
 }
 
 func (d *T) Download(ctx context.Context, instance, datasource string) error {
-	ctx, client, err := d.GleanConfig.NewAPIClient(ctx, instance)
+	ctx, client, err := d.GleanConfig.NewIndexingAPIClient(ctx, instance)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error {
 	}
 	fmt.Printf("Registering custom datasource:\n%s\n", buf)
 
-	ctx, client, err := d.GleanConfig.NewAPIClient(ctx, cfg.GleanInstance)
+	ctx, client, err := d.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
 	if err != nil {
 		return err
 	}
