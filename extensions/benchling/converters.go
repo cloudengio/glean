@@ -7,6 +7,7 @@ package benchling
 import (
 	"context"
 	"fmt"
+	"path"
 	"strings"
 	"time"
 
@@ -42,6 +43,7 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 
 	gd.SetDatasource(datasourceName)
 	gd.SetId(*doc.Entry.Id)
+	gd.SetObjectType(path.Base(string(benchling.DocumentType)))
 	gd.SetViewURL(*doc.Entry.WebURL)
 	gd.SetTitle(*doc.Entry.Name)
 	gd.SetContainer(strings.Join(doc.Parents, "/"))
@@ -93,7 +95,7 @@ func (c *userConverter) Convert(_ context.Context, _ string, cfg config.Conversi
 
 	var obj content.Object[benchlingsdk.User, *operations.Response]
 	if err := obj.Decode(data); err != nil {
-		return gd, fmt.Errorf("benchlong.com user converter: failed to decode object data: %v", err)
+		return gd, fmt.Errorf("benchling.com user converter: failed to decode object data: %v", err)
 	}
 	usr := obj.Value
 	if usr.Name == nil {

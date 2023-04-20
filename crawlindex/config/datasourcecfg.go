@@ -74,7 +74,6 @@ func DatasourceForName(ctx context.Context, filename string, name string) (Datas
 	}
 	var cfg Datasources
 	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
-		fmt.Printf("oops: %v\n", filename)
 		return Datasource{}, err
 	}
 	ds, ok := cfg.ConfigForName(name)

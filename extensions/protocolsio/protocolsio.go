@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path"
 
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/content"
@@ -138,7 +139,8 @@ func (c *converter) Convert(_ context.Context, _ string, cfg config.Conversion, 
 	}
 
 	p := obj.Value.Protocol
-	gd.Datasource = cfg.Datasource.Name
+	gd.SetDatasource(cfg.Datasource.Name)
+	gd.SetObjectType(path.Base(string(protocolsio.ContentType)))
 	gd.SetId(p.URI)
 	gd.SetViewURL(p.URL)
 	gd.SetTitle(p.Title)
