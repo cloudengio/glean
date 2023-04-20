@@ -22,10 +22,16 @@ cloudeng.io/glean/config v0.0.0-20230315223944-dad97cce0cf4 h1:UUF7Q8gJCbrnZ30k7
 cloudeng.io/glean/config v0.0.0-20230315223944-dad97cce0cf4/go.mod h1:jOZa6tq6sjuofLEuR64EHJP4orplXm7O5qzlmXi6qMM=
 cloudeng.io/glean/config v0.0.0-20230315233431-3e23653bac92 h1:PLIBe87qJ/EENh+/23+VpUkgGgXRB7l6mfbVlEhDZx8=
 cloudeng.io/glean/config v0.0.0-20230315233431-3e23653bac92/go.mod h1:OtZkv2DNp63LdPqemL6/l7sg0YO295l1A8QDCz/2Fp4=
+cloudeng.io/glean/config v0.0.0-20230419233858-002e1bf32a47 h1:l2kxxkWGDZyhyrFAKUD2sJlqhpbciVVdI7hTnxyifaU=
+cloudeng.io/glean/config v0.0.0-20230419233858-002e1bf32a47/go.mod h1:SpdVgl2nKhldROfc9ri462SJaNIJFGC0tJExvlcnZbI=
+cloudeng.io/glean/gleanclientsdk v0.0.0-20230418164646-9bd61768749b h1:+4QNSkXaINFCRAbzoJC6hCSzt98mh/gpLbU+1FNwZvY=
+cloudeng.io/glean/gleanclientsdk v0.0.0-20230418164646-9bd61768749b/go.mod h1:3XMAgKThDz8RJP8FwqhnneWhwLNPxK2IT02zgV26j3k=
 cloudeng.io/glean/gleansdk v0.0.0-20230315223944-dad97cce0cf4 h1:rfINnIE1Knt9O+CshkFMZP9Y2AP+8pRjHgpYtuRcnVo=
 cloudeng.io/glean/gleansdk v0.0.0-20230315223944-dad97cce0cf4/go.mod h1:EsUojSpyUx675ijIX8LzHGbEif4hBsQ0PbnUhdPur6Y=
 cloudeng.io/glean/gleansdk v0.0.0-20230315233431-3e23653bac92 h1:HvOj0ek1twF57c7dzLZRFOrFxMhVur6cwbgvYpfBQkY=
 cloudeng.io/glean/gleansdk v0.0.0-20230315233431-3e23653bac92/go.mod h1:EsUojSpyUx675ijIX8LzHGbEif4hBsQ0PbnUhdPur6Y=
+cloudeng.io/glean/gleansdk v0.0.0-20230418164646-9bd61768749b h1:8j0QHuLi+Gl6MauKIImHPfZvltTDeeDuJNRwPMr/C6g=
+cloudeng.io/glean/gleansdk v0.0.0-20230418164646-9bd61768749b/go.mod h1:EsUojSpyUx675ijIX8LzHGbEif4hBsQ0PbnUhdPur6Y=
 cloudeng.io/net v0.0.0-20230314235058-45ee90f9cff7 h1:b83zvN4eWNXQ16QylPoYel9cDZBPNS1hiRa/LgOudXo=
 cloudeng.io/net v0.0.0-20230314235058-45ee90f9cff7/go.mod h1:4TtqwU62cwzOBTm20oTBQqsJu3bNmFV8saDsJRCN21M=
 cloudeng.io/net v0.0.0-20230408225100-e6b3b9644e60 h1:HbCZgZWWLLc/lWWQkCUZKlb6dlulWWIhlno0Y2/E+2c=
@@ -46,6 +52,8 @@ cloudeng.io/webapi/operations v0.0.0-20230315172443-60f4854a6126 h1:rZIht7n7fTtn
 cloudeng.io/webapi/operations v0.0.0-20230315172443-60f4854a6126/go.mod h1:ct7/ejH+/lyXhrTeTLT07/0iNF8rghg03GWy3OgK1Nc=
 cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8 h1:CyV4UBolt99kUBuwm+QWEhONa0raRWX22sU/skx5Mk8=
 cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8/go.mod h1:hok8zW8gStnWlOObWOnlGAMb559LYeTlgsHX07tL4Do=
+cloudeng.io/webapi/operations v0.0.0-20230413233803-c159995f85f6 h1:R0Fcpklu+J0j0cshVgonfyhg5X73uVvIOicGF6jyCEA=
+cloudeng.io/webapi/operations v0.0.0-20230413233803-c159995f85f6/go.mod h1:hok8zW8gStnWlOObWOnlGAMb559LYeTlgsHX07tL4Do=
 github.com/aws/aws-sdk-go-v2 v1.17.6 h1:Y773UK7OBqhzi5VDXMi1zVGsoj+CVHs2eaC2bDsLwi0=
 github.com/aws/aws-sdk-go-v2 v1.17.6/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
 github.com/aws/aws-sdk-go-v2 v1.17.8 h1:GMupCNNI7FARX27L7GjCJM8NgivWbRgpjNI/hOQjFS8=

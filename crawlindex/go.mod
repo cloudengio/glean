@@ -8,11 +8,12 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20230408225100-e6b3b9644e60
 	cloudeng.io/errors v0.0.8
 	cloudeng.io/file v0.0.0-20230408225100-e6b3b9644e60
-	cloudeng.io/glean/config v0.0.0-20230315233431-3e23653bac92
-	cloudeng.io/glean/gleansdk v0.0.0-20230315233431-3e23653bac92
+	cloudeng.io/glean/config v0.0.0-20230419233858-002e1bf32a47
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20230418164646-9bd61768749b
+	cloudeng.io/glean/gleansdk v0.0.0-20230418164646-9bd61768749b
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/text v0.0.11
-	cloudeng.io/webapi/operations v0.0.0-20230410172045-aa7c883cebf8
+	cloudeng.io/webapi/operations v0.0.0-20230413233803-c159995f85f6
 	gopkg.in/yaml.v3 v3.0.1
 )
 
