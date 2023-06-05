@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"cloudeng.io/file"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/filewalk"
 	"cloudeng.io/glean/crawlindex/config"
@@ -53,15 +54,15 @@ func newWalker(datasource string, cfg map[content.Type]config.Conversion, docCnv
 	}
 }
 
-func (w *walker) dirs(_ context.Context, prefix string, _ *filewalk.Info, err error) (bool, []filewalk.Info, error) {
+func (w *walker) dirs(_ context.Context, prefix string, _ file.Info, err error) (bool, file.InfoList, error) {
 	if err != nil {
 		return false, nil, err
 	}
 	return w.skip.skip(prefix), nil, nil
 }
 
-func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch <-chan filewalk.Contents) ([]filewalk.Info, error) {
-	children := make([]filewalk.Info, 0, 10)
+func (w *walker) files(ctx context.Context, prefix string, _ file.Info, ch <-chan filewalk.Contents) (file.InfoList, error) {
+	children := make([]file.Info, 0, 10)
 	var req Request
 	for {
 		var contents filewalk.Contents
@@ -82,7 +83,7 @@ func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch 
 			}
 		}
 		for _, file := range contents.Files {
-			path := filepath.Join(prefix, file.Name)
+			path := filepath.Join(prefix, file.Name())
 			ctype, data, err := content.ReadObjectFile(path)
 			if err != nil {
 				fmt.Printf("failed to read file: %v: %v\n", path, err)
@@ -90,7 +91,7 @@ func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch 
 			}
 			gd, ok, err := w.convertDocument(ctx, ctype, data)
 			if err != nil {
-				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name), err)
+				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name()), err)
 				continue
 			}
 			if ok {
@@ -98,7 +99,7 @@ func (w *walker) files(ctx context.Context, prefix string, _ *filewalk.Info, ch 
 			}
 			ge, ok, err := w.convertUser(ctx, ctype, data)
 			if err != nil {
-				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name), err)
+				fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, file.Name()), err)
 				continue
 			}
 			if ok {
