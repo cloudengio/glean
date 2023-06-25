@@ -73,6 +73,7 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 		TextContent: &doc.PreprintAbstract,
 	})
 
+	gd.Author = &gleansdk.UserReferenceDefinition{}
 	gd.Author.SetName(doc.PreprintAuthors)
 	gd.Author.SetEmail(cfg.Converter.DefaultAuthor.Email)
 
@@ -81,5 +82,29 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 	gd.Permissions = &gleansdk.DocumentPermissionsDefinition{}
 	gd.Permissions.SetAllowAnonymousAccess(true)
 
+	gd.CustomProperties = []gleansdk.CustomProperty{}
+	ap := func(n, v string) {
+		gd.CustomProperties = appendCustomProp(gd.CustomProperties, n, v)
+	}
+	ap("published_journal", doc.PublishedJournal)
+	ap("published_date", doc.PublishedDate)
+	ap("published_doi", doc.PublishedDOI)
+	ap("preprint_category", doc.PreprintCategory)
+	ap("corresponding_author", doc.PreprintAuthorCorresponding)
+	ap("corresponding_author_institution", doc.PreprintAuthorCoresspondingInstitution)
 	return gd, nil
+}
+
+func appendCustomProp(cp []gleansdk.CustomProperty, name, value string) []gleansdk.CustomProperty {
+	if len(value) == 0 {
+		return cp
+	}
+	n := new(string)
+	*n = name
+	v := new(string)
+	*v = value
+	return append(cp, gleansdk.CustomProperty{
+		Name:  n,
+		Value: v,
+	})
 }
