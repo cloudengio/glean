@@ -24,6 +24,16 @@ type CrawlFlags struct {
 	biorxivcmd.CrawlFlags
 }
 
+type ScanFlags struct {
+	CommonFlags
+	biorxivcmd.ScanFlags
+}
+
+type LookupFlags struct {
+	CommonFlags
+	biorxivcmd.LookupFlags
+}
+
 type IndexFlags struct {
 	CommonFlags
 	biorxivcmd.IndexFlags
@@ -39,6 +49,16 @@ const (
       summary: crawl biorxiv/medrxiv, i.e. download article metadata and abstracts
       arguments:
         - datasource-name - the datasource to be crawled
+    - name: scan-downloaded
+      summary: scan downloaded articles
+      arguments:
+        - datasource-name - the datasource whose downloaded protocols are to be scanned
+    - name: lookup-downloaded
+      summary: lookup downloaded articles
+      arguments:
+        - datasource-name - the datasource whose downloaded articles are to be accessed
+        - DOI - the DOI of the article to be looked up
+        - ...
 `
 )
 
@@ -46,6 +66,8 @@ func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
 	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
 		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunnerAndFlags(c.crawlCmd, subcmd.MustRegisteredFlagSet(&CrawlFlags{}))
+		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunnerAndFlags(c.scanDownloadsCmd, subcmd.MustRegisteredFlagSet(&ScanFlags{}))
+		cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunnerAndFlags(c.lookupDownloadsCmd, subcmd.MustRegisteredFlagSet(&LookupFlags{}))
 		return nil
 	})
 }
@@ -68,4 +90,22 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 		return err
 	}
 	return c.Crawl(ctx, cmd.cacheRoot, fv.CrawlFlags)
+}
+
+func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
+	fv := values.(*ScanFlags)
+	c, err := cmd.new(ctx, fv.CommonFlags, fv.ScanFlags.CommonFlags, args[0])
+	if err != nil {
+		return err
+	}
+	return c.ScanDownloaded(ctx, cmd.cacheRoot, &fv.ScanFlags)
+}
+
+func (cmd *command) lookupDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
+	fv := values.(*LookupFlags)
+	c, err := cmd.new(ctx, fv.CommonFlags, fv.LookupFlags.CommonFlags, args[0])
+	if err != nil {
+		return err
+	}
+	return c.LookupDownloaded(ctx, cmd.cacheRoot, &fv.LookupFlags, args[1:]...)
 }

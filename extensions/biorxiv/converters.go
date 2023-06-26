@@ -45,7 +45,7 @@ func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg con
 	if strings.ToLower(doc.PreprintPlatform) == "medrxiv" {
 		host = "https://www.medrxiv.org"
 	}
-	gd.SetViewURL(fmt.Sprintf("%s/content/%s", host, doc.PreprintDOI))
+	gd.SetViewURL(fmt.Sprintf("%s/content/%s", host, strings.TrimSpace(doc.PreprintDOI)))
 	gd.SetContainer(doc.PreprintPlatform)
 
 	gd.SetTitle(doc.PreprintTitle)
