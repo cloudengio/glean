@@ -1,4 +1,4 @@
-module cloudeng.io/glean/extensions/benchling
+module cloudeng.io/glean/extensions/biorxiv
 
 go 1.20
 
@@ -9,7 +9,7 @@ require (
 	cloudeng.io/glean/crawlindex v0.0.0-20230605212339-87d9eaca5f42
 	cloudeng.io/glean/gleansdk v0.0.0-20230605212339-87d9eaca5f42
 	cloudeng.io/webapi/benchling v0.0.0-20230626214655-db966602bc5b
-	cloudeng.io/webapi/operations v0.0.0-20230626214655-db966602bc5b
+	cloudeng.io/webapi/biorxiv v0.0.0-20230626214655-db966602bc5b
 )
 
 require (
@@ -17,10 +17,11 @@ require (
 	cloudeng.io/errors v0.0.8 // indirect
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20230605212339-87d9eaca5f42 // indirect
 	cloudeng.io/net v0.0.0-20230626173734-59e0cb432e38 // indirect
-	cloudeng.io/os v0.0.0-20230626173734-59e0cb432e38 // indirect
+	cloudeng.io/os v0.0.0-20230515161208-f8725b1587ca // indirect
 	cloudeng.io/path v0.0.8 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
+	cloudeng.io/webapi/operations v0.0.0-20230626214655-db966602bc5b // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.27 // indirect
