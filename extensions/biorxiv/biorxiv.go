@@ -74,7 +74,7 @@ func Extension(parents ...string) gleancfg.Extension {
 
 type command struct{ cacheRoot string }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv biorxivcmd.CommonFlags, datasource string) (*biorxivcmd.Command, error) {
+func (cmd *command) new(ctx context.Context, fv CommonFlags, _ biorxivcmd.CommonFlags, datasource string) (*biorxivcmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
