@@ -17,6 +17,7 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/extensions/benchling"
+	"cloudeng.io/glean/extensions/biorxiv"
 	"cloudeng.io/glean/extensions/papersapp"
 	"cloudeng.io/glean/extensions/protocolsio"
 )
@@ -44,7 +45,7 @@ func MustDocumentConverters() *content.Registry[converters.Document] {
 		protocolsio.NewDocumentConverter(),
 		benchling.NewDocumentConverter(),
 		papersapp.NewDocumentConverter(),
-		//biorxiv.NewDocumentConverter(),
+		biorxiv.NewDocumentConverter(),
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to load document converters: %v", err))
@@ -71,7 +72,7 @@ func APIExtensions(parents ...string) []gleancfg.Extension {
 		protocolsio.Extension(parents...),
 		benchling.Extension(parents...),
 		papersapp.Extension(parents...),
-		//biorxiv.Extension(parents...),
+		biorxiv.Extension(parents...),
 	)
 	return exts
 }

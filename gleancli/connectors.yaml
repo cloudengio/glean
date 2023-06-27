@@ -1,0 +1,212 @@
+- datasource: biorxiv
+  email: cnicolaou@glean.dev
+  api_crawls:
+    biorxiv:
+      service:
+        service_url: https://api.biorxiv.org/pubs/biorxiv
+        start_date: 2000-01-01
+      rate_control:
+        tick: 1s
+        requests_per_tick: 1
+      exponential_backoff:
+        initial_delay: 30s
+        steps: 10
+        status_codes: [408]
+      cache_prefix: downloads
+      cache_checkpoint: checkpoints
+      cache_sharding_prefix_len: 3
+  cache:
+    path: $HOME/.biorxiv/cache/
+  bulk_index:
+    force_restart: true
+    force_deletion: false
+    readdir_entries: 100
+    document_request_size: 100
+  converters:
+    - from_content_types: ["api.biorxiv.org/article"]
+      default_author:
+        name: "biorxiv"
+        email: "biorxiv@altoslabs.com"
+        userid: "biorxiv"
+  datasource_config:
+    glean_instance: altos
+    name: "biorxiv"
+    displayname: "biorxiv"
+    homeurl: "https://www.biorxiv.org"
+    datasourcecategory: PUBLISHED_CONTENT
+    urlregex: "^https://www.biorxiv.org.*"
+    iconurl: "https://www.biorxiv.org/sites/default/files/images/favicon.ico"
+    icondarkurl: "https://www.biorxiv.org/sites/default/files/images/favicon.ico"
+
+- datasource: papersapp.com
+  email: cnicolaou@glean.dev
+  api_crawls:
+    papersapp:
+      service:
+        service_url: https://api.papers.ai
+        refresh_token_url: https://services.readcube.com/api/token
+        list_items_page_size: 50
+      rate_control:
+        tick: 1s
+        requests_per_tick: 2
+      exponential_backoff:
+        initial_delay: 30s
+        steps: 10
+        status_codes: [429]
+  cache:
+    path: $HOME/.papersapp/cache/
+  bulk_index:
+    force_restart: true
+    force_deletion: false
+    readdir_entries: 50
+    document_request_size: 20
+    employee_request_size: 20
+  converters:
+    - from_content_types: ["papersapp.com/item"]
+      default_author:
+        name: "papersapp"
+        email: "papersapp@altoslabs.com"
+        userid: "papersapp"
+  datasource_config:
+    glean_instance: altos
+    name: "papersapp"
+    displayname: "ReadCube"
+    homeurl: "https://app.readcube.com"
+    datasourcecategory: PUBLISHED_CONTENT
+    urlregex: "^https://app.readcube.com.*"
+    iconurl: "https://app.readcube.com/favicon.ico"
+    icondarkurl: "https://app.readcube.com/favicon.ico"
+
+- datasource: benchling.com
+  email: cnicolaou@glean.dev
+  api_crawls:
+    benchling:
+      service:
+        service_url: https://altoslabs.benchling.com/api/v2/
+        users_page_size: 50
+        users_sort: name:asc
+        entries_page_size: 50
+        entries_sort: name:asc
+        folders_page_size: 50
+        folders_sort: name:asc
+        projects_page_size: 50
+        projects_sort: modifiedAt
+      exponential_backoff:
+        initial_delay: 30s
+        steps: 10
+        status_codes: [429]
+  cache:
+    path: $HOME/.benchling/cache/
+  bulk_index:
+    force_restart: true
+    force_deletion: true
+    readdir_entries: 50
+    document_request_size: 20
+    user_request_size: 20
+  converters:
+    - from_content_types: ["benchling.com/document", "benchling/users"]
+      default_author:
+        name: "benchling"
+        email: "benchling@altoslabs.com"
+        userid: "benchling"
+  datasource_config:
+    glean_instance: altos
+    name: "benchling"
+    displayname: "Benchling"
+    homeurl: "https://altoslabs.benchling.com"
+    datasourcecategory: PUBLISHED_CONTENT
+    urlregex: "^https://altoslabs.benchling.com.*"
+    iconurl: "https://academic.bnchcdn.com/static/img/logo_250_notext.png"
+    icondarkurl: "https://academic.bnchcdn.com/static/img/logo_250_notext.png"
+
+- datasource: protocols.io
+  email: cnicolaou@glean.dev
+  api_crawls:
+    protocols.io:
+      service:
+        order_direction: asc
+        order_field: id
+        filter: public
+      cache_prefix: downloads/protocols
+      cache_checkpoint: checkpoints/protocols
+      cache_sharding_prefix_len: 1
+      incremental: true
+      exponential_backoff:
+        initial_delay: 60s
+        steps: 10
+        status_codes: [429]
+  bulk_index:
+    force_restart: true
+    force_deletion: false
+    readdir_entries: 50
+    document_request_size: 20
+  cache:
+    path: $HOME/.protocolsio/cache/
+  converters:
+    - from_content_types: ["protocols.io/protocol"]
+      default_author:
+        email: "protocolsio@altoslabs.com"
+  datasource_config:
+    glean_instance: glean-dev
+    name: "protocolsio"
+    displayname: "protocols.io"
+    homeurl: "https://www.protocols.io/view"
+    datasourcecategory: PUBLISHED_CONTENT
+    urlregex: "^https://www.protocols.io/view/.*"
+    iconurl: "https://www.protocols.io/img/protocolsio-white.ico"
+    icondarkurl: "https://www.protocols.io/img/protocolsio-white.ico"
+
+- datasource: altos-static-content
+  email: "cnicolaou@altoslabs.com"
+  crawls:
+    - name: static-content
+      depth: 10
+      seeds:
+        - s3://altos-lab-static-content/bioinformatics/index.html
+      nofollow:
+        - "^#.*"
+        - "^https://.*"
+        - "^http://.*"
+        - "^mailto:.*"
+        - "^s3://altos-lab-pubcache/.*"
+        - ".*\\.css$"
+        - ".*\\.png$"
+      rewrite:
+        - "s%(.*)/$%${1}/index.html%"
+      cache:
+        cache_prefix: "static"
+        cache_clear_before_crawl: true
+        cache_sharding_prefix_len: 1
+      download:
+        default_concurrency: 4 # 0 will default to all available CPUs
+        default_request_chan_size: 100
+        default_crawled_chan_size: 100
+        concurrency: [1, 2, 4]
+      num_extractors: 4
+      extractors: ["text/html;charset=utf-8"]
+      aws:
+        aws: true
+        aws_profile: altos-labs
+        aws_region: us-west-2
+  cache:
+    path: $HOME/.glean/altos-static
+  bulk_index:
+    force_restart: true
+    force_deletion: false
+    readdir_entries: 50
+    document_request_size: 50
+  converters:
+    - from_content_types: ["text/html;charset=utf-8"]
+      default_author:
+        email: "mkdocs@altoslabs.com"
+      view_url_rewrites:
+        - "s%^(s3://altos-lab-static-content/)(.*)%https://static.lab.altoslabs.com/${2}%"
+  datasource_config:
+    glean_instance: altos
+    name: internalDocumentation
+    displayname: "Altos Internal"
+    homeurl: "https://static.lab.altoslabs.com"
+    datasourcecategory: PUBLISHED_CONTENT
+    urlregex: "^https://static.lab.altoslabs.com/.*"
+    iconurl: ""
+    icondarkurl: ""
