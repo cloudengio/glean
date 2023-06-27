@@ -45,7 +45,7 @@ func MustDocumentConverters() *content.Registry[converters.Document] {
 		protocolsio.NewDocumentConverter(),
 		benchling.NewDocumentConverter(),
 		papersapp.NewDocumentConverter(),
-		biorxiv.NewDocumentConverter(),
+		//biorxiv.NewDocumentConverter(),
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to load document converters: %v", err))
@@ -72,7 +72,7 @@ func APIExtensions(parents ...string) []gleancfg.Extension {
 		protocolsio.Extension(parents...),
 		benchling.Extension(parents...),
 		papersapp.Extension(parents...),
-		biorxiv.Extension(parents...),
+		//biorxiv.Extension(parents...),
 	)
 	return exts
 }
