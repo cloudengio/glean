@@ -17,7 +17,6 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/extensions/benchling"
-	"cloudeng.io/glean/extensions/biorxiv"
 	"cloudeng.io/glean/extensions/papersapp"
 	"cloudeng.io/glean/extensions/protocolsio"
 )
