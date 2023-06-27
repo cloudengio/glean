@@ -24,12 +24,12 @@ func NewDocumentConverter() converters.Document {
 type docConverter struct{}
 
 func (c *docConverter) Type() content.Type {
-	return biorxiv.DocumentType
+	return biorxiv.PreprintType
 }
 
 func (c *docConverter) Convert(_ context.Context, datasourceName string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error) {
 	var gd gleansdk.DocumentDefinition
-	if ctype != biorxiv.DocumentType {
+	if ctype != biorxiv.PreprintType {
 		return gd, fmt.Errorf("api.biorxiv.org article converter: expected %v, not %v", cfg.Type, ctype)
 	}
 	var obj content.Object[biorxiv.PreprintDetail, struct{}]
