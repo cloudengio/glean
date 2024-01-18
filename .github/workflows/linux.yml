@@ -22,16 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Install tools
         run: |
           go install cloudeng.io/citools/multimod@latest
@@ -49,16 +39,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Cache modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
       - name: Install tools
         run: |
