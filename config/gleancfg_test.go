@@ -7,7 +7,7 @@ package config_test
 import (
 	"testing"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/glean/config"
 )
 
@@ -27,7 +27,7 @@ const configSpec = `
 
 func TestConfig(t *testing.T) {
 	var cfg config.Glean
-	if err := cmdutil.ParseYAMLConfigString(configSpec, &cfg); err != nil {
+	if err := cmdyaml.ParseConfigString(configSpec, &cfg); err != nil {
 		t.Fatal(err)
 	}
 	if got, want := len(cfg), 2; got != want {

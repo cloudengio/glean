@@ -7,7 +7,7 @@ package config_test
 import (
 	"testing"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/glean/crawlindex/config"
 )
 
@@ -30,7 +30,7 @@ const crawlsSpec = `
 
 func TestCrawlConfig(t *testing.T) {
 	var crawl config.Crawl
-	if err := cmdutil.ParseYAMLConfigString(crawlsSpec, &crawl); err != nil {
+	if err := cmdyaml.ParseConfigString(crawlsSpec, &crawl); err != nil {
 		t.Fatal(err)
 	}
 

@@ -7,7 +7,7 @@ package config_test
 import (
 	"testing"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/file/content"
 	"cloudeng.io/glean/crawlindex/config"
 )
@@ -26,7 +26,7 @@ const convertersSpec = `
 
 func TestConverterCfg(t *testing.T) {
 	var converters config.Converters
-	if err := cmdutil.ParseYAMLConfigString(convertersSpec, &converters); err != nil {
+	if err := cmdyaml.ParseConfigString(convertersSpec, &converters); err != nil {
 		t.Fatal(err)
 	}
 	if got, want := len(converters), 1; got != want {

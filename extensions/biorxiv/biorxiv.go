@@ -65,9 +65,9 @@ const (
 func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
 	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
-		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunnerAndFlags(c.crawlCmd, subcmd.MustRegisteredFlagSet(&CrawlFlags{}))
-		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunnerAndFlags(c.scanDownloadsCmd, subcmd.MustRegisteredFlagSet(&ScanFlags{}))
-		cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunnerAndFlags(c.lookupDownloadsCmd, subcmd.MustRegisteredFlagSet(&LookupFlags{}))
+		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
+		cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunner(c.lookupDownloadsCmd, &LookupFlags{})
 		return nil
 	})
 }

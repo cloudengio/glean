@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/subcmd"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/crawl"
@@ -119,37 +120,27 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.apiExtensions)...))
 
 	var ds Datasources
-	cmdSet.Set("datasources", "download").MustRunnerAndFlags(
-		ds.Download, subcmd.MustRegisteredFlagSet(&struct{}{}))
+	cmdSet.Set("datasources", "download").MustRunner(ds.Download, &struct{}{})
 
-	cmdSet.Set("datasources", "register").MustRunnerAndFlags(
-		ds.Register, subcmd.MustRegisteredFlagSet(&datasources.Flags{}))
+	cmdSet.Set("datasources", "register").MustRunner(ds.Register, &datasources.Flags{})
 
-	cmdSet.Set("datasources", "show-config").MustRunnerAndFlags(
-		ds.ShowConfig, subcmd.MustRegisteredFlagSet(&struct{}{}))
+	cmdSet.Set("datasources", "show-config").MustRunner(ds.ShowConfig, &struct{}{})
 
 	cc := Crawl{options: options}
-	cmdSet.Set("crawl", "run").MustRunnerAndFlags(
-		cc.Run, subcmd.MustRegisteredFlagSet(&crawl.Flags{}))
+	cmdSet.Set("crawl", "run").MustRunner(cc.Run, &crawl.Flags{})
 
 	idx := Index{options: options}
-	cmdSet.Set("index", "bulk").MustRunnerAndFlags(
-		idx.bulk, subcmd.MustRegisteredFlagSet(&index.BulkFlags{}))
+	cmdSet.Set("index", "bulk").MustRunner(idx.bulk, &index.BulkFlags{})
 
-	cmdSet.Set("index", "stats").MustRunnerAndFlags(
-		idx.stats, subcmd.MustRegisteredFlagSet(&index.StatsFlags{}))
+	cmdSet.Set("index", "stats").MustRunner(idx.stats, &index.StatsFlags{})
 
-	cmdSet.Set("index", "query").MustRunnerAndFlags(
-		idx.query, subcmd.MustRegisteredFlagSet(&index.QueryFlags{}))
+	cmdSet.Set("index", "query").MustRunner(idx.query, &index.QueryFlags{})
 
-	cmdSet.Set("index", "delete").MustRunnerAndFlags(
-		idx.delete, subcmd.MustRegisteredFlagSet(&index.DeleteFlags{}))
+	cmdSet.Set("index", "delete").MustRunner(idx.delete, &index.DeleteFlags{})
 
-	cmdSet.Set("index", "delete-all").MustRunnerAndFlags(
-		idx.deleteAll, subcmd.MustRegisteredFlagSet(&index.DeleteAllFlags{}))
+	cmdSet.Set("index", "delete-all").MustRunner(idx.deleteAll, &index.DeleteAllFlags{})
 
-	cmdSet.Set("index", "process-now").MustRunnerAndFlags(
-		idx.processNow, subcmd.MustRegisteredFlagSet(&index.ProcessNowFlags{}))
+	cmdSet.Set("index", "process-now").MustRunner(idx.processNow, &index.ProcessNowFlags{})
 
 	cmdSet.MustAddExtensions()
 
@@ -170,7 +161,7 @@ func mainWrapper(ctx context.Context, loadConfig bool, cmdRunner func(ctx contex
 	cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
 
 	if loadConfig {
-		err := cmdutil.ParseYAMLConfigFile(ctx, globalFlags.Config, &globalConfig)
+		err := cmdyaml.ParseConfigFile(ctx, globalFlags.Config, &globalConfig)
 		if err != nil {
 			if !errors.Is(err, os.ErrNotExist) {
 				return err
