@@ -26,11 +26,11 @@ require (
 	cloudeng.io/path v0.0.8 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
-	cloudeng.io/webapi/benchling v0.0.0-20230830005306-7a8f83fd22c4 // indirect
-	cloudeng.io/webapi/biorxiv v0.0.0-20230830005306-7a8f83fd22c4 // indirect
-	cloudeng.io/webapi/operations v0.0.0-20230830005306-7a8f83fd22c4 // indirect
-	cloudeng.io/webapi/papersapp v0.0.0-20230830005306-7a8f83fd22c4 // indirect
-	cloudeng.io/webapi/protocolsio v0.0.0-20230830005306-7a8f83fd22c4 // indirect
+	cloudeng.io/webapi/benchling v0.0.0-20240118171000-2abe3e9d32dd // indirect
+	cloudeng.io/webapi/biorxiv v0.0.0-20240118171000-2abe3e9d32dd // indirect
+	cloudeng.io/webapi/operations v0.0.0-20240118171000-2abe3e9d32dd // indirect
+	cloudeng.io/webapi/papersapp v0.0.0-20240118171000-2abe3e9d32dd // indirect
+	cloudeng.io/webapi/protocolsio v0.0.0-20240118171000-2abe3e9d32dd // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/CloudyKit/jet/v6 v6.2.0 // indirect
@@ -41,8 +41,8 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.5.4 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.26.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.16.15 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.11 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.10 // indirect
@@ -53,7 +53,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.16.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.48.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.18.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.18.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.21.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
@@ -108,7 +108,6 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect

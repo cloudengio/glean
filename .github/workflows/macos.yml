@@ -10,7 +10,7 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [">=1.20.2"]
+        go-version: ["1.21x"]
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:

@@ -10,8 +10,8 @@ require (
 	cloudeng.io/glean/config v0.0.0-20230627174325-bb52a348873f
 	cloudeng.io/glean/crawlindex v0.0.0-20230627174325-bb52a348873f
 	cloudeng.io/glean/gleansdk v0.0.0-20230627174325-bb52a348873f
-	cloudeng.io/webapi/benchling v0.0.0-20230830005306-7a8f83fd22c4
-	cloudeng.io/webapi/operations v0.0.0-20230830005306-7a8f83fd22c4
+	cloudeng.io/webapi/benchling v0.0.0-20240118171000-2abe3e9d32dd
+	cloudeng.io/webapi/operations v0.0.0-20240118171000-2abe3e9d32dd
 )
 
 require (
@@ -30,15 +30,15 @@ require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.26.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.16.15 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.11 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.10.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.10 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.18.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.18.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.21.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
@@ -89,7 +89,6 @@ require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
