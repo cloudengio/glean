@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/file/content"
 	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
@@ -73,7 +73,7 @@ func DatasourceForName(ctx context.Context, filename string, name string) (Datas
 		return Datasource{}, fmt.Errorf("no datasource config file specified")
 	}
 	var cfg Datasources
-	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
+	if err := cmdyaml.ParseConfigFile(ctx, filename, &cfg); err != nil {
 		return Datasource{}, err
 	}
 	ds, ok := cfg.ConfigForName(name)

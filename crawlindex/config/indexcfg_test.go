@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/glean/crawlindex/config"
 )
 
@@ -22,7 +22,7 @@ const bulkIndexSpec = `
 
 func TestBulkIndexConfig(t *testing.T) {
 	var index config.BulkIndex
-	if err := cmdutil.ParseYAMLConfigString(bulkIndexSpec, &index); err != nil {
+	if err := cmdyaml.ParseConfigString(bulkIndexSpec, &index); err != nil {
 		t.Fatal(err)
 	}
 
@@ -45,7 +45,7 @@ const incrementalIndexSpec = `
 
 func TestIncrementalIndexConfig(t *testing.T) {
 	var index config.IncrementalIndex
-	if err := cmdutil.ParseYAMLConfigString(incrementalIndexSpec, &index); err != nil {
+	if err := cmdyaml.ParseConfigString(incrementalIndexSpec, &index); err != nil {
 		t.Fatal(err)
 	}
 	if got, want := index.DeletionDelay, 48*time.Hour; got != want {
@@ -68,7 +68,7 @@ type bothIndices struct {
 
 func TestIndexModeSelection(t *testing.T) {
 	var index bothIndices
-	if err := cmdutil.ParseYAMLConfigString(bulkOnly, &index); err != nil {
+	if err := cmdyaml.ParseConfigString(bulkOnly, &index); err != nil {
 		t.Fatal(err)
 	}
 
@@ -88,7 +88,7 @@ func TestIndexModeSelection(t *testing.T) {
 	}
 
 	index = bothIndices{}
-	if err := cmdutil.ParseYAMLConfigString(incrementalOnly, &index); err != nil {
+	if err := cmdyaml.ParseConfigString(incrementalOnly, &index); err != nil {
 		t.Fatal(err)
 	}
 	if got, want := index.BulkIndex, (*config.BulkIndex)(nil); !reflect.DeepEqual(got, want) {

@@ -7,7 +7,7 @@ package config_test
 import (
 	"testing"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/glean/config"
 )
 
@@ -24,7 +24,7 @@ icondarkurl: "dark.jpg"
 
 func TestDataSource(t *testing.T) {
 	var ds config.DatasourceConfig
-	if err := cmdutil.ParseYAMLConfigString(datasourcesSpec, &ds); err != nil {
+	if err := cmdyaml.ParseConfigString(datasourcesSpec, &ds); err != nil {
 		t.Fatal(err)
 	}
 

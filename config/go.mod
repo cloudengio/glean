@@ -1,21 +1,23 @@
 module cloudeng.io/glean/config
 
-go 1.20
+go 1.21
+
+toolchain go1.21.6
 
 require (
-	cloudeng.io/cmdutil v0.0.0-20230626173734-59e0cb432e38
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20230605212339-87d9eaca5f42
-	cloudeng.io/glean/gleansdk v0.0.0-20230605212339-87d9eaca5f42
+	cloudeng.io/cmdutil v0.0.0-20240117000235-f25d4d69956f
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20230627174325-bb52a348873f
+	cloudeng.io/glean/gleansdk v0.0.0-20230627174325-bb52a348873f
 )
 
 require (
-	cloudeng.io/file v0.0.0-20230626173734-59e0cb432e38 // indirect
+	cloudeng.io/file v0.0.0-20240117000235-f25d4d69956f // indirect
 	cloudeng.io/path v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	golang.org/x/net v0.11.0 // indirect
-	golang.org/x/oauth2 v0.9.0 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
+	golang.org/x/oauth2 v0.16.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
+	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

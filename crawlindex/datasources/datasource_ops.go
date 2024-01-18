@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/cmdyaml"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/internal"
@@ -56,7 +56,7 @@ func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error {
 
 func (d *T) ShowConfig(ctx context.Context, filename string) error {
 	var cfg config.Datasources
-	if err := cmdutil.ParseYAMLConfigFile(ctx, filename, &cfg); err != nil {
+	if err := cmdyaml.ParseConfigFile(ctx, filename, &cfg); err != nil {
 		return err
 	}
 	buf, err := yaml.Marshal(cfg)

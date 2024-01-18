@@ -13,6 +13,7 @@ import (
 
 	"cloudeng.io/errors"
 	"cloudeng.io/file/content"
+	"cloudeng.io/file/filewalk/localfs"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
@@ -73,9 +74,12 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		return fmt.Errorf("no converters specified/found in config file")
 	}
 
+	fs := localfs.New() // TODO(cnicolaou): allow for use of S3 etc.
+
 	checkpointDirs := apicrawlcmd.CheckpointPaths(idx.Config.APICrawls)
 	walker := newWalker(
 		idx.Config.CustomDatasourceConfig.GetName(),
+		fs,
 		cnvmap,
 		idx.DocumentConverters,
 		idx.UserConverters,

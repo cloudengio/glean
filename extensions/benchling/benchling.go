@@ -50,8 +50,8 @@ const (
 func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
 	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
-		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunnerAndFlags(c.crawlCmd, subcmd.MustRegisteredFlagSet(&CrawlFlags{}))
-		cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunnerAndFlags(c.indexCmd, subcmd.MustRegisteredFlagSet(&IndexFlags{}))
+		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+		cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
 		return nil
 	})
 }

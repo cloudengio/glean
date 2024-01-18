@@ -38,7 +38,7 @@ func TestConverter(t *testing.T) {
 	modTime := time.Now()
 	dl := download.Result{
 		Name:     "foo",
-		FileInfo: file.NewInfo("foo", 100, 0600, modTime, file.InfoOption{}),
+		FileInfo: file.NewInfo("foo", 100, 0600, modTime, file.XAttr{}),
 	}
 	var obj content.Object[[]byte, download.Result]
 	obj.Value = []byte(htmlExample)
