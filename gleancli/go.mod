@@ -9,7 +9,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20240117000235-f25d4d69956f
 	cloudeng.io/file v0.0.0-20240117000235-f25d4d69956f
 	cloudeng.io/glean/config v0.0.0-20230627174325-bb52a348873f
-	cloudeng.io/glean/crawlindex v0.0.0-20230627174325-bb52a348873f
+	cloudeng.io/glean/crawlindex v0.0.0-20240118214222-9977032eb357
 	cloudeng.io/glean/extensions/benchling v0.0.0-20230627174325-bb52a348873f
 	cloudeng.io/glean/extensions/biorxiv v0.0.0-20230627174325-bb52a348873f
 	cloudeng.io/glean/extensions/papersapp v0.0.0-20230627174325-bb52a348873f

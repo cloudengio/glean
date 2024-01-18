@@ -16,6 +16,8 @@ cloudeng.io/glean/config v0.0.0-20230627174325-bb52a348873f h1:rRUB9I0LhJ8qNU1IH
 cloudeng.io/glean/config v0.0.0-20230627174325-bb52a348873f/go.mod h1:o/J04d47/AIEPrEbY4DiN3KbZN6T5/h2ynf4Ur2kJpI=
 cloudeng.io/glean/crawlindex v0.0.0-20230627174325-bb52a348873f h1:P/rZvSHN03rc/DNwyiigU1VnpdrUwelJDD2gKUNi2fc=
 cloudeng.io/glean/crawlindex v0.0.0-20230627174325-bb52a348873f/go.mod h1:wlvcqF2oQJcZk9m7xekb76Taul7rx4IjuV4dB0PyHlU=
+cloudeng.io/glean/crawlindex v0.0.0-20240118214222-9977032eb357 h1:d+OB/gfpPF7StIgxax7wpf0p/AemU1rP96gB4T2SNJU=
+cloudeng.io/glean/crawlindex v0.0.0-20240118214222-9977032eb357/go.mod h1:38H/fOjOuwM79sqNA4LnqmeB3Mau+NmCKoqXv6Li6bs=
 cloudeng.io/glean/extensions/benchling v0.0.0-20230627174325-bb52a348873f h1:vF85r0rggichZ0+QHahzogQUbeAdESM053VQWFHieBs=
 cloudeng.io/glean/extensions/benchling v0.0.0-20230627174325-bb52a348873f/go.mod h1:Af49S1MV06nkdT1g8B+TebtEODplhv0KMV8QrOQ6rhw=
 cloudeng.io/glean/extensions/biorxiv v0.0.0-20230627174325-bb52a348873f h1:KRjYLIZDkGaQedHuBem5mkLcgTvyujpOJQ6jVKHCnKA=
