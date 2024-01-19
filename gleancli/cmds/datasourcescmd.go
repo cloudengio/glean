@@ -6,11 +6,17 @@ package cmds
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
+	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/datasources"
 )
 
-type Datasources struct{}
+type Datasources struct {
+	gleanCfgFile string
+	extensions   []gleancfg.Extension
+}
 
 func (ds Datasources) Download(ctx context.Context, _ interface{}, args []string) error {
 	d := datasources.T{GleanConfig: globalConfig}
@@ -25,4 +31,15 @@ func (ds Datasources) Register(ctx context.Context, values interface{}, args []s
 func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []string) error {
 	d := datasources.T{GleanConfig: globalConfig}
 	return d.ShowConfig(ctx, args[0])
+}
+
+func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, args []string) error {
+	d := datasources.T{GleanConfig: globalConfig}
+	var out strings.Builder
+
+	if err := d.ExplainConfig(ctx, &out, ds.gleanCfgFile, "connectors.yaml", ds.extensions); err != nil {
+		return err
+	}
+	fmt.Println(out.String())
+	return nil
 }

@@ -18,13 +18,13 @@ type GleanFlags struct {
 }
 
 type Glean []struct {
-	Name string `yaml:"name"`
+	Name string `yaml:"name" cmd:"name of the glean instance"`
 	Auth struct {
-		BearerToken       string `yaml:"indexing_token"`
-		ClientBearerToken string `yaml:"client_token"`
+		BearerToken       string `yaml:"indexing_token" cmd:"indexing token for the glean instance"`
+		ClientBearerToken string `yaml:"client_token" cmd:"client bearer token for the glean instance"`
 	}
 	API struct {
-		Domain string `yaml:"domain"`
+		Domain string `yaml:"domain" cmd:"domain for the glean instance"`
 	}
 }
 

@@ -47,6 +47,8 @@ commands:
         summary: load and display the specified config file
         arguments:
           - datasource-config-file
+      - name: explain-config
+        summary: explain the configuration options for configured connectors
 
   - name: crawl
     summary: crawl a web site or filesystem
@@ -119,12 +121,16 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
 		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.apiExtensions)...))
 
-	var ds Datasources
+	ds := Datasources{
+		extensions: cmdExtensions,
+	}
 	cmdSet.Set("datasources", "download").MustRunner(ds.Download, &struct{}{})
 
 	cmdSet.Set("datasources", "register").MustRunner(ds.Register, &datasources.Flags{})
 
 	cmdSet.Set("datasources", "show-config").MustRunner(ds.ShowConfig, &struct{}{})
+
+	cmdSet.Set("datasources", "explain-config").MustRunner(ds.ExplainConfig, &struct{}{})
 
 	cc := Crawl{options: options}
 	cmdSet.Set("crawl", "run").MustRunner(cc.Run, &crawl.Flags{})
