@@ -80,7 +80,7 @@ func explain(out *strings.Builder, indent int, cfg any) error {
 	return nil
 }
 
-func (d *T) ExplainConfig(ctx context.Context, out *strings.Builder,
+func (d *T) ExplainConfig(_ context.Context, out *strings.Builder,
 	gleanCfgGile, connectorsCfgFile string,
 	extensions []gleancfg.Extension) error {
 	var errs errors.M

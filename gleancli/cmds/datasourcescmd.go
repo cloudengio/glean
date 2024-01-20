@@ -33,7 +33,7 @@ func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []stri
 	return d.ShowConfig(ctx, args[0])
 }
 
-func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, args []string) error {
+func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, _ []string) error {
 	d := datasources.T{GleanConfig: globalConfig}
 	var out strings.Builder
 
