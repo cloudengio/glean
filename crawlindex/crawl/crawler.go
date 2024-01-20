@@ -30,7 +30,7 @@ type Flags struct {
 type Crawler struct {
 	GleanConfig gleancfg.Glean
 	Extractors  func() map[content.Type]outlinks.Extractor
-	FSForCrawl  func(config.Crawl) map[string]file.FSFactory
+	FSForCrawl  func(config.Crawl) (map[string]file.FSFactory, error)
 }
 
 func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
@@ -57,7 +57,11 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 			Extractors: c.Extractors,
 		}
 		g.Go(func() error {
-			return crawler.Run(ctx, c.FSForCrawl(crawl), cachePath, fv.Outlinks, fv.Progress)
+			fsmap, err := c.FSForCrawl(crawl)
+			if err != nil {
+				return err
+			}
+			return crawler.Run(ctx, fsmap, cachePath, fv.Outlinks, fv.Progress)
 		})
 	}
 	return g.Wait()

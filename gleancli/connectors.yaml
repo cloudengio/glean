@@ -184,7 +184,8 @@
         concurrency: [1, 2, 4]
       num_extractors: 4
       extractors: ["text/html;charset=utf-8"]
-      aws:
+      service_name: "s3"
+      service_config:
         aws: true
         aws_profile: altos-labs
         aws_region: us-west-2

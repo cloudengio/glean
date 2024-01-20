@@ -18,7 +18,7 @@ type Option func(o *options)
 type options struct {
 	apiExtensions      []gleancfg.Extension
 	extractors         func() map[content.Type]outlinks.Extractor
-	fsForCrawl         func(cfg config.Crawl) map[string]file.FSFactory
+	fsForCrawl         func(cfg config.Crawl) (map[string]file.FSFactory, error)
 	documentConverters *content.Registry[converters.Document]
 	userConverters     *content.Registry[converters.User]
 	gleanConfig        gleancfg.Glean
@@ -31,7 +31,7 @@ func WithAPIExtensions(extensions []gleancfg.Extension) Option {
 	}
 }
 
-func WithFSForCrawl(fsForCrawl func(cfg config.Crawl) map[string]file.FSFactory) Option {
+func WithFSForCrawl(fsForCrawl func(cfg config.Crawl) (map[string]file.FSFactory, error)) Option {
 	return func(o *options) {
 		o.fsForCrawl = fsForCrawl
 	}
