@@ -609,6 +609,8 @@ cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8 h1:Ms26Vg8jRyE/8mzccQjAfG0IR
 cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8/go.mod h1:dF2K5KmbqgXCPF0K2s4zF5LDGPukIJLDiinHqdnnX6g=
 cloudeng.io/glean/config v0.0.0-20240118220623-422a3624243c h1:mvXQ76RDJK53MHhuxMiZHiMwIEEoEbOBfgDMb2MGwIo=
 cloudeng.io/glean/config v0.0.0-20240118220623-422a3624243c/go.mod h1:qz891yaO73Hj1ghOn5n2NrArXAR7XxEtHKMiqRkqIO0=
+cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1 h1:VbfUrByUxeK3RGBIaGDYeVAxIUzy2ZsZt/aH/9Q0Jm4=
+cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1/go.mod h1:lGS8WwvzS2IkFBXlJPpp6b3cQzoK3j0XSpAvc7q7jBc=
 cloudeng.io/glean/gleanclientsdk v0.0.0-20240118220623-422a3624243c h1:POhZalqSegHWLScmNX8Zuy5kJHCvypQucikw4akXg9M=
 cloudeng.io/glean/gleanclientsdk v0.0.0-20240118220623-422a3624243c/go.mod h1:os35RZM2vFpDLqL7cAt+DESUd8PRgstp8hrNBPRvGSQ=
 cloudeng.io/glean/gleansdk v0.0.0-20240118220623-422a3624243c h1:8WdhFBn6S7AvbkjzxARqwxXoOeThe0dN5JGxju3uOuI=

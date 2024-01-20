@@ -8,7 +8,7 @@ require (
 	cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/cmdutil v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8
-	cloudeng.io/glean/config v0.0.0-20240118220623-422a3624243c
+	cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1
 	cloudeng.io/glean/crawlindex v0.0.0-20240118220623-422a3624243c
 	cloudeng.io/glean/extensions/benchling v0.0.0-20240118220623-422a3624243c
 	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240118220623-422a3624243c

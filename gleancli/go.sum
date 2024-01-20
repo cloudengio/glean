@@ -609,6 +609,8 @@ cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8 h1:Ms26Vg8jRyE/8mzccQjAfG0IR
 cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8/go.mod h1:dF2K5KmbqgXCPF0K2s4zF5LDGPukIJLDiinHqdnnX6g=
 cloudeng.io/glean/config v0.0.0-20240118220623-422a3624243c h1:mvXQ76RDJK53MHhuxMiZHiMwIEEoEbOBfgDMb2MGwIo=
 cloudeng.io/glean/config v0.0.0-20240118220623-422a3624243c/go.mod h1:qz891yaO73Hj1ghOn5n2NrArXAR7XxEtHKMiqRkqIO0=
+cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1 h1:VbfUrByUxeK3RGBIaGDYeVAxIUzy2ZsZt/aH/9Q0Jm4=
+cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1/go.mod h1:lGS8WwvzS2IkFBXlJPpp6b3cQzoK3j0XSpAvc7q7jBc=
 cloudeng.io/glean/crawlindex v0.0.0-20240118220623-422a3624243c h1:ADzIqYmb473OdlJ//gtnvU9pSPHYAyh+QvGc2zw8RSI=
 cloudeng.io/glean/crawlindex v0.0.0-20240118220623-422a3624243c/go.mod h1:38H/fOjOuwM79sqNA4LnqmeB3Mau+NmCKoqXv6Li6bs=
 cloudeng.io/glean/extensions/benchling v0.0.0-20240118220623-422a3624243c h1:YsC0mUlLXCqS/XnF8M3s6Kbdj/Vr/+eTq6Cg0O6K5Tk=
