@@ -138,7 +138,7 @@ require (
 	cloudeng.io/debug v0.0.0-20231026032435-4ad1389db593 // indirect
 	cloudeng.io/errors v0.0.9 // indirect
 	cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8 // indirect
-	cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1 // indirect
+	cloudeng.io/glean/config v0.0.0-20240120193826-765aa66815f0 // indirect
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240118220623-422a3624243c // indirect
 	cloudeng.io/net v0.0.0-20231219174858-fd89ad37703c // indirect
 	cloudeng.io/os v0.0.0-20231219174858-fd89ad37703c // indirect

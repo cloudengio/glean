@@ -10,7 +10,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/errors v0.0.9
 	cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8
-	cloudeng.io/glean/config v0.0.0-20240120023638-f0ff6d7139a1
+	cloudeng.io/glean/config v0.0.0-20240120193826-765aa66815f0
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240118220623-422a3624243c
 	cloudeng.io/glean/gleansdk v0.0.0-20240118220623-422a3624243c
 	cloudeng.io/sync v0.0.8
