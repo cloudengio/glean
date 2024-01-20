@@ -10,10 +10,10 @@ require (
 	cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/glean/config v0.0.0-20240120193826-765aa66815f0
 	cloudeng.io/glean/crawlindex v0.0.0-20240118220623-422a3624243c
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240118220623-422a3624243c
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240118220623-422a3624243c
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240118220623-422a3624243c
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240118220623-422a3624243c
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240120202042-b49808fffd4a
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240120202042-b49808fffd4a
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240120202042-b49808fffd4a
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240120202042-b49808fffd4a
 )
 
 require (
