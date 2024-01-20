@@ -27,30 +27,35 @@ type FileFlags struct {
 // Datasource represents a single datasource or corpus to be crawled and
 // indexed.
 type Datasource struct {
-	Datasource string // Datasource name.
+	// Datasource name.
+	Datasource string `yaml:"datasource" cmd:"name of the datasource"`
 
-	Crawls []Crawl `yaml:"crawls,omitempty"`
+	Crawls []Crawl `yaml:"crawls,omitempty" cmd:"http crawls to run for this datasource"`
 	// File/download orientend Crawls that obtain data for this datasource.
 
 	// API based 'crawls' that obtain data for this datasource.
-	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty"`
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty" cmd:"api crawls to run for this datasource"`
 
 	// Bulk index configuration for this datasource.
-	*BulkIndex `yaml:"bulk_index,omitempty"`
+	*BulkIndex `yaml:"bulk_index,omitempty" cmd:"bulk index configuration for this datasource"`
 	// Incremental index configuration for this datasource.
-	*IncrementalIndex `yaml:"incremental_index,omitempty"`
+	*IncrementalIndex `yaml:"incremental_index,omitempty" cmd:"incremental index configuration for this datasource"`
 
-	Cache                  // Cache configuration for this datasource.
-	Converters []Converter // Converters (from download.Result to Glean document) configuration.
+	// Cache configuration for this datasource.
+	Cache `yaml:"cache,omitempty" cmd:"path to the cache for this datasource"`
+
+	// Converters (from download.Result to Glean document) configuration.
+	Converters []Converter `yaml:"converters,omitempty" cmd:"converters for this datasource"`
 
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	config.DatasourceConfig `yaml:"datasource_config"`
+	config.DatasourceConfig `yaml:"datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
 }
 
 // Cache represents a cache configuration.
 type Cache struct {
-	Path string // Path is the location of the cache for this datasource.
+	// Path is the location of the cache for this datasource.
+	Path string `yaml:"path,omitempty" cmd:"path to the cache for this datasource"`
 }
 
 // Datasources represents a list of named datasources.

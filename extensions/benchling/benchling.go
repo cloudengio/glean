@@ -49,11 +49,13 @@ const (
 
 func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
-		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-		cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
-		return nil
-	})
+	return gleancfg.NewExtension(cmdName, cmdSpec,
+		benchlingcmd.Auth{}, benchlingcmd.Service{},
+		func(cmdSet *subcmd.CommandSetYAML) error {
+			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+			cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
+			return nil
+		})
 }
 
 type command struct{ cacheRoot string }

@@ -47,11 +47,13 @@ const (
 
 func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
-		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanCmd, &ScanFlags{})
-		return nil
-	})
+	return gleancfg.NewExtension(cmdName, cmdSpec,
+		papersappcmd.Auth{}, papersappcmd.Service{},
+		func(cmdSet *subcmd.CommandSetYAML) error {
+			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+			cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanCmd, &ScanFlags{})
+			return nil
+		})
 }
 
 type command struct{ cacheRoot string }

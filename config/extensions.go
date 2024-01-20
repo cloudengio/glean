@@ -16,11 +16,15 @@ type Extension interface {
 	subcmd.Extension
 	SetGleanConfig(*Glean)
 	GleanConfig() *Glean
+	AuthConfigType() any
+	ServiceConfigType() any
 }
 
 type extension struct {
 	subcmd.Extension
-	cfg *Glean
+	cfg            *Glean
+	authCfgType    any
+	serviceCfgType any
 }
 
 func (e *extension) SetGleanConfig(cfg *Glean) {
@@ -31,8 +35,18 @@ func (e *extension) GleanConfig() *Glean {
 	return e.cfg
 }
 
-func NewExtension(name, spec string, appendFn func(cmdSet *subcmd.CommandSetYAML) error) Extension {
+func (e *extension) AuthConfigType() any {
+	return e.authCfgType
+}
+
+func (e *extension) ServiceConfigType() any {
+	return e.serviceCfgType
+}
+
+func NewExtension(name, spec string, authCfgType, serviceCfgType any, appendFn func(cmdSet *subcmd.CommandSetYAML) error) Extension {
 	return &extension{
-		Extension: subcmd.NewExtension(name, spec, appendFn),
+		Extension:      subcmd.NewExtension(name, spec, appendFn),
+		serviceCfgType: serviceCfgType,
+		authCfgType:    authCfgType,
 	}
 }

@@ -64,12 +64,14 @@ const (
 
 func Extension(parents ...string) gleancfg.Extension {
 	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
-		cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-		cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
-		cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunner(c.lookupDownloadsCmd, &LookupFlags{})
-		return nil
-	})
+	return gleancfg.NewExtension(cmdName, cmdSpec,
+		biorxivcmd.Auth{}, biorxivcmd.Service{},
+		func(cmdSet *subcmd.CommandSetYAML) error {
+			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+			cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
+			cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunner(c.lookupDownloadsCmd, &LookupFlags{})
+			return nil
+		})
 }
 
 type command struct{ cacheRoot string }
