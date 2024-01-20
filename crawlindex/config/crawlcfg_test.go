@@ -7,6 +7,7 @@ package config_test
 import (
 	"testing"
 
+	"cloudeng.io/aws/awsconfig"
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/glean/crawlindex/config"
 )
@@ -23,7 +24,8 @@ const crawlsSpec = `
     default_downloads_chan_size: 100
     per_depth_concurrency: [1, 2, 4]
 
-  aws:
+  service_name: aws
+  service_config:
     aws: true
     aws_region: us-east-1
 `
@@ -42,10 +44,18 @@ func TestCrawlConfig(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := crawl.AWS.AWS, true; got != want {
+	if got, want := crawl.ServiceName, "aws"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
-	if got, want := crawl.AWS.AWSRegion, "us-east-1"; got != want {
+
+	var awscfg awsconfig.AWSFlags
+	if err := crawl.ServiceConfig.Decode(&awscfg); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := awscfg.AWS, true; got != want {
+		t.Errorf("got %v, want %v", got, want)
+	}
+	if got, want := awscfg.AWSRegion, "us-east-1"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 

@@ -598,6 +598,8 @@ cloudeng.io/algo v0.0.0-20240119231719-f985f7cde7e8 h1:ruGPPHNXum+J8y1q/CDU1NlfA
 cloudeng.io/algo v0.0.0-20240119231719-f985f7cde7e8/go.mod h1:Jb27copqciuPx3O2G3ZlM6PhcPzF//K2HwsdrRCoDWE=
 cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8 h1:XBls4t3H3i+b68fLb6Kj020GXb6p6ia7eqyix4rbqvI=
 cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8/go.mod h1:NwMm/5MQ6NpHT/JBxkpUItn8CBp1LWvYWXSlVCwgCwg=
+cloudeng.io/aws v0.0.0-20240120234157-7e30acc5437f h1:FuqixaLDlrx0tRi5XSnYaGNc9pi0qJAlECRhgKgZjDo=
+cloudeng.io/aws v0.0.0-20240120234157-7e30acc5437f/go.mod h1:NwMm/5MQ6NpHT/JBxkpUItn8CBp1LWvYWXSlVCwgCwg=
 cloudeng.io/cmdutil v0.0.0-20240119231719-f985f7cde7e8 h1:AQ+3/QJ+ERKX5lR8LPvgjDhj3kdOZh7ReHZxlQBtWWs=
 cloudeng.io/cmdutil v0.0.0-20240119231719-f985f7cde7e8/go.mod h1:bpwFzmwjrw07Hg8zEP1CjfpJqII475r2j4GYMjLQN/E=
 cloudeng.io/debug v0.0.0-20231026032435-4ad1389db593 h1:WEFkomseqbtoV3sDgMh25BeMUjajGB3nFRUbV1X/auo=

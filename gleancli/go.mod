@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8
+	cloudeng.io/aws v0.0.0-20240120234157-7e30acc5437f
 	cloudeng.io/cmdutil v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/file v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/glean/config v0.0.0-20240120193826-765aa66815f0
