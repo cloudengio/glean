@@ -12,6 +12,6 @@ import (
 // Crawl represents a single crawl that contributes data to a datasource.
 type Crawl struct {
 	crawlcmd.Config `yaml:",inline" cmd:"crawl configuration"`
-	ServiceName     string    `yaml:"service_name" cmd:"name of service to crawl, eg. s3"`
-	ServiceConfig   yaml.Node `yaml:"service_config" cmd:"service specific configuration"`
+	ServiceName     string    `yaml:"service_name" cmd:"name of service to crawl, eg. s3/aws"`
+	ServiceConfig   yaml.Node `yaml:"service_config" cmd:"service specific configuration, eg. cloudeng.io/aws/awsconfig.AWSFlags"`
 }

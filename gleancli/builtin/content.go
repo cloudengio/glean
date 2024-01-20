@@ -33,7 +33,7 @@ func Extractors() map[content.Type]outlinks.Extractor {
 // FSForCrawl returns a map of filesystem schemes to filesystem factories
 // for use when creating crawling requests.
 func FSForCrawl(cfg config.Crawl) (map[string]file.FSFactory, error) {
-	if cfg.ServiceName == "s3" {
+	if cfg.ServiceName == "s3" || cfg.ServiceName == "aws" {
 		var awscfg awsconfig.AWSFlags
 		if err := cfg.ServiceConfig.Decode(&awscfg); err != nil {
 			return nil, err
