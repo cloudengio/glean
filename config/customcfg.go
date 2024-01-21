@@ -11,6 +11,6 @@ import (
 // DatasourceConfig represents the configuration of the datasource with
 // Glean's API.
 type DatasourceConfig struct {
-	GleanInstance                   string `yaml:"glean_instance"`
-	gleansdk.CustomDatasourceConfig `yaml:",inline"`
+	GleanInstance                   string `yaml:"glean_instance" cmd:"glean instance to use"`
+	gleansdk.CustomDatasourceConfig `yaml:",inline" cmd:"glean custom datasource configuration"`
 }

@@ -9,6 +9,7 @@ package builtin
 import (
 	"fmt"
 
+	"cloudeng.io/aws/awsconfig"
 	"cloudeng.io/aws/s3fs"
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
@@ -31,10 +32,17 @@ func Extractors() map[content.Type]outlinks.Extractor {
 
 // FSForCrawl returns a map of filesystem schemes to filesystem factories
 // for use when creating crawling requests.
-func FSForCrawl(cfg config.Crawl) map[string]file.FSFactory {
-	return map[string]file.FSFactory{
-		"s3": &s3fs.Factory{Config: cfg.AWS},
+func FSForCrawl(cfg config.Crawl) (map[string]file.FSFactory, error) {
+	if cfg.ServiceName == "s3" || cfg.ServiceName == "aws" {
+		var awscfg awsconfig.AWSFlags
+		if err := cfg.ServiceConfig.Decode(&awscfg); err != nil {
+			return nil, err
+		}
+		return map[string]file.FSFactory{
+			"s3": &s3fs.Factory{Config: awscfg},
+		}, nil
 	}
+	return nil, nil
 }
 
 // MustDocumentConverters returns the available converters,
