@@ -5,32 +5,32 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/aws v0.0.0-20240120234157-7e30acc5437f
-	cloudeng.io/cmdutil v0.0.0-20240120234157-7e30acc5437f
-	cloudeng.io/file v0.0.0-20240120234157-7e30acc5437f
-	cloudeng.io/glean/config v0.0.0-20240120235928-78bc62dadd1a
-	cloudeng.io/glean/crawlindex v0.0.0-20240120235928-78bc62dadd1a
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240120213735-923eb73129f2
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240120213735-923eb73129f2
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240120213735-923eb73129f2
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240120213735-923eb73129f2
+	cloudeng.io/aws v0.0.0-20240205011056-ae4442f4a167
+	cloudeng.io/cmdutil v0.0.0-20240205011056-ae4442f4a167
+	cloudeng.io/file v0.0.0-20240205011056-ae4442f4a167
+	cloudeng.io/glean/config v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/crawlindex v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240121213236-6902fad6afb2
 )
 
 require (
-	cloudeng.io/algo v0.0.0-20240120234157-7e30acc5437f // indirect
+	cloudeng.io/algo v0.0.0-20240205011056-ae4442f4a167 // indirect
 	cloudeng.io/errors v0.0.9 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240120213735-923eb73129f2 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20240120213735-923eb73129f2 // indirect
-	cloudeng.io/net v0.0.0-20240120234157-7e30acc5437f // indirect
-	cloudeng.io/os v0.0.0-20240120234157-7e30acc5437f // indirect
-	cloudeng.io/path v0.0.8 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240121213236-6902fad6afb2 // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20240121213236-6902fad6afb2 // indirect
+	cloudeng.io/net v0.0.0-20240205011056-ae4442f4a167 // indirect
+	cloudeng.io/os v0.0.0-20240205011056-ae4442f4a167 // indirect
+	cloudeng.io/path v0.0.9 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
-	cloudeng.io/webapi/benchling v0.0.0-20240119233928-def038ede9c6 // indirect
-	cloudeng.io/webapi/biorxiv v0.0.0-20240119233928-def038ede9c6 // indirect
-	cloudeng.io/webapi/operations v0.0.0-20240119233928-def038ede9c6 // indirect
-	cloudeng.io/webapi/papersapp v0.0.0-20240119233928-def038ede9c6 // indirect
-	cloudeng.io/webapi/protocolsio v0.0.0-20240119233928-def038ede9c6 // indirect
+	cloudeng.io/webapi/benchling v0.0.0-20240204185103-04bb6faa2ebf // indirect
+	cloudeng.io/webapi/biorxiv v0.0.0-20240204185103-04bb6faa2ebf // indirect
+	cloudeng.io/webapi/operations v0.0.0-20240204185103-04bb6faa2ebf // indirect
+	cloudeng.io/webapi/papersapp v0.0.0-20240204185103-04bb6faa2ebf // indirect
+	cloudeng.io/webapi/protocolsio v0.0.0-20240204185103-04bb6faa2ebf // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/CloudyKit/jet/v6 v6.2.0 // indirect
@@ -41,18 +41,18 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.5.4 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.26.6 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.11 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.10 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.2 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.10.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.16.10 // indirect
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.48.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.48.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.18.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.21.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
@@ -65,13 +65,13 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/getkin/kin-openapi v0.122.0 // indirect
+	github.com/getkin/kin-openapi v0.123.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.9.1 // indirect
 	github.com/go-openapi/errors v0.21.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.2 // indirect
 	github.com/go-openapi/strfmt v0.22.0 // indirect
-	github.com/go-openapi/swag v0.22.7 // indirect
+	github.com/go-openapi/swag v0.22.9 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.17.0 // indirect
@@ -79,7 +79,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47 // indirect
-	github.com/google/uuid v1.5.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/invopop/yaml v0.2.0 // indirect
 	github.com/iris-contrib/schema v0.0.6 // indirect
@@ -91,11 +91,11 @@ require (
 	github.com/kataras/pio v0.0.13 // indirect
 	github.com/kataras/sitemap v0.0.6 // indirect
 	github.com/kataras/tunnel v0.0.4 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/klauspost/compress v1.17.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/labstack/echo/v4 v4.11.4 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
-	github.com/leodido/go-urn v1.2.4 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mailgun/raymond/v2 v2.0.48 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -111,8 +111,8 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/tdewolff/minify/v2 v2.20.14 // indirect
-	github.com/tdewolff/parse/v2 v2.7.9 // indirect
+	github.com/tdewolff/minify/v2 v2.20.16 // indirect
+	github.com/tdewolff/parse/v2 v2.7.11 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

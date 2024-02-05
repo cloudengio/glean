@@ -46,7 +46,7 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 
 	cachePath := os.ExpandEnv(cfg.Cache.Path)
 	if err := os.MkdirAll(cachePath, 0755); err != nil {
-		return fmt.Errorf("failedto ensure that %v exists: %v", cfg.Cache.Path, err)
+		return fmt.Errorf("failed to ensure that %v exists: %v", cfg.Cache.Path, err)
 	}
 
 	// Run all of the crawlers concurrently.
