@@ -5,23 +5,23 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/algo v0.0.0-20240120234157-7e30acc5437f
+	cloudeng.io/algo v0.0.0-20240205011056-ae4442f4a167
 	cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8
-	cloudeng.io/cmdutil v0.0.0-20240120234157-7e30acc5437f
+	cloudeng.io/cmdutil v0.0.0-20240205011056-ae4442f4a167
 	cloudeng.io/errors v0.0.9
-	cloudeng.io/file v0.0.0-20240120234157-7e30acc5437f
-	cloudeng.io/glean/config v0.0.0-20240120213735-923eb73129f2
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240120213735-923eb73129f2
-	cloudeng.io/glean/gleansdk v0.0.0-20240120213735-923eb73129f2
+	cloudeng.io/file v0.0.0-20240205011056-ae4442f4a167
+	cloudeng.io/glean/config v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/glean/gleansdk v0.0.0-20240121213236-6902fad6afb2
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/text v0.0.11
-	cloudeng.io/webapi/operations v0.0.0-20240119233928-def038ede9c6
+	cloudeng.io/webapi/operations v0.0.0-20240204185103-04bb6faa2ebf
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	cloudeng.io/net v0.0.0-20240120234157-7e30acc5437f // indirect
-	cloudeng.io/path v0.0.8 // indirect
+	cloudeng.io/net v0.0.0-20240205011056-ae4442f4a167 // indirect
+	cloudeng.io/path v0.0.9 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
@@ -36,6 +36,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
