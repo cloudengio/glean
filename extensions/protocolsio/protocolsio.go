@@ -12,6 +12,7 @@ import (
 	"path"
 
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/content"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
@@ -65,22 +66,31 @@ const (
 `
 )
 
-func Extension(parents ...string) gleancfg.Extension {
-	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec,
-		protocolsiocmd.Auth{}, protocolsiocmd.Service{},
-		func(cmdSet *subcmd.CommandSetYAML) error {
-			cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(
-				c.scanDownloadsCmd, &ScanFlags{})
-			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(
-				c.crawlCmd, &CrawlFlags{})
-			cmdSet.Set(append(parents, cmdName, "get")...).MustRunner(
-				c.getCmd, &GetFlags{})
-			return nil
-		})
+var ExtensionSpec = gleancfg.ExtensionSpec{
+	Name:       cmdName,
+	CmdSpec:    cmdSpec,
+	AuthCfg:    protocolsiocmd.Auth{},
+	ServiceCfg: protocolsiocmd.Service{},
+	AddFunc:    AddExtension,
 }
 
-type command struct{ cacheRoot string }
+func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+	c := &command{parent: extension}
+	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(
+		c.scanDownloadsCmd, &ScanFlags{})
+	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(
+		c.crawlCmd, &CrawlFlags{})
+	cmdSet.Set(append(parents, cmdName, "get")...).MustRunner(
+		c.getCmd, &GetFlags{})
+	return nil
+}
+
+type command struct {
+	parent    gleancfg.Extension
+	cacheRoot string
+	fs        operations.FS
+	chkpt     checkpoint.Operation
+}
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv protocolsiocmd.CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
@@ -88,8 +98,15 @@ func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv protocolsiocmd.
 		return nil, err
 	}
 	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-
-	return protocolsiocmd.NewCommand(ctx, cfg.APICrawls, cmdName, pfv.ProtocolsConfig)
+	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	return protocolsiocmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmd.chkpt, cmdName, pfv.ProtocolsConfig)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
@@ -98,7 +115,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 	if err != nil {
 		return err
 	}
-	return c.Crawl(ctx, cmd.cacheRoot, &fv.CrawlFlags)
+	return c.Crawl(ctx, cmd.fs, cmd.cacheRoot, &fv.CrawlFlags)
 }
 
 func (cmd *command) getCmd(ctx context.Context, values interface{}, args []string) error {

@@ -7,16 +7,19 @@ package main
 import (
 	"context"
 
-	"cloudeng.io/glean/gleancli/builtin"
+	"cloudeng.io/glean/gleancli/builtin/dynamic"
+	"cloudeng.io/glean/gleancli/builtin/static"
 	"cloudeng.io/glean/gleancli/cmds"
 )
 
 func main() {
-	cmds.MustNew(
-		cmds.WithDocumentConverters(builtin.MustDocumentConverters()),
-		cmds.WithUserConverters(builtin.MustUserConverters()),
-		cmds.WithFSForCrawl(builtin.FSForCrawl),
-		cmds.WithOutlinkExtractors(builtin.Extractors),
-		cmds.WithAPIExtensions(builtin.APIExtensions("api")),
-	).MustDispatch(context.Background())
+	opts := cmds.Options{
+		CrawlProcessors:    static.MustCrawlProcessors(),
+		IndexProcessors:    static.MustIndexProcessors(),
+		CreateCrawlFS:      dynamic.PopulateFS,
+		CreateStoreFS:      dynamic.StoreFS,
+		CreateCheckpointOp: dynamic.CheckpointOp,
+		APIExtensions:      static.APIExtensions("api"),
+	}
+	cmds.MustNew(opts).MustDispatch(context.Background())
 }

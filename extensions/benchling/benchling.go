@@ -10,9 +10,11 @@ import (
 	"strings"
 
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/checkpoint"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/webapi/benchling/benchlingcmd"
+	"cloudeng.io/webapi/operations"
 )
 
 type CommonFlags struct {
@@ -47,26 +49,42 @@ const (
 `
 )
 
-func Extension(parents ...string) gleancfg.Extension {
-	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec,
-		benchlingcmd.Auth{}, benchlingcmd.Service{},
-		func(cmdSet *subcmd.CommandSetYAML) error {
-			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-			cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
-			return nil
-		})
+var ExtensionSpec = gleancfg.ExtensionSpec{
+	Name:       cmdName,
+	CmdSpec:    cmdSpec,
+	AuthCfg:    benchlingcmd.Auth{},
+	ServiceCfg: benchlingcmd.Service{},
+	AddFunc:    AddExtension,
 }
 
-type command struct{ cacheRoot string }
+func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+	c := &command{parent: extension}
+	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+	cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
+	return nil
+}
+
+type command struct {
+	parent gleancfg.Extension
+	fs     operations.FS
+	chkpt  checkpoint.Operation
+}
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv benchlingcmd.CommonFlags, datasource string) (*benchlingcmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	return benchlingcmd.NewCommand(ctx, cfg.APICrawls, cmdName, pfv.BenchlingConfig)
+	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
+	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	return benchlingcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmd.chkpt, cacheRoot, cmdName, pfv.BenchlingConfig)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
@@ -76,7 +94,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 		return err
 	}
 	entities := strings.Split(fv.Entities, ",")
-	return c.Crawl(ctx, cmd.cacheRoot, fv.CrawlFlags, entities...)
+	return c.Crawl(ctx, fv.CrawlFlags, entities...)
 }
 
 func (cmd *command) indexCmd(ctx context.Context, values interface{}, args []string) error {
@@ -85,5 +103,5 @@ func (cmd *command) indexCmd(ctx context.Context, values interface{}, args []str
 	if err != nil {
 		return err
 	}
-	return c.CreateIndexableDocuments(ctx, cmd.cacheRoot, fv.IndexFlags)
+	return c.CreateIndexableDocuments(ctx, fv.IndexFlags)
 }

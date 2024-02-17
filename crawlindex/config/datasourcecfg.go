@@ -13,6 +13,7 @@ import (
 	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/webapi/operations/apicrawlcmd"
+	"gopkg.in/yaml.v3"
 )
 
 type DatasourceName struct {
@@ -55,7 +56,8 @@ type Datasource struct {
 // Cache represents a cache configuration.
 type Cache struct {
 	// Path is the location of the cache for this datasource.
-	Path string `yaml:"path,omitempty" cmd:"path to the cache for this datasource"`
+	Path          string    `yaml:"path,omitempty" cmd:"path to the cache for this datasource"`
+	ServiceConfig yaml.Node `yaml:"service_config,omitempty" cmd:"cache specific configuration"`
 }
 
 // Datasources represents a list of named datasources.

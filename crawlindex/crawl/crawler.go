@@ -6,16 +6,16 @@ package crawl
 
 import (
 	"context"
-	"fmt"
 	"os"
 
-	"cloudeng.io/file"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/crawlcmd"
 	"cloudeng.io/file/crawl/outlinks"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/sync/errgroup"
+	"cloudeng.io/webapi/operations"
+	"gopkg.in/yaml.v3"
 )
 
 // Flags represents the flags that are used to control the crawl.
@@ -28,9 +28,10 @@ type Flags struct {
 // Crawler represents a crawler instance that contains global configuration
 // information.
 type Crawler struct {
-	GleanConfig gleancfg.Glean
-	Extractors  func() map[content.Type]outlinks.Extractor
-	FSForCrawl  func(config.Crawl) (map[string]file.FSFactory, error)
+	GleanConfig   gleancfg.Glean
+	Extractors    map[content.Type]outlinks.Extractor
+	CreateCrawlFS func(service string, cfg yaml.Node, fsmap map[string]crawlcmd.FSFactory) error
+	CreateStoreFS func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
 }
 
 func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
@@ -39,16 +40,19 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 		return err
 	}
 
-	// Initialize the cache storage for crawled files.
-	if len(cfg.Cache.Path) == 0 {
-		return fmt.Errorf("no path spepdatcified for the cache to stored downloaded files")
+	ofs, err := c.CreateStoreFS(ctx, cfg.Cache.Path, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return err
 	}
 
-	cachePath := os.ExpandEnv(cfg.Cache.Path)
-	if err := os.MkdirAll(cachePath, 0755); err != nil {
-		return fmt.Errorf("failed to ensure that %v exists: %v", cfg.Cache.Path, err)
+	fsmap := map[string]crawlcmd.FSFactory{}
+	for _, crawl := range cfg.Crawls {
+		if err := c.CreateCrawlFS(crawl.ServiceName, crawl.ServiceConfig, fsmap); err != nil {
+			return err
+		}
 	}
 
+	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
 	// Run all of the crawlers concurrently.
 	g := errgroup.T{}
 	for _, crawl := range cfg.Crawls {
@@ -57,11 +61,7 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 			Extractors: c.Extractors,
 		}
 		g.Go(func() error {
-			fsmap, err := c.FSForCrawl(crawl)
-			if err != nil {
-				return err
-			}
-			return crawler.Run(ctx, fsmap, cachePath, fv.Outlinks, fv.Progress)
+			return crawler.Run(ctx, fsmap, ofs, cacheRoot, fv.Outlinks, fv.Progress)
 		})
 	}
 	return g.Wait()

@@ -5,32 +5,33 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/aws v0.0.0-20240205011056-ae4442f4a167
-	cloudeng.io/cmdutil v0.0.0-20240205011056-ae4442f4a167
-	cloudeng.io/file v0.0.0-20240205011056-ae4442f4a167
-	cloudeng.io/glean/config v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/glean/crawlindex v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240121213236-6902fad6afb2
+	cloudeng.io/aws v0.0.0-20240206224746-063a3aa44177
+	cloudeng.io/cmdutil v0.0.0-20240206224746-063a3aa44177
+	cloudeng.io/file v0.0.0-20240206224746-063a3aa44177
+	cloudeng.io/glean/config v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/crawlindex v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/path v0.0.9
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	cloudeng.io/algo v0.0.0-20240205011056-ae4442f4a167 // indirect
+	cloudeng.io/algo v0.0.0-20240206224746-063a3aa44177 // indirect
 	cloudeng.io/errors v0.0.9 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240121213236-6902fad6afb2 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20240121213236-6902fad6afb2 // indirect
-	cloudeng.io/net v0.0.0-20240205011056-ae4442f4a167 // indirect
-	cloudeng.io/os v0.0.0-20240205011056-ae4442f4a167 // indirect
-	cloudeng.io/path v0.0.9 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240205023926-3eb3c2387dc2 // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20240205023926-3eb3c2387dc2 // indirect
+	cloudeng.io/net v0.0.0-20240206224746-063a3aa44177 // indirect
+	cloudeng.io/os v0.0.0-20240206224746-063a3aa44177 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
-	cloudeng.io/webapi/benchling v0.0.0-20240204185103-04bb6faa2ebf // indirect
-	cloudeng.io/webapi/biorxiv v0.0.0-20240204185103-04bb6faa2ebf // indirect
-	cloudeng.io/webapi/operations v0.0.0-20240204185103-04bb6faa2ebf // indirect
-	cloudeng.io/webapi/papersapp v0.0.0-20240204185103-04bb6faa2ebf // indirect
-	cloudeng.io/webapi/protocolsio v0.0.0-20240204185103-04bb6faa2ebf // indirect
+	cloudeng.io/webapi/benchling v0.0.0-20240205224624-781bd404884e // indirect
+	cloudeng.io/webapi/biorxiv v0.0.0-20240205224624-781bd404884e // indirect
+	cloudeng.io/webapi/operations v0.0.0-20240205224624-781bd404884e // indirect
+	cloudeng.io/webapi/papersapp v0.0.0-20240205224624-781bd404884e // indirect
+	cloudeng.io/webapi/protocolsio v0.0.0-20240205224624-781bd404884e // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/CloudyKit/jet/v6 v6.2.0 // indirect
@@ -91,7 +92,7 @@ require (
 	github.com/kataras/pio v0.0.13 // indirect
 	github.com/kataras/sitemap v0.0.6 // indirect
 	github.com/kataras/tunnel v0.0.4 // indirect
-	github.com/klauspost/compress v1.17.5 // indirect
+	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/labstack/echo/v4 v4.11.4 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
@@ -123,7 +124,7 @@ require (
 	go.mongodb.org/mongo-driver v1.13.1 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
+	golang.org/x/exp v0.0.0-20240205201215-2c58cdc269a3 // indirect
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
@@ -133,5 +134,4 @@ require (
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

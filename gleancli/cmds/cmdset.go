@@ -13,10 +13,15 @@ import (
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/checkpoint"
+	"cloudeng.io/file/crawl/crawlcmd"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/crawlindex/index"
+	"cloudeng.io/glean/gleancli/builtin/static"
+	"cloudeng.io/webapi/operations"
+	"gopkg.in/yaml.v3"
 )
 
 type GlobalFlags struct {
@@ -110,16 +115,23 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 	return subext
 }
 
-func MustNew(opts ...Option) *subcmd.CommandSetYAML {
-	var options options
-	for _, fn := range opts {
-		fn(&options)
-	}
+type Option func(o *Options)
 
-	cmdExtensions = append(cmdExtensions, options.apiExtensions...)
+type Options struct {
+	CrawlProcessors    static.CrawlProcessors
+	IndexProcessors    static.IndexProcessors
+	CreateCrawlFS      func(name string, cfg yaml.Node, factories map[string]crawlcmd.FSFactory) error
+	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
+	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
+	APIExtensions      []gleancfg.Extension
+}
+
+func MustNew(options Options) *subcmd.CommandSetYAML {
+
+	cmdExtensions = append(cmdExtensions, options.APIExtensions...)
 
 	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
-		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.apiExtensions)...))
+		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.APIExtensions)...))
 
 	ds := Datasources{
 		extensions: cmdExtensions,
@@ -132,10 +144,10 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 
 	cmdSet.Set("datasources", "explain-config").MustRunner(ds.ExplainConfig, &struct{}{})
 
-	cc := Crawl{options: options}
+	cc := Crawl{Options: options}
 	cmdSet.Set("crawl", "run").MustRunner(cc.Run, &crawl.Flags{})
 
-	idx := Index{options: options}
+	idx := Index{Options: options}
 	cmdSet.Set("index", "bulk").MustRunner(idx.bulk, &index.BulkFlags{})
 
 	cmdSet.Set("index", "stats").MustRunner(idx.stats, &index.StatsFlags{})
@@ -153,31 +165,31 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML {
 	globals := subcmd.GlobalFlagSet()
 	globals.MustRegisterFlagStruct(&globalFlags, nil, nil)
 	cmdSet.WithGlobalFlags(globals)
-	if options.useGleanConfig {
-		globalConfig = options.gleanConfig
+
+	extOpts := gleancfg.ExtensionOptions{
+		CreateStoreFS:      options.CreateStoreFS,
+		CreateCheckpointOp: options.CreateCheckpointOp,
 	}
 	cmdSet.WithMain(func(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
-		return mainWrapper(ctx, !options.useGleanConfig, cmdRunner)
+		return mainWrapper(ctx, extOpts, cmdRunner)
 	})
 	return cmdSet
 }
 
-func mainWrapper(ctx context.Context, loadConfig bool, cmdRunner func(ctx context.Context) error) error {
+func mainWrapper(ctx context.Context, extOpts gleancfg.ExtensionOptions, cmdRunner func(ctx context.Context) error) error {
 	ctx, cancel := context.WithCancel(ctx)
 	cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
 
-	if loadConfig {
-		err := cmdyaml.ParseConfigFile(ctx, globalFlags.Config, &globalConfig)
-		if err != nil {
-			if !errors.Is(err, os.ErrNotExist) {
-				return err
-			}
-			fmt.Printf("warning: %q not found\n", globalFlags.Config)
+	err := cmdyaml.ParseConfigFile(ctx, globalFlags.Config, &globalConfig)
+	if err != nil {
+		if !errors.Is(err, os.ErrNotExist) {
+			return err
 		}
+		fmt.Printf("warning: %q not found\n", globalFlags.Config)
 	}
-
+	extOpts.Glean = globalConfig
 	for _, ext := range cmdExtensions {
-		ext.SetGleanConfig(&globalConfig)
+		ext.SetOptions(extOpts)
 	}
 	return cmdRunner(ctx)
 }

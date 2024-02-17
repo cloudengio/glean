@@ -8,7 +8,7 @@ import cloudeng.io/glean/gleancli/cmds
 ## Functions
 ### Func MustNew
 ```go
-func MustNew(opts ...Option) *subcmd.CommandSetYAML
+func MustNew(options Options) *subcmd.CommandSetYAML
 ```
 
 
@@ -17,7 +17,7 @@ func MustNew(opts ...Option) *subcmd.CommandSetYAML
 ### Type Crawl
 ```go
 type Crawl struct {
-	// contains filtered or unexported fields
+	Options
 }
 ```
 
@@ -32,13 +32,20 @@ func (cmd *Crawl) Run(ctx context.Context, values interface{}, args []string) er
 
 ### Type Datasources
 ```go
-type Datasources struct{}
+type Datasources struct {
+	// contains filtered or unexported fields
+}
 ```
 
 ### Methods
 
 ```go
-func (ds Datasources) Download(ctx context.Context, values interface{}, args []string) error
+func (ds Datasources) Download(ctx context.Context, _ interface{}, args []string) error
+```
+
+
+```go
+func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, _ []string) error
 ```
 
 
@@ -48,7 +55,7 @@ func (ds Datasources) Register(ctx context.Context, values interface{}, args []s
 
 
 ```go
-func (ds Datasources) ShowConfig(ctx context.Context, values interface{}, args []string) error
+func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []string) error
 ```
 
 
@@ -65,43 +72,27 @@ type GlobalFlags struct {
 ### Type Index
 ```go
 type Index struct {
-	// contains filtered or unexported fields
+	Options
 }
 ```
 
 
 ### Type Option
 ```go
-type Option func(o *options)
+type Option func(o *Options)
 ```
 
-### Functions
 
+### Type Options
 ```go
-func WithAPIExtensions(extensions []gleancfg.Extension) Option
+type Options struct {
+	CrawlProcessors static.CrawlProcessors
+	IndexProcessors static.IndexProcessors
+	CreateFS        func(name string, cfg yaml.Node, factories map[string]crawlcmd.FSFactory) error
+	CreateContentFS func(ctx context.Context, path string, cfg yaml.Node) (content.FS, error)
+	APIExtensions   []gleancfg.Extension
+}
 ```
-
-
-```go
-func WithConverters(converters *content.Registry[converters.T]) Option
-```
-
-
-```go
-func WithFSForCrawl(fsForCrawl func(cfg config.Crawl) map[string]file.FSFactory) Option
-```
-
-
-```go
-func WithGleanConfig(cfg gleancfg.Glean) Option
-```
-
-
-```go
-func WithOutlinkExtractors(extractors func() map[content.Type]outlinks.Extractor) Option
-```
-
-
 
 
 

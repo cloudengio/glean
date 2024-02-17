@@ -13,12 +13,13 @@ import (
 
 	"cloudeng.io/errors"
 	"cloudeng.io/file/content"
-	"cloudeng.io/file/filewalk/localfs"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/operations/apicrawlcmd"
+	"gopkg.in/yaml.v3"
 )
 
 // BulkFlags represents the flags to the bulk indexing command.
@@ -36,6 +37,7 @@ type Indexer struct {
 	Config             config.Datasource
 	DocumentConverters *content.Registry[converters.Document]
 	UserConverters     *content.Registry[converters.User]
+	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
 }
 
 // Bulk indexes a datasource in bulk mode.
@@ -52,6 +54,11 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 
 	if idx.Config.BulkIndex == nil {
 		return fmt.Errorf("bulk_index block is missing from config file")
+	}
+
+	ofs, err := idx.CreateStoreFS(ctx, idx.Config.Cache.Path, idx.Config.Cache.ServiceConfig)
+	if err != nil {
+		return err
 	}
 
 	size := idx.Config.BulkIndex.ReaddirEntries
@@ -74,12 +81,10 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		return fmt.Errorf("no converters specified/found in config file")
 	}
 
-	fs := localfs.New() // TODO(cnicolaou): allow for use of S3 etc.
-
 	checkpointDirs := apicrawlcmd.CheckpointPaths(idx.Config.APICrawls)
 	walker := newWalker(
 		idx.Config.CustomDatasourceConfig.GetName(),
-		fs,
+		ofs,
 		cnvmap,
 		idx.DocumentConverters,
 		idx.UserConverters,
