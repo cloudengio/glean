@@ -35,7 +35,7 @@ func (sd skipdirs) skip(dir string) bool {
 type walker struct {
 	datasource string
 	fs         operations.FS
-	store      *stores.Sync
+	store      stores.T
 	cfg        map[content.Type]config.Conversion
 	docCnv     *content.Registry[converters.Document]
 	empCnv     *content.Registry[converters.User]
@@ -44,11 +44,11 @@ type walker struct {
 	wk         *filewalk.Walker[struct{}]
 }
 
-func newWalker(datasource string, fs operations.FS, cfg map[content.Type]config.Conversion, docCnv *content.Registry[converters.Document], empCnv *content.Registry[converters.User], skip skipdirs, scanSize int, ch chan<- Request) *walker {
+func newWalker(datasource string, fs operations.FS, cfg map[content.Type]config.Conversion, docCnv *content.Registry[converters.Document], empCnv *content.Registry[converters.User], skip skipdirs, concurrency, scanSize int, ch chan<- Request) *walker {
 	idxWalker := &walker{
 		datasource: datasource,
 		fs:         fs,
-		store:      stores.New(fs),
+		store:      stores.New(fs, concurrency),
 		cfg:        cfg,
 		docCnv:     docCnv,
 		empCnv:     empCnv,
@@ -94,7 +94,6 @@ func (w *walker) Contents(ctx context.Context, _ *struct{}, prefix string, conte
 		if entry.IsDir() {
 			continue
 		}
-		//path := filepath.Join(prefix, entry.Name)
 		ctype, data, err := w.store.Read(ctx, prefix, entry.Name)
 		if err != nil {
 			fmt.Printf("failed to read file: %v %v: %v\n", prefix, entry.Name, err)
