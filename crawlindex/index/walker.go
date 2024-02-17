@@ -6,9 +6,10 @@ package index
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
@@ -89,33 +90,38 @@ func (w *walker) Contents(ctx context.Context, _ *struct{}, prefix string, conte
 		close(doneCh)
 	}()
 
-	var req Request
+	names := make([]string, 0, len(contents))
 	for _, entry := range contents {
-		if entry.IsDir() {
-			continue
+		if entry.Type.IsRegular() {
+			names = append(names, entry.Name)
 		}
-		ctype, data, err := w.store.Read(ctx, prefix, entry.Name)
-		if err != nil {
-			fmt.Printf("failed to read file: %v %v: %v\n", prefix, entry.Name, err)
-			continue
-		}
+	}
+	var req Request
+	var mu sync.Mutex
+
+	w.store.ReadV(ctx, prefix, names, func(ctx context.Context, prefix, name string, ctype content.Type, data []byte, err error) error {
 		gd, ok, err := w.convertDocument(ctx, ctype, data)
 		if err != nil {
-			fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, entry.Name), err)
-			continue
+			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
 		}
 		if ok {
+			mu.Lock()
 			req.Documents = append(req.Documents, gd)
+			mu.Unlock()
 		}
 		ge, ok, err := w.convertUser(ctx, ctype, data)
 		if err != nil {
-			fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, entry.Name), err)
-			continue
+			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
 		}
 		if ok {
+			mu.Lock()
 			req.Users = append(req.Users, ge)
+			mu.Unlock()
 		}
-	}
+		return nil
+	})
 
 	if len(req.Documents) > 0 || len(req.Users) > 0 {
 		select {
