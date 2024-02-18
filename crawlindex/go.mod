@@ -15,7 +15,7 @@ require (
 	cloudeng.io/glean/gleansdk v0.0.0-20240205023926-3eb3c2387dc2
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/text v0.0.11
-	cloudeng.io/webapi/operations v0.0.0-20240218193650-650801f01a7d
+	cloudeng.io/webapi/operations v0.0.0-20240218232106-56ca28c3280e
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -40,7 +40,6 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/oauth2 v0.17.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 )
