@@ -5,20 +5,20 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/cmdutil v0.0.0-20240205011056-ae4442f4a167
-	cloudeng.io/file v0.0.0-20240205011056-ae4442f4a167
+	cloudeng.io/cmdutil v0.0.0-20240218002136-045ada2e7f21
+	cloudeng.io/file v0.0.0-20240218002136-045ada2e7f21
 	cloudeng.io/glean/config v0.0.0-20240121213236-6902fad6afb2
 	cloudeng.io/glean/crawlindex v0.0.0-20240121213236-6902fad6afb2
 	cloudeng.io/glean/gleansdk v0.0.0-20240121213236-6902fad6afb2
-	cloudeng.io/webapi/benchling v0.0.0-20240204185103-04bb6faa2ebf
-	cloudeng.io/webapi/operations v0.0.0-20240204185103-04bb6faa2ebf
+	cloudeng.io/webapi/benchling v0.0.0-20240218193650-650801f01a7d
+	cloudeng.io/webapi/operations v0.0.0-20240217231149-2a5b236c060e
 )
 
 require (
 	cloudeng.io/aws v0.0.0-20240203235614-ea57581c3aff // indirect
-	cloudeng.io/errors v0.0.9 // indirect
+	cloudeng.io/errors v0.0.10 // indirect
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240121213236-6902fad6afb2 // indirect
-	cloudeng.io/net v0.0.0-20240205011056-ae4442f4a167 // indirect
+	cloudeng.io/net v0.0.0-20240218002136-045ada2e7f21 // indirect
 	cloudeng.io/path v0.0.9 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
@@ -75,6 +75,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
+	github.com/oapi-codegen/runtime v1.1.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -90,11 +91,11 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect

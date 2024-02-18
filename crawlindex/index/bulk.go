@@ -89,6 +89,7 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		idx.DocumentConverters,
 		idx.UserConverters,
 		checkpointDirs,
+		idx.Config.BulkIndex.CacheConcurrency,
 		idx.Config.BulkIndex.ReaddirEntries,
 		reqCh)
 	indexer := newBulkIndexer(client, idx.Config,

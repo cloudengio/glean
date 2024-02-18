@@ -15,7 +15,7 @@
       cache_prefix: downloads
       cache_checkpoint: checkpoints
       cache_sharding_prefix_len: 1
-      cache_concurrency: 10
+      cache_concurrency: 20
   cache:
     path: s3://cloudeng-s3fs/biorxiv/crawl/
     service_config:
@@ -27,6 +27,7 @@
     force_deletion: false
     readdir_entries: 100
     document_request_size: 100
+    cache_concurrency: 20
   converters:
     - from_content_types: ["api.biorxiv.org/article"]
       default_author:
@@ -60,7 +61,7 @@
         status_codes: [429]
       cache_prefix: downloads
       cache_checkpoint: checkpoints
-      cache_concurrency: 10
+      cache_concurrency: 20
   cache:
     path: s3://cloudeng-s3fs/papersapp/crawl/
     service_config:
@@ -73,6 +74,7 @@
     readdir_entries: 50
     document_request_size: 20
     employee_request_size: 20
+    cache_concurrency: 20
   converters:
     - from_content_types: ["papersapp.com/item"]
       default_author:
@@ -105,7 +107,7 @@
         status_codes: [429]
       cache_prefix: downloads
       cache_checkpoint: checkpoints
-      cache_concurrency: 10
+      cache_concurrency: 20
   cache:
     path: s3://cloudeng-s3fs/benchling/crawl/
     service_config:
@@ -118,6 +120,7 @@
     readdir_entries: 50
     document_request_size: 20
     user_request_size: 20
+    cache_concurrency: 20
   converters:
     - from_content_types: ["benchling.com/document", "benchling/users"]
       default_author:
@@ -145,7 +148,7 @@
       cache_prefix: downloads
       cache_checkpoint: checkpoints
       cache_sharding_prefix_len: 1
-      cache_concurrency: 10
+      cache_concurrency: 20
       incremental: true
       exponential_backoff:
         initial_delay: 60s
@@ -156,6 +159,7 @@
     force_deletion: false
     readdir_entries: 50
     document_request_size: 20
+    cache_concurrency: 20
   cache:
     path: s3://cloudeng-s3fs/protocolsio/crawl/
     service_config:
@@ -221,7 +225,7 @@
         cache_checkpoint: checkpoints
         cache_clear_before_crawl: true
         cache_sharding_prefix_len: 1
-        cache_concurrency: 10
+        cache_concurrency: 20
       download:
         default_concurrency: 4 # 0 will default to all available CPUs
         default_request_chan_size: 100
@@ -241,6 +245,7 @@
     force_deletion: false
     readdir_entries: 50
     document_request_size: 50
+    cache_concurrency: 20
   converters:
     - from_content_types: ["text/html;charset=utf-8"]
       default_author:

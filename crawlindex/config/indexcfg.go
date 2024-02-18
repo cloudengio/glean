@@ -13,6 +13,7 @@ type BulkIndex struct {
 	ReaddirEntries      int  `yaml:"readdir_entries"`       // number of entries per Readdir call.
 	DocumentRequestSize int  `yaml:"document_request_size"` // number of documents to include in a single request in a single bulk index request.
 	UserRequestSize     int  `yaml:"user_request_size"`     // number of user to include in a single request in a single bulk index request.
+	CacheConcurrency    int  `yaml:"cache_concurrency"`     // number of concurrent cache reads.
 }
 
 // IncrementalIndex represents the configuration info for incremental, document
