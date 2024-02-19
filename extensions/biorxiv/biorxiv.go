@@ -97,6 +97,9 @@ func (cmd *command) new(ctx context.Context, fv CommonFlags, _ biorxivcmd.Common
 		return nil, err
 	}
 	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
 	return biorxivcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cacheRoot, cmd.chkpt, cmdName)
 }
 

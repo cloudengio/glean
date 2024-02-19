@@ -99,7 +99,11 @@ func (w *walker) Contents(ctx context.Context, _ *struct{}, prefix string, conte
 	var req Request
 	var mu sync.Mutex
 
-	w.store.ReadV(ctx, prefix, names, func(ctx context.Context, prefix, name string, ctype content.Type, data []byte, err error) error {
+	err := w.store.ReadV(ctx, prefix, names, func(ctx context.Context, prefix, name string, ctype content.Type, data []byte, err error) error {
+		if err != nil {
+			log.Printf("failed to read: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
+		}
 		gd, ok, err := w.convertDocument(ctx, ctype, data)
 		if err != nil {
 			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
@@ -122,6 +126,9 @@ func (w *walker) Contents(ctx context.Context, _ *struct{}, prefix string, conte
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	if len(req.Documents) > 0 || len(req.Users) > 0 {
 		select {
