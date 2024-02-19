@@ -11,6 +11,7 @@ import (
 	"cloudeng.io/cmdutil/subcmd"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/papersapp/papersappcmd"
 )
 
@@ -45,18 +46,26 @@ const (
 `
 )
 
-func Extension(parents ...string) gleancfg.Extension {
-	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec,
-		papersappcmd.Auth{}, papersappcmd.Service{},
-		func(cmdSet *subcmd.CommandSetYAML) error {
-			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-			cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanCmd, &ScanFlags{})
-			return nil
-		})
+var ExtensionSpec = gleancfg.ExtensionSpec{
+	Name:       cmdName,
+	CmdSpec:    cmdSpec,
+	AuthCfg:    papersappcmd.Auth{},
+	ServiceCfg: papersappcmd.Service{},
+	AddFunc:    AddExtension,
 }
 
-type command struct{ cacheRoot string }
+func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+	c := &command{parent: extension}
+	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanCmd, &ScanFlags{})
+	return nil
+}
+
+type command struct {
+	parent    gleancfg.Extension
+	cacheRoot string
+	fs        operations.FS
+}
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv papersappcmd.CommonFlags, datasource string) (*papersappcmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
@@ -64,7 +73,11 @@ func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv papersappcmd.Co
 		return nil, err
 	}
 	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	return papersappcmd.NewCommand(ctx, cfg.APICrawls, cmdName, pfv.PapersAppConfig)
+	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	return papersappcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmdName, pfv.PapersAppConfig)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {

@@ -11,14 +11,15 @@ import (
 )
 
 type Crawl struct {
-	options
+	Options
 }
 
 func (cmd *Crawl) Run(ctx context.Context, values interface{}, args []string) error {
 	crawler := crawl.Crawler{
-		GleanConfig: globalConfig,
-		Extractors:  cmd.extractors,
-		FSForCrawl:  cmd.fsForCrawl,
+		GleanConfig:   globalConfig,
+		Extractors:    cmd.CrawlProcessors.Extractors,
+		CreateCrawlFS: cmd.CreateCrawlFS,
+		CreateStoreFS: cmd.CreateStoreFS,
 	}
 	return crawler.Run(ctx, values.(*crawl.Flags), args[0])
 }

@@ -6,16 +6,19 @@ package index
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"cloudeng.io/file"
 	"cloudeng.io/file/content"
+	"cloudeng.io/file/content/stores"
 	"cloudeng.io/file/filewalk"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations"
 )
 
 type skipdirs []string
@@ -32,7 +35,8 @@ func (sd skipdirs) skip(dir string) bool {
 
 type walker struct {
 	datasource string
-	fs         file.FS
+	fs         operations.FS
+	store      stores.T
 	cfg        map[content.Type]config.Conversion
 	docCnv     *content.Registry[converters.Document]
 	empCnv     *content.Registry[converters.User]
@@ -41,9 +45,11 @@ type walker struct {
 	wk         *filewalk.Walker[struct{}]
 }
 
-func newWalker(datasource string, fs filewalk.FS, cfg map[content.Type]config.Conversion, docCnv *content.Registry[converters.Document], empCnv *content.Registry[converters.User], skip skipdirs, scanSize int, ch chan<- Request) *walker {
+func newWalker(datasource string, fs operations.FS, cfg map[content.Type]config.Conversion, docCnv *content.Registry[converters.Document], empCnv *content.Registry[converters.User], skip skipdirs, concurrency, scanSize int, ch chan<- Request) *walker {
 	idxWalker := &walker{
 		datasource: datasource,
+		fs:         fs,
+		store:      stores.New(fs, concurrency),
 		cfg:        cfg,
 		docCnv:     docCnv,
 		empCnv:     empCnv,
@@ -84,33 +90,44 @@ func (w *walker) Contents(ctx context.Context, _ *struct{}, prefix string, conte
 		close(doneCh)
 	}()
 
-	var req Request
+	names := make([]string, 0, len(contents))
 	for _, entry := range contents {
-		if entry.IsDir() {
-			continue
+		if entry.Type.IsRegular() {
+			names = append(names, entry.Name)
 		}
-		path := filepath.Join(prefix, entry.Name)
-		ctype, data, err := content.ReadObjectFile(path)
+	}
+	var req Request
+	var mu sync.Mutex
+
+	err := w.store.ReadV(ctx, prefix, names, func(ctx context.Context, prefix, name string, ctype content.Type, data []byte, err error) error {
 		if err != nil {
-			fmt.Printf("failed to read file: %v: %v\n", path, err)
-			continue
+			log.Printf("failed to read: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
 		}
 		gd, ok, err := w.convertDocument(ctx, ctype, data)
 		if err != nil {
-			fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, entry.Name), err)
-			continue
+			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
 		}
 		if ok {
+			mu.Lock()
 			req.Documents = append(req.Documents, gd)
+			mu.Unlock()
 		}
 		ge, ok, err := w.convertUser(ctx, ctype, data)
 		if err != nil {
-			fmt.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, entry.Name), err)
-			continue
+			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			return err
 		}
 		if ok {
+			mu.Lock()
 			req.Users = append(req.Users, ge)
+			mu.Unlock()
 		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	if len(req.Documents) > 0 || len(req.Users) > 0 {

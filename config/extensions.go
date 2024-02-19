@@ -9,30 +9,41 @@
 package config
 
 import (
+	"context"
+
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/checkpoint"
+	"cloudeng.io/webapi/operations"
+	"gopkg.in/yaml.v3"
 )
+
+type ExtensionOptions struct {
+	Glean
+	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
+	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
+}
 
 type Extension interface {
 	subcmd.Extension
-	SetGleanConfig(*Glean)
-	GleanConfig() *Glean
+	SetOptions(ExtensionOptions)
+	Options() ExtensionOptions
 	AuthConfigType() any
 	ServiceConfigType() any
 }
 
 type extension struct {
 	subcmd.Extension
-	cfg            *Glean
+	options        ExtensionOptions
 	authCfgType    any
 	serviceCfgType any
 }
 
-func (e *extension) SetGleanConfig(cfg *Glean) {
-	e.cfg = cfg
+func (e *extension) SetOptions(opts ExtensionOptions) {
+	e.options = opts
 }
 
-func (e *extension) GleanConfig() *Glean {
-	return e.cfg
+func (e *extension) Options() ExtensionOptions {
+	return e.options
 }
 
 func (e *extension) AuthConfigType() any {
@@ -41,6 +52,26 @@ func (e *extension) AuthConfigType() any {
 
 func (e *extension) ServiceConfigType() any {
 	return e.serviceCfgType
+}
+
+type ExtensionSpec struct {
+	Name       string // Name of the extension
+	CmdSpec    string // YAML subcmd spec
+	AuthCfg    any    // used for describing the auth configuration
+	ServiceCfg any    // used for describing the service configuration
+	// called to add the command to its parent cmdSet.
+	AddFunc func(extension Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error
+}
+
+func NewExtensionC(spec ExtensionSpec, parents []string) Extension {
+	ext := &extension{
+		authCfgType:    spec.AuthCfg,
+		serviceCfgType: spec.ServiceCfg,
+	}
+	ext.Extension = subcmd.NewExtension(spec.Name, spec.CmdSpec, func(cmdSet *subcmd.CommandSetYAML) error {
+		return spec.AddFunc(ext, cmdSet, parents)
+	})
+	return ext
 }
 
 func NewExtension(name, spec string, authCfgType, serviceCfgType any, appendFn func(cmdSet *subcmd.CommandSetYAML) error) Extension {

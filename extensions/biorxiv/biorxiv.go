@@ -10,9 +10,11 @@ import (
 	"os"
 
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/checkpoint"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/webapi/biorxiv/biorxivcmd"
+	"cloudeng.io/webapi/operations"
 )
 
 type CommonFlags struct {
@@ -62,27 +64,43 @@ const (
 `
 )
 
-func Extension(parents ...string) gleancfg.Extension {
-	c := &command{}
-	return gleancfg.NewExtension(cmdName, cmdSpec,
-		biorxivcmd.Auth{}, biorxivcmd.Service{},
-		func(cmdSet *subcmd.CommandSetYAML) error {
-			cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
-			cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
-			cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunner(c.lookupDownloadsCmd, &LookupFlags{})
-			return nil
-		})
+var ExtensionSpec = gleancfg.ExtensionSpec{
+	Name:       cmdName,
+	CmdSpec:    cmdSpec,
+	AuthCfg:    biorxivcmd.Auth{},
+	ServiceCfg: biorxivcmd.Service{},
+	AddFunc:    AddExtension,
 }
 
-type command struct{ cacheRoot string }
+func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+	c := &command{parent: extension}
+	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
+	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
+	cmdSet.Set(append(parents, cmdName, "lookup-downloaded")...).MustRunner(c.lookupDownloadsCmd, &LookupFlags{})
+	return nil
+}
+
+type command struct {
+	parent gleancfg.Extension
+	fs     operations.FS
+	chkpt  checkpoint.Operation
+}
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, _ biorxivcmd.CommonFlags, datasource string) (*biorxivcmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	return biorxivcmd.NewCommand(ctx, cfg.APICrawls, cmdName)
+	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
+	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	if err != nil {
+		return nil, err
+	}
+	return biorxivcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cacheRoot, cmd.chkpt, cmdName)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
@@ -91,7 +109,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 	if err != nil {
 		return err
 	}
-	return c.Crawl(ctx, cmd.cacheRoot, fv.CrawlFlags)
+	return c.Crawl(ctx, fv.CrawlFlags)
 }
 
 func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
@@ -100,7 +118,7 @@ func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, ar
 	if err != nil {
 		return err
 	}
-	return c.ScanDownloaded(ctx, cmd.cacheRoot, &fv.ScanFlags)
+	return c.ScanDownloaded(ctx, &fv.ScanFlags)
 }
 
 func (cmd *command) lookupDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
@@ -109,5 +127,5 @@ func (cmd *command) lookupDownloadsCmd(ctx context.Context, values interface{}, 
 	if err != nil {
 		return err
 	}
-	return c.LookupDownloaded(ctx, cmd.cacheRoot, &fv.LookupFlags, args[1:]...)
+	return c.LookupDownloaded(ctx, &fv.LookupFlags, args[1:]...)
 }

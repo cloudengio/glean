@@ -14,14 +14,20 @@
         status_codes: [408]
       cache_prefix: downloads
       cache_checkpoint: checkpoints
-      cache_sharding_prefix_len: 3
+      cache_sharding_prefix_len: 1
+      cache_concurrency: 20
   cache:
-    path: $HOME/.biorxiv/cache/
+    path: s3://cloudeng-s3fs/biorxiv/crawl/
+    service_config:
+      aws: true
+      aws_profile: cloudeng-admin
+      aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
     readdir_entries: 100
     document_request_size: 100
+    cache_concurrency: 20
   converters:
     - from_content_types: ["api.biorxiv.org/article"]
       default_author:
@@ -53,14 +59,22 @@
         initial_delay: 30s
         steps: 10
         status_codes: [429]
+      cache_prefix: downloads
+      cache_checkpoint: checkpoints
+      cache_concurrency: 20
   cache:
-    path: $HOME/.papersapp/cache/
+    path: s3://cloudeng-s3fs/papersapp/crawl/
+    service_config:
+      aws: true
+      aws_profile: cloudeng-admin
+      aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
     readdir_entries: 50
     document_request_size: 20
     employee_request_size: 20
+    cache_concurrency: 20
   converters:
     - from_content_types: ["papersapp.com/item"]
       default_author:
@@ -83,26 +97,30 @@
     benchling:
       service:
         service_url: https://altoslabs.benchling.com/api/v2/
-        users_page_size: 50
-        users_sort: name:asc
-        entries_page_size: 50
-        entries_sort: name:asc
-        folders_page_size: 50
-        folders_sort: name:asc
-        projects_page_size: 50
-        projects_sort: modifiedAt
+        users_page_size: 100
+        entries_page_size: 100
+        folders_page_size: 100
+        projects_page_size: 100
       exponential_backoff:
         initial_delay: 30s
         steps: 10
         status_codes: [429]
+      cache_prefix: downloads
+      cache_checkpoint: checkpoints
+      cache_concurrency: 20
   cache:
-    path: $HOME/.benchling/cache/
+    path: s3://cloudeng-s3fs/benchling/crawl/
+    service_config:
+      aws: true
+      aws_profile: cloudeng-admin
+      aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: true
     readdir_entries: 50
     document_request_size: 20
     user_request_size: 20
+    cache_concurrency: 20
   converters:
     - from_content_types: ["benchling.com/document", "benchling/users"]
       default_author:
@@ -127,9 +145,10 @@
         order_direction: asc
         order_field: id
         filter: public
-      cache_prefix: downloads/protocols
-      cache_checkpoint: checkpoints/protocols
+      cache_prefix: downloads
+      cache_checkpoint: checkpoints
       cache_sharding_prefix_len: 1
+      cache_concurrency: 20
       incremental: true
       exponential_backoff:
         initial_delay: 60s
@@ -140,8 +159,13 @@
     force_deletion: false
     readdir_entries: 50
     document_request_size: 20
+    cache_concurrency: 20
   cache:
-    path: $HOME/.protocolsio/cache/
+    path: s3://cloudeng-s3fs/protocolsio/crawl/
+    service_config:
+      aws: true
+      aws_profile: cloudeng-admin
+      aws_region: us-west-2
   converters:
     - from_content_types: ["protocols.io/protocol"]
       default_author:
@@ -162,7 +186,30 @@
     - name: static-content
       depth: 10
       seeds:
+        - s3://altos-lab-static-content/bioinf_2023_CK_L1_explorations/index.html
+        - s3://altos-lab-static-content/bioinf_2023_CK_riboseq_explorations/index.html
+        - s3://altos-lab-static-content/bioinf_2023_FMMZ_10xFLEX/index.html
+        - s3://altos-lab-static-content/bioinf_2023_FMMZ_10xFlex/index.html
+        - s3://altos-lab-static-content/bioinf_2023_FeYi_CK_L1_ASO/index.html
+        - s3://altos-lab-static-content/bioinf_2023_MaCo_bRNA_pokey_dolphin/index.html
+        - s3://altos-lab-static-content/bioinf_2023_PuMu_bRNA_EXP23003730/index.html
+        - s3://altos-lab-static-content/bioinf_2023_PuMu_bRNA_EXP23005574/index.html
+        - s3://altos-lab-static-content/bioinf_2023_PuMu_bRNA_EXP23005675/index.html
+        - s3://altos-lab-static-content/bioinf_2023_PuMu_scRNA_NMJ_Denervation/index.html
+        - s3://altos-lab-static-content/bioinf_2023_RoFr_public_scRNAseq_oligodendrocytes/index.html
+        - s3://altos-lab-static-content/bioinf_2023_github_pages/index.html
+        - s3://altos-lab-static-content/bioinf_2023_github_pagesx/index.html
+        - s3://altos-lab-static-content/bioinf_2024_PuMu_RNAseq_senolysis/index.html
+        - s3://altos-lab-static-content/bioinf_CK_Bernier_Array_Data/index.html
+        - s3://altos-lab-static-content/bioinf_CK_Bernier_Izgy/index.html
+        - s3://altos-lab-static-content/bioinf_CK_early_reprogramming_events/index.html
+        - s3://altos-lab-static-content/bioinf_CK_pycr1_effects/index.html
+        - s3://altos-lab-static-content/bioinf_CK_worm_motifs/index.html
         - s3://altos-lab-static-content/bioinformatics/index.html
+        - s3://altos-lab-static-content/igv/index.html
+        - s3://altos-lab-static-content/standards/index.html
+        - s3://altos-lab-static-content/techdocs/index.html
+
       nofollow:
         - "^#.*"
         - "^https://.*"
@@ -174,9 +221,11 @@
       rewrite:
         - "s%(.*)/$%${1}/index.html%"
       cache:
-        cache_prefix: "static"
+        cache_prefix: downloads
+        cache_checkpoint: checkpoints
         cache_clear_before_crawl: true
         cache_sharding_prefix_len: 1
+        cache_concurrency: 20
       download:
         default_concurrency: 4 # 0 will default to all available CPUs
         default_request_chan_size: 100
@@ -196,6 +245,7 @@
     force_deletion: false
     readdir_entries: 50
     document_request_size: 50
+    cache_concurrency: 20
   converters:
     - from_content_types: ["text/html;charset=utf-8"]
       default_author:
