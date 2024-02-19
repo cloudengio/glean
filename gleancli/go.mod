@@ -8,12 +8,12 @@ require (
 	cloudeng.io/aws v0.0.0-20240218002136-045ada2e7f21
 	cloudeng.io/cmdutil v0.0.0-20240218002136-045ada2e7f21
 	cloudeng.io/file v0.0.0-20240218002136-045ada2e7f21
-	cloudeng.io/glean/config v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/config v0.0.0-20240218234621-cb8626a93bd6
 	cloudeng.io/glean/crawlindex v0.0.0-20240218194221-213bdf77131d
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240205023926-3eb3c2387dc2
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240205023926-3eb3c2387dc2
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240205023926-3eb3c2387dc2
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240205023926-3eb3c2387dc2
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240218234621-cb8626a93bd6
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240218234621-cb8626a93bd6
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240218234621-cb8626a93bd6
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240218234621-cb8626a93bd6
 	cloudeng.io/path v0.0.9
 	cloudeng.io/webapi/operations v0.0.0-20240218232106-56ca28c3280e
 	gopkg.in/yaml.v3 v3.0.1
