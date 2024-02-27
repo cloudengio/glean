@@ -80,13 +80,18 @@ func MustIndexProcessors() IndexProcessors {
 
 // APIExtensions returns the builtin API related commands.
 func APIExtensions(parents ...string) []gleancfg.Extension {
-	var exts []gleancfg.Extension
-	for _, spec := range []gleancfg.ExtensionSpec{
+	return NewExtensions(parents,
 		protocolsio.ExtensionSpec,
 		benchling.ExtensionSpec,
 		papersapp.ExtensionSpec,
 		biorxiv.ExtensionSpec,
-	} {
+	)
+}
+
+// NewExtensions creates the command specified extensions.
+func NewExtensions(parents []string, specs ...gleancfg.ExtensionSpec) []gleancfg.Extension {
+	var exts []gleancfg.Extension
+	for _, spec := range specs {
 		ext := gleancfg.NewExtensionC(spec, parents)
 		exts = append(exts, ext)
 	}

@@ -103,7 +103,10 @@ commands:
         arguments:
           - datasource-name - the name of the datasource to use
           - query           - the query to be used to find documents to be deleted
- `
+
+  {{range subcmdExtension "Extensions"}}
+  {{.}}{{end}}
+`
 
 var cmdExtensions []gleancfg.Extension
 
@@ -123,15 +126,19 @@ type Options struct {
 	CreateCrawlFS      func(name string, cfg yaml.Node, factories map[string]crawlcmd.FSFactory) error
 	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
 	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
+	Extensions         []gleancfg.Extension
 	APIExtensions      []gleancfg.Extension
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
 
+	cmdExtensions = append([]gleancfg.Extension{}, options.Extensions...)
 	cmdExtensions = append(cmdExtensions, options.APIExtensions...)
 
 	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
-		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.APIExtensions)...))
+		subcmd.MergeExtensions("Extensions", asSubcmdExtensions(options.Extensions)...),
+		subcmd.MergeExtensions("APIExtensions", asSubcmdExtensions(options.APIExtensions)...),
+	)
 
 	ds := Datasources{
 		extensions: cmdExtensions,
