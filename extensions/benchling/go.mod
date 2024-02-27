@@ -5,21 +5,21 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/cmdutil v0.0.0-20240218002136-045ada2e7f21
-	cloudeng.io/file v0.0.0-20240218002136-045ada2e7f21
-	cloudeng.io/glean/config v0.0.0-20240219190213-ae7b980af97c
-	cloudeng.io/glean/crawlindex v0.0.0-20240219190213-ae7b980af97c
-	cloudeng.io/glean/gleansdk v0.0.0-20240219190213-ae7b980af97c
+	cloudeng.io/cmdutil v0.0.0-20240221211424-ed9aa42afca1
+	cloudeng.io/file v0.0.0-20240221211424-ed9aa42afca1
+	cloudeng.io/glean/config v0.0.0-20240219192622-922fdfc38b20
+	cloudeng.io/glean/crawlindex v0.0.0-20240219192622-922fdfc38b20
+	cloudeng.io/glean/gleansdk v0.0.0-20240219192622-922fdfc38b20
 	cloudeng.io/webapi/benchling v0.0.0-20240218232106-56ca28c3280e
-	cloudeng.io/webapi/operations v0.0.0-20240218232106-56ca28c3280e
+	cloudeng.io/webapi/operations v0.0.0-20240227010112-3534f4777beb
 )
 
 require (
 	cloudeng.io/aws v0.0.0-20240203235614-ea57581c3aff // indirect
 	cloudeng.io/errors v0.0.10 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240205023926-3eb3c2387dc2 // indirect
-	cloudeng.io/net v0.0.0-20240218002136-045ada2e7f21 // indirect
-	cloudeng.io/os v0.0.0-20240218002136-045ada2e7f21 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240219192622-922fdfc38b20 // indirect
+	cloudeng.io/net v0.0.0-20240221211424-ed9aa42afca1 // indirect
+	cloudeng.io/os v0.0.0-20240221211424-ed9aa42afca1 // indirect
 	cloudeng.io/path v0.0.9 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
@@ -42,7 +42,7 @@ require (
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/crypto v0.19.0 // indirect
+	golang.org/x/crypto v0.20.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/oauth2 v0.17.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
