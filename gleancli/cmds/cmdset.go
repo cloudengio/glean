@@ -198,7 +198,7 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 }
 
 func defaultInitState(ctx context.Context, gf GlobalFlags, gc *gleancfg.Glean) (context.Context, error) {
-	err := cmdyaml.ParseConfigFile(ctx, gf.Config, globalConfig)
+	err := cmdyaml.ParseConfigFile(ctx, gf.Config, gc)
 	if err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			return ctx, err
