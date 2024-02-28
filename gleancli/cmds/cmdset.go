@@ -118,8 +118,6 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 	return subext
 }
 
-type Option func(o *Options)
-
 type Options struct {
 	CrawlProcessors    static.CrawlProcessors
 	IndexProcessors    static.IndexProcessors
@@ -128,6 +126,7 @@ type Options struct {
 	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
 	Extensions         []gleancfg.Extension
 	APIExtensions      []gleancfg.Extension
+	MainWrapper        func(ctx context.Context, extOpts gleancfg.ExtensionOptions, cmdRunner func(ctx context.Context) error) error
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
@@ -177,8 +176,12 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 		CreateStoreFS:      options.CreateStoreFS,
 		CreateCheckpointOp: options.CreateCheckpointOp,
 	}
+	wrapper := options.MainWrapper
+	if wrapper == nil {
+		wrapper = mainWrapper
+	}
 	cmdSet.WithMain(func(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
-		return mainWrapper(ctx, extOpts, cmdRunner)
+		return wrapper(ctx, extOpts, cmdRunner)
 	})
 	return cmdSet
 }
