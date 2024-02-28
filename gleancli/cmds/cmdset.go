@@ -118,8 +118,6 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 	return subext
 }
 
-type Option func(o *Options)
-
 type Options struct {
 	CrawlProcessors    static.CrawlProcessors
 	IndexProcessors    static.IndexProcessors
@@ -128,6 +126,7 @@ type Options struct {
 	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
 	Extensions         []gleancfg.Extension
 	APIExtensions      []gleancfg.Extension
+	InitGlobalState    func(ctx context.Context, globalFlags GlobalFlags, globalConfig *gleancfg.Glean) (context.Context, error)
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
@@ -177,26 +176,34 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 		CreateStoreFS:      options.CreateStoreFS,
 		CreateCheckpointOp: options.CreateCheckpointOp,
 	}
+
+	initStat := options.InitGlobalState
+	if initStat == nil {
+		initStat = defaultInitState
+	}
 	cmdSet.WithMain(func(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
-		return mainWrapper(ctx, extOpts, cmdRunner)
+		ctx, cancel := context.WithCancel(ctx)
+		cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
+		ctx, err := initStat(ctx, globalFlags, &globalConfig)
+		if err != nil {
+			return err
+		}
+		extOpts.Glean = globalConfig
+		for _, ext := range cmdExtensions {
+			ext.SetOptions(extOpts)
+		}
+		return cmdRunner(ctx)
 	})
 	return cmdSet
 }
 
-func mainWrapper(ctx context.Context, extOpts gleancfg.ExtensionOptions, cmdRunner func(ctx context.Context) error) error {
-	ctx, cancel := context.WithCancel(ctx)
-	cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
-
-	err := cmdyaml.ParseConfigFile(ctx, globalFlags.Config, &globalConfig)
+func defaultInitState(ctx context.Context, gf GlobalFlags, gc *gleancfg.Glean) (context.Context, error) {
+	err := cmdyaml.ParseConfigFile(ctx, gf.Config, gc)
 	if err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
-			return err
+			return ctx, err
 		}
-		fmt.Printf("warning: %q not found\n", globalFlags.Config)
+		fmt.Printf("warning: %q not found\n", gf.Config)
 	}
-	extOpts.Glean = globalConfig
-	for _, ext := range cmdExtensions {
-		ext.SetOptions(extOpts)
-	}
-	return cmdRunner(ctx)
+	return ctx, nil
 }
