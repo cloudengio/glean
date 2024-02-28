@@ -33,6 +33,9 @@ func TestConfig(t *testing.T) {
 	if got, want := len(cfg), 2; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
+	if got, want := cfg[0].API.Domain, "glean-dev"; got != want {
+		t.Errorf("got %v, want %v", got, want)
+	}
 	if got, want := cfg[1].Name, "another-instance"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}

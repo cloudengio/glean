@@ -7,6 +7,7 @@ package index
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 	"time"
@@ -248,7 +249,7 @@ func timings(then time.Time, docs, employees int) {
 		return
 	}
 	avg := time.Duration(int64(taken) / int64(docs+employees))
-	fmt.Printf("indexed: % 5v docs, % 5v employees in % 8v, (avg: %8v)\n", docs, employees, taken, avg)
+	log.Printf("indexed: % 5v docs, % 5v employees in % 8v, (avg: %8v)\n", docs, employees, taken, avg)
 }
 
 // finish will send any buffered documents and then the last
