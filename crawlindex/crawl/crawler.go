@@ -40,7 +40,8 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 		return err
 	}
 
-	ofs, err := c.CreateStoreFS(ctx, cfg.Cache.Path, cfg.Cache.ServiceConfig)
+	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
+	ofs, err := c.CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
 	if err != nil {
 		return err
 	}
@@ -52,7 +53,6 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 		}
 	}
 
-	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
 	// Run all of the crawlers concurrently.
 	g := errgroup.T{}
 	for _, crawl := range cfg.Crawls {
