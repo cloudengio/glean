@@ -13,15 +13,12 @@ import (
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
-	"cloudeng.io/file/crawl/crawlcmd"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/crawlindex/index"
 	"cloudeng.io/glean/gleancli/builtin/static"
-	"cloudeng.io/webapi/operations"
-	"gopkg.in/yaml.v3"
+	"cloudeng.io/webapi/operations/apitokens"
 )
 
 type GlobalFlags struct {
@@ -119,14 +116,16 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 }
 
 type Options struct {
-	CrawlProcessors    static.CrawlProcessors
-	IndexProcessors    static.IndexProcessors
-	CreateCrawlFS      func(name string, cfg yaml.Node, factories map[string]crawlcmd.FSFactory) error
-	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
-	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
-	Extensions         []gleancfg.Extension
-	APIExtensions      []gleancfg.Extension
-	InitGlobalState    func(ctx context.Context, globalFlags GlobalFlags, globalConfig *gleancfg.Glean) (context.Context, error)
+	CrawlProcessors static.CrawlProcessors
+	IndexProcessors static.IndexProcessors
+	TokenReaders    *apitokens.Readers
+
+	gleancfg.DynamicResources
+
+	Extensions    []gleancfg.Extension
+	APIExtensions []gleancfg.Extension
+
+	InitGlobalState func(ctx context.Context, globalFlags GlobalFlags, globalConfig *gleancfg.Glean) (context.Context, error)
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
@@ -172,11 +171,6 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 	globals.MustRegisterFlagStruct(&globalFlags, nil, nil)
 	cmdSet.WithGlobalFlags(globals)
 
-	extOpts := gleancfg.ExtensionOptions{
-		CreateStoreFS:      options.CreateStoreFS,
-		CreateCheckpointOp: options.CreateCheckpointOp,
-	}
-
 	initStat := options.InitGlobalState
 	if initStat == nil {
 		initStat = defaultInitState
@@ -188,7 +182,11 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 		if err != nil {
 			return err
 		}
-		extOpts.Glean = globalConfig
+		extOpts := gleancfg.ExtensionOptions{
+			Glean:            globalConfig,
+			TokenReaders:     options.TokenReaders,
+			DynamicResources: options.DynamicResources,
+		}
 		for _, ext := range cmdExtensions {
 			ext.SetOptions(extOpts)
 		}

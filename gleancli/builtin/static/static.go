@@ -17,6 +17,7 @@ import (
 	"cloudeng.io/glean/extensions/biorxiv"
 	"cloudeng.io/glean/extensions/papersapp"
 	"cloudeng.io/glean/extensions/protocolsio"
+	"cloudeng.io/webapi/operations/apitokens"
 )
 
 // CrawlProcessors represents the set of available Extractors for crawling.
@@ -92,8 +93,14 @@ func APIExtensions(parents ...string) []gleancfg.Extension {
 func NewExtensions(parents []string, specs ...gleancfg.ExtensionSpec) []gleancfg.Extension {
 	var exts []gleancfg.Extension
 	for _, spec := range specs {
-		ext := gleancfg.NewExtensionC(spec, parents)
+		ext := gleancfg.NewExtension(spec, parents)
 		exts = append(exts, ext)
 	}
 	return exts
+}
+
+func TokenReaders() *apitokens.Readers {
+	def := apitokens.CloneReaders(apitokens.DefaultReaders)
+	// Add any additional token readers go here.
+	return def
 }

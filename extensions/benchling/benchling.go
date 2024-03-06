@@ -6,19 +6,18 @@ package benchling
 
 import (
 	"context"
-	"os"
 	"strings"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
 	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/webapi/benchling/benchlingcmd"
-	"cloudeng.io/webapi/operations"
+	"cloudeng.io/webapi/apis/benchling/benchlingcmd"
+	"cloudeng.io/webapi/operations/apicrawlcmd"
 )
 
 type CommonFlags struct {
 	config.FileFlags
+	AuthFile string `subcmd:"benchling-auth,$HOME/.benchling.yaml,'benchling.io auth config file'"`
 }
 
 type CrawlFlags struct {
@@ -52,7 +51,7 @@ const (
 var ExtensionSpec = gleancfg.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    benchlingcmd.Auth{},
+	AuthCfg:    gleancfg.APIKey{},
 	ServiceCfg: benchlingcmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -66,30 +65,29 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 
 type command struct {
 	parent gleancfg.Extension
-	fs     operations.FS
-	chkpt  checkpoint.Operation
 }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv benchlingcmd.CommonFlags, datasource string) (*benchlingcmd.Command, error) {
+func (cmd *command) new(ctx context.Context, fv CommonFlags, datasource string) (*benchlingcmd.Command, error) {
 	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
-	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
+	var key gleancfg.APIKey
+	token, err := key.ParseAndRead(ctx, fv.AuthFile, cmd.parent.Options().TokenReaders)
 	if err != nil {
 		return nil, err
 	}
-	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
+	resources := apicrawlcmd.Resources{
+		Token:           token,
+		NewOperationsFS: cmd.parent.Options().NewOperationsFS,
+		NewCheckpointOp: cmd.parent.Options().NewCheckpointOp,
 	}
-	return benchlingcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmd.chkpt, cacheRoot, cmdName, pfv.BenchlingConfig)
+	return benchlingcmd.NewCommand(ctx, cfg.APICrawls[datasource], resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
@@ -99,7 +97,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 
 func (cmd *command) indexCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*IndexFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.IndexFlags.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}

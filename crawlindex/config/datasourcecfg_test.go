@@ -25,8 +25,8 @@ const datasourcesSpec = `- datasource: static-corpus
         default_request_chan_size: 100
         default_downloads_chan_size: 100
         concurrency: [1, 2, 4]
-  cache:
-    path: $HOME/.cache/test-crawl
+      cache:
+        downloads: $HOME/.cache/test-crawl
   index:
     force_restart: true
     force_deletion: true
@@ -56,7 +56,7 @@ func TestDataSource(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.Cache.Path, "$HOME/.cache/test-crawl"; got != want {
+	if got, want := ds0.Crawls[0].Cache.Downloads, "$HOME/.cache/test-crawl"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 

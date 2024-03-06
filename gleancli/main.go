@@ -14,12 +14,11 @@ import (
 
 func main() {
 	opts := cmds.Options{
-		CrawlProcessors:    static.MustCrawlProcessors(),
-		IndexProcessors:    static.MustIndexProcessors(),
-		CreateCrawlFS:      dynamic.PopulateFS,
-		CreateStoreFS:      dynamic.StoreFS,
-		CreateCheckpointOp: dynamic.CheckpointOp,
-		APIExtensions:      static.APIExtensions("api"),
+		CrawlProcessors:  static.MustCrawlProcessors(),
+		IndexProcessors:  static.MustIndexProcessors(),
+		TokenReaders:     static.TokenReaders(),
+		APIExtensions:    static.APIExtensions("api"),
+		DynamicResources: dynamic.New(),
 	}
 	cmds.MustNew(opts).MustDispatch(context.Background())
 }

@@ -12,16 +12,15 @@
         initial_delay: 30s
         steps: 10
         status_codes: [408]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_sharding_prefix_len: 1
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/biorxiv/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: s3://cloudeng-s3fs/biorxiv/crawl/downloads
+        checkpoint: s3://cloudeng-s3fs/biorxiv/crawl/checkpoints
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
@@ -59,15 +58,14 @@
         initial_delay: 30s
         steps: 10
         status_codes: [429]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/papersapp/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: s3://cloudeng-s3fs/papersapp/crawl/downloads
+        checkpoint: s3://cloudeng-s3fs/papersapp/crawl/checkpoints
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
@@ -105,15 +103,14 @@
         initial_delay: 30s
         steps: 10
         status_codes: [429]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/benchling/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: s3://cloudeng-s3fs/benchling/crawl/downloads
+        checkpoint: s3://cloudeng-s3fs/benchling/crawl/checkpoints
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: true
@@ -145,11 +142,15 @@
         order_direction: asc
         order_field: id
         filter: public
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_sharding_prefix_len: 1
-      cache_concurrency: 20
-      incremental: true
+      cache:
+        downloads: s3://cloudeng-s3fs/protocolsio/crawl/downloads
+        checkpoint: s3://cloudeng-s3fs/protocolsio/crawl/checkpoints
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
       exponential_backoff:
         initial_delay: 60s
         steps: 10
@@ -160,12 +161,7 @@
     readdir_entries: 50
     document_request_size: 20
     cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/protocolsio/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+
   converters:
     - from_content_types: ["protocols.io/protocol"]
       default_author:
@@ -209,7 +205,6 @@
         - s3://altos-lab-static-content/igv/index.html
         - s3://altos-lab-static-content/standards/index.html
         - s3://altos-lab-static-content/techdocs/index.html
-
       nofollow:
         - "^#.*"
         - "^https://.*"
@@ -221,11 +216,15 @@
       rewrite:
         - "s%(.*)/$%${1}/index.html%"
       cache:
-        cache_prefix: downloads
-        cache_checkpoint: checkpoints
-        cache_clear_before_crawl: true
-        cache_sharding_prefix_len: 1
-        cache_concurrency: 20
+        downloads: s3://cloudeng-s3fs/altos-static/downloads
+        checkpoint: s3://cloudeng-s3fs/altos-static/checkpoints
+        clear_before_crawl: true
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
       download:
         default_concurrency: 4 # 0 will default to all available CPUs
         default_request_chan_size: 100
@@ -238,8 +237,6 @@
         aws: true
         aws_profile: altos-labs
         aws_region: us-west-2
-  cache:
-    path: $HOME/.glean/altos-static
   bulk_index:
     force_restart: true
     force_deletion: false

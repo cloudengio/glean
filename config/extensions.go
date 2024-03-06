@@ -11,18 +11,38 @@ package config
 import (
 	"context"
 
+	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/checkpoint"
+	"cloudeng.io/file/content"
+	"cloudeng.io/file/crawl/crawlcmd"
+	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/webapi/operations"
-	"gopkg.in/yaml.v3"
+	"cloudeng.io/webapi/operations/apitokens"
 )
 
-type ExtensionOptions struct {
-	Glean
-	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
-	CreateCheckpointOp func(ctx context.Context, path string, cfg yaml.Node) (checkpoint.Operation, error)
+// DynamicResources provides a set of functions and  that can be used to create
+// the various resources required by command extensions.
+type DynamicResources struct {
+	PopulateCrawlFS func(ctx context.Context, cfg config.CrawlService, factories map[string]crawlcmd.FSFactory) error
+
+	NewContentFS func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (content.FS, error)
+
+	NewCheckpointOp func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (checkpoint.Operation, error)
+
+	NewOperationsFS func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 
+// ExtensionsOptions are the options that are passed to each extension.
+type ExtensionOptions struct {
+	Glean
+
+	TokenReaders *apitokens.Readers
+
+	DynamicResources
+}
+
+// Extension is implemented by all extensions.
 type Extension interface {
 	subcmd.Extension
 	SetOptions(ExtensionOptions)
@@ -54,6 +74,7 @@ func (e *extension) ServiceConfigType() any {
 	return e.serviceCfgType
 }
 
+// ExtensionSpec defines an extension.
 type ExtensionSpec struct {
 	Name       string // Name of the extension
 	CmdSpec    string // YAML subcmd spec
@@ -63,7 +84,7 @@ type ExtensionSpec struct {
 	AddFunc func(extension Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error
 }
 
-func NewExtensionC(spec ExtensionSpec, parents []string) Extension {
+func NewExtension(spec ExtensionSpec, parents []string) Extension {
 	ext := &extension{
 		authCfgType:    spec.AuthCfg,
 		serviceCfgType: spec.ServiceCfg,
@@ -74,10 +95,17 @@ func NewExtensionC(spec ExtensionSpec, parents []string) Extension {
 	return ext
 }
 
-func NewExtension(name, spec string, authCfgType, serviceCfgType any, appendFn func(cmdSet *subcmd.CommandSetYAML) error) Extension {
-	return &extension{
-		Extension:      subcmd.NewExtension(name, spec, appendFn),
-		serviceCfgType: serviceCfgType,
-		authCfgType:    authCfgType,
+type APIKey struct {
+	APIKey string `yaml:"api_key" cmd:"API key in apitokens format"`
+}
+
+func (k *APIKey) ParseAndRead(ctx context.Context, filename string, readers *apitokens.Readers) (*apitokens.T, error) {
+	if err := cmdyaml.ParseConfigFile(ctx, filename, &k); err != nil {
+		return nil, err
 	}
+	tok := apitokens.New(k.APIKey)
+	if err := tok.Read(ctx, readers); err != nil {
+		return nil, err
+	}
+	return tok, nil
 }
