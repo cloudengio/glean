@@ -4,13 +4,7 @@
 
 package config_test
 
-import (
-	"testing"
-
-	"cloudeng.io/cmdutil/cmdyaml"
-	"cloudeng.io/glean/config"
-)
-
+/*
 const configSpec = `
 - name: glean-dev
   auth:
@@ -46,3 +40,4 @@ func TestConfig(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 }
+*/

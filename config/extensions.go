@@ -16,13 +16,15 @@ import (
 	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/crawlcmd"
+	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/operations/apitokens"
 )
 
-// DynamicResources provides a set of functions and  that can be used to create
-// the various resources required by command extensions.
+// DynamicResources provides a set of functions that can be used to create
+// the various resources required by commands and command extensions.
 type DynamicResources struct {
 	PopulateCrawlFS func(ctx context.Context, cfg config.CrawlService, factories map[string]crawlcmd.FSFactory) error
 
@@ -33,11 +35,31 @@ type DynamicResources struct {
 	NewOperationsFS func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 
+// CrawlProcessors represents the set of available Extractors for crawling.
+type CrawlProcessors struct {
+	Extractors map[content.Type]outlinks.Extractor
+}
+
+// IndexProcessor represents the set of available converters for indexing.
+type IndexProcessors struct {
+	DocumentConverters *content.Registry[converters.Document]
+	UserConverters     *content.Registry[converters.User]
+}
+
+// StaticResources provides a set of resources that are typically required
+// by commands and command extensions that are statically configured
+// per application instance.
+type StaticResources struct {
+	CrawlProcessors CrawlProcessors
+	IndexProcessors IndexProcessors
+	TokenReaders    *apitokens.Readers
+}
+
 // ExtensionsOptions are the options that are passed to each extension.
 type ExtensionOptions struct {
 	Glean
 
-	TokenReaders *apitokens.Readers
+	StaticResources
 
 	DynamicResources
 }

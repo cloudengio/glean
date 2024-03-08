@@ -20,19 +20,8 @@ import (
 	"cloudeng.io/webapi/operations/apitokens"
 )
 
-// CrawlProcessors represents the set of available Extractors for crawling.
-type CrawlProcessors struct {
-	Extractors map[content.Type]outlinks.Extractor
-}
-
-// IndexProcessor represents the set of available converters for indexing.
-type IndexProcessors struct {
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-}
-
-// Extractors represents the set of available outlink extractors.
-func Extractors() map[content.Type]outlinks.Extractor {
+// LinkExtractors represents the set of available outlink extractors.
+func LinkExtractors() map[content.Type]outlinks.Extractor {
 	return map[content.Type]outlinks.Extractor{
 		"text/html;charset=utf-8": outlinks.NewHTML(),
 	}
@@ -66,14 +55,14 @@ func MustUserConverters() *content.Registry[converters.User] {
 	return cnv
 }
 
-func MustCrawlProcessors() CrawlProcessors {
-	return CrawlProcessors{
-		Extractors: Extractors(),
+func MustCrawlProcessors() gleancfg.CrawlProcessors {
+	return gleancfg.CrawlProcessors{
+		Extractors: LinkExtractors(),
 	}
 }
 
-func MustIndexProcessors() IndexProcessors {
-	return IndexProcessors{
+func MustIndexProcessors() gleancfg.IndexProcessors {
+	return gleancfg.IndexProcessors{
 		DocumentConverters: MustDocumentConverters(),
 		UserConverters:     MustUserConverters(),
 	}
@@ -101,6 +90,15 @@ func NewExtensions(parents []string, specs ...gleancfg.ExtensionSpec) []gleancfg
 
 func TokenReaders() *apitokens.Readers {
 	def := apitokens.CloneReaders(apitokens.DefaultReaders)
-	// Add any additional token readers go here.
+	// Add any additional token readers go here, eg. for reading
+	// from AWS secrets manager.
 	return def
+}
+
+func New() gleancfg.StaticResources {
+	return gleancfg.StaticResources{
+		CrawlProcessors: MustCrawlProcessors(),
+		IndexProcessors: MustIndexProcessors(),
+		TokenReaders:    TokenReaders(),
+	}
 }

@@ -17,18 +17,11 @@ type StatsFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags, datasource string) error {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
-	if err != nil {
-		return err
-	}
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return err
-	}
+func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags) error {
+	ctx, client := idx.newGleanIndexingClient(ctx)
 
 	var req gleansdk.GetDocumentCountRequest
-	req.SetName(cfg.CustomDatasourceConfig.GetName())
+	req.SetName(idx.datasourceName)
 
 	count, resp, err := client.DocumentsApi.GetdocumentcountPost(ctx).GetDocumentCountRequest(req).Execute()
 	if err := handleHTTPError(resp, err); err != nil {

@@ -4,30 +4,15 @@
 
 package config
 
-import (
-	"context"
-	"fmt"
-	"strings"
-
-	"cloudeng.io/glean/gleanclientsdk"
-	"cloudeng.io/glean/gleansdk"
-)
-
-type GleanFlags struct {
-	Config string `subcmd:"config,$HOME/.glean.yaml,'glean config file'"`
-}
-
 type Glean []struct {
-	Name string `yaml:"name" cmd:"name of the glean instance"`
-	Auth struct {
+	Domain string `yaml:"domain" cmd:"domain name of the glean instance"`
+	Auth   struct {
 		BearerToken       string `yaml:"indexing_token" cmd:"indexing token for the glean instance"`
 		ClientBearerToken string `yaml:"client_token" cmd:"client bearer token for the glean instance"`
 	}
-	API struct {
-		Domain string `yaml:"domain" cmd:"domain for the glean instance"`
-	}
 }
 
+/*
 func (c Glean) String() string {
 	var out strings.Builder
 	for _, cfg := range c {
@@ -62,9 +47,9 @@ func (c Glean) NewClientAPIClient(ctx context.Context, name string) (context.Con
 			}
 			ctx = context.WithValue(ctx, gleanclientsdk.ContextAccessToken, cfg.Auth.ClientBearerToken)
 			ctx = context.WithValue(ctx, gleanclientsdk.ContextServerVariables, templateVars)
-			cfg := gleanclientsdk.NewConfiguration()
-			return ctx, gleanclientsdk.NewAPIClient(cfg), nil
+			return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration()), nil
 		}
 	}
 	return ctx, nil, fmt.Errorf("Glean.NewClientAPIClient: failed to find config for %q", name)
 }
+*/

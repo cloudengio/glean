@@ -24,17 +24,9 @@ type QueryFlags struct {
 }
 
 func (idx *Indexer) query(ctx context.Context, numDocs int, cfg config.Datasource, query string) (*gleanclientsdk.SearchResponse, error) {
-	ctx, client, err := idx.GleanConfig.NewClientAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return nil, err
-	}
+	ctx, client := idx.newGleanClient(ctx)
 	si := gleanclientsdk.NewSearchRequestSourceInfo("FULLPAGE")
-	for _, c := range idx.GleanConfig {
-		if c.Name == cfg.GleanInstance {
-			si.SetDomain(c.API.Domain)
-			break
-		}
-	}
+	si.SetDomain(idx.datasource.GleanDomain)
 	si.SetIsDebug(true)
 	sreq := gleanclientsdk.NewSearchRequest(*si)
 	sreq.SetQuery(query)
@@ -43,7 +35,7 @@ func (idx *Indexer) query(ctx context.Context, numDocs int, cfg config.Datasourc
 	}
 	sreq.SetPageSize(int32(numDocs))
 	sreq.RequestOptions = gleanclientsdk.NewSearchRequestOptions(100)
-	sreq.RequestOptions.SetDatasourceFilter(cfg.DatasourceConfig.Name)
+	sreq.RequestOptions.SetDatasourceFilter(idx.datasourceName)
 	sreq.RequestOptions.SetDisableSpellcheck(true)
 	sreq.RequestOptions.SetDisableQueryAutocorrect(true)
 	results, _, err := client.SearchApi.Search(ctx).Payload(*sreq).Execute()
@@ -89,16 +81,13 @@ func (idx *Indexer) Query(ctx context.Context, fv *QueryFlags, datasource string
 }
 
 func (idx *Indexer) indexingStatus(ctx context.Context, cfg config.Datasource, results []gleanclientsdk.SearchResult) error {
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return err
-	}
+	ctx, client := idx.newGleanIndexingClient(ctx)
 	for _, r := range results {
 		objType := strings.ToLower(r.Document.GetDocType())
 		docid := r.Document.GetId()
-		prefix := fmt.Sprintf("CUSTOM_%v_%v_", strings.ToUpper(cfg.DatasourceConfig.Name), objType)
+		prefix := fmt.Sprintf("CUSTOM_%v_%v_", strings.ToUpper(idx.datasourceName), objType)
 		docid = strings.TrimPrefix(docid, prefix)
-		sr := gleansdk.NewGetDocumentStatusRequest(cfg.DatasourceConfig.Name,
+		sr := gleansdk.NewGetDocumentStatusRequest(idx.datasourceName,
 			objType, docid)
 
 		resp, _, err := client.DocumentsApi.GetdocumentstatusPost(ctx).GetDocumentStatusRequest(*sr).Execute()

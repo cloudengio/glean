@@ -33,8 +33,8 @@
         name: "biorxiv"
         email: "biorxiv@altoslabs.com"
         userid: "biorxiv"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "biorxiv"
     displayname: "biorxiv"
     homeurl: "https://www.biorxiv.org"
@@ -79,8 +79,8 @@
         name: "papersapp"
         email: "papersapp@altoslabs.com"
         userid: "papersapp"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "papersapp"
     displayname: "ReadCube"
     homeurl: "https://app.readcube.com"
@@ -124,8 +124,8 @@
         name: "benchling"
         email: "benchling@altoslabs.com"
         userid: "benchling"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "benchling"
     displayname: "Benchling"
     homeurl: "https://altoslabs.benchling.com"
@@ -166,7 +166,7 @@
     - from_content_types: ["protocols.io/protocol"]
       default_author:
         email: "protocolsio@altoslabs.com"
-  datasource_config:
+  glean_datasource_config:
     glean_instance: glean-dev
     name: "protocolsio"
     displayname: "protocols.io"
@@ -249,8 +249,8 @@
         email: "mkdocs@altoslabs.com"
       view_url_rewrites:
         - "s%^(s3://altos-lab-static-content/)(.*)%https://static.lab.altoslabs.com/${2}%"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: internalDocumentation
     displayname: "Altos Internal"
     homeurl: "https://static.lab.altoslabs.com"

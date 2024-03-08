@@ -8,67 +8,28 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"sync"
 	"time"
 
 	"cloudeng.io/errors"
-	"cloudeng.io/file/content"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
-	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/operations/apicrawlcmd"
-	"gopkg.in/yaml.v3"
 )
-
-// BulkFlags represents the flags to the bulk indexing command.
-type BulkFlags struct {
-	config.FileFlags
-	UploadID      string `subcmd:"upload-id,upload,id to use for this bulk upload"`
-	ForceRestart  bool   `subcmd:"force-restart,false,restart the bulk upload"`
-	ForceDeletion bool   `subcmd:"force-sync-deletion,false,synchronously delete stale documents on upload of last bulk indexing batch"`
-	DryRun        bool   `subcmd:"dry-run,false,'process but not do index documents'"`
-}
-
-// Indexer represents a Glean indexer.
-type Indexer struct {
-	GleanConfig        gleancfg.Glean
-	Config             config.Datasource
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-	CreateStoreFS      func(ctx context.Context, path string, cfg yaml.Node) (operations.FS, error)
-}
 
 // Bulk indexes a datasource in bulk mode.
 func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
-	cachePath := os.ExpandEnv(idx.Config.Cache.Path)
-	if len(cachePath) == 0 {
-		return fmt.Errorf("no path specified for the cache to be indexed")
-	}
-
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, idx.Config.GleanInstance)
-	if err != nil {
-		return err
-	}
-
-	if idx.Config.BulkIndex == nil {
+	ctx, client := idx.newGleanIndexingClient(ctx)
+	if idx.datasource.BulkIndex == nil {
 		return fmt.Errorf("bulk_index block is missing from config file")
 	}
 
-	ofs, err := idx.CreateStoreFS(ctx, idx.Config.Cache.Path, idx.Config.Cache.ServiceConfig)
-	if err != nil {
-		return err
-	}
-
-	size := idx.Config.BulkIndex.ReaddirEntries
+	size := idx.datasource.BulkIndex.ReaddirEntries
 	if size == 0 {
 		size = 100
 	}
 	reqCh := make(chan Request, size)
 
-	forceRestart, forceDeletion := idx.Config.ForceRestart, idx.Config.ForceDeletion
+	forceRestart, forceDeletion := idx.datasource.ForceRestart, idx.datasource.ForceDeletion
 	if fv.ForceDeletion {
 		forceDeletion = true
 	}
@@ -77,28 +38,28 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		forceRestart = true
 	}
 
-	cnvmap := idx.Config.ConfigForContentType()
+	cnvmap := idx.datasource.ConfigForContentType()
 	if len(cnvmap) == 0 {
 		return fmt.Errorf("no converters specified/found in config file")
 	}
 
-	checkpointDirs := apicrawlcmd.CheckpointPaths(idx.Config.APICrawls)
-	walker := newWalker(
-		idx.Config.CustomDatasourceConfig.GetName(),
-		ofs,
-		cnvmap,
-		idx.DocumentConverters,
-		idx.UserConverters,
-		checkpointDirs,
-		idx.Config.BulkIndex.CacheConcurrency,
-		idx.Config.BulkIndex.ReaddirEntries,
-		reqCh)
-	indexer := newBulkIndexer(client, idx.Config,
+	walker := &walker{
+		resources:   idx.resources,
+		datasource:  idx.datasource,
+		cnvConfig:   cnvmap,
+		docCnv:      idx.resources.DocumentConverters,
+		empCnv:      idx.resources.UserConverters,
+		idxCh:       reqCh,
+		concurrency: idx.datasource.BulkIndex.CacheConcurrency,
+		scanSize:    idx.datasource.BulkIndex.ReaddirEntries,
+	}
+
+	indexer := newBulkIndexer(client, idx.datasource,
 		WithForceDelete(forceDeletion),
 		WithForceRestart(forceRestart),
 		WithBulkID(fv.UploadID),
-		WithReqSizes(idx.Config.BulkIndex.DocumentRequestSize, idx.Config.BulkIndex.UserRequestSize),
-		WithUsers(idx.Config.BulkIndex.UserRequestSize > 0),
+		WithReqSizes(idx.datasource.BulkIndex.DocumentRequestSize, idx.datasource.BulkIndex.UserRequestSize),
+		WithUsers(idx.datasource.BulkIndex.UserRequestSize > 0),
 		WithDryRun(fv.DryRun),
 	)
 
@@ -109,7 +70,7 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	go func() {
-		errs.Append(walker.Run(ctx, cachePath))
+		errs.Append(walker.run(ctx))
 		close(reqCh)
 		wg.Done()
 	}()
@@ -199,7 +160,7 @@ func newBulkIndexer(client *gleansdk.APIClient, datasource config.Datasource, op
 		options.empReqSize = 50
 	}
 
-	datasourceName := datasource.CustomDatasourceConfig.GetName()
+	datasourceName := datasource.GleanDatasource.GetName()
 	b := &bulkIndexer{
 		documentIndexer: newBulkDocumentIndexer(
 			options, client, datasourceName),

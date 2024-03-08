@@ -14,9 +14,7 @@ import (
 
 func main() {
 	opts := cmds.Options{
-		CrawlProcessors:  static.MustCrawlProcessors(),
-		IndexProcessors:  static.MustIndexProcessors(),
-		TokenReaders:     static.TokenReaders(),
+		StaticResources:  static.New(),
 		APIExtensions:    static.APIExtensions("api"),
 		DynamicResources: dynamic.New(),
 	}

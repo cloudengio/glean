@@ -23,10 +23,10 @@ type FileFlags struct {
 	ConfigFile string `subcmd:"datasource-configs,,datasource config file"`
 }
 
-// GleanConfig represents the configuration of the datasource with
+// GleanDatasource represents the configuration of the datasource with
 // Glean's API.
-type GleanConfig struct {
-	GleanInstance                   string `yaml:"glean_instance" cmd:"glean instance to use"`
+type GleanDatasource struct {
+	// GleanConfig is the datasource configuration for the Glean instance.
 	gleansdk.CustomDatasourceConfig `yaml:",inline" cmd:"glean custom datasource configuration"`
 }
 
@@ -51,9 +51,12 @@ type Datasource struct {
 	// Converters (from download.Result to Glean document) configuration.
 	Converters []Converter `yaml:"converters,omitempty" cmd:"converters for this datasource"`
 
+	// GleanDomain is the domain of the Glean instance to use.
+	GleanDomain string `yaml:"glean_domain" cmd:"glean domain to use"`
+
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	GleanConfig `yaml:"datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
+	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
 }
 
 // Datasources represents a list of named datasources.
@@ -102,7 +105,7 @@ func (d Datasource) ConfigForContentType() map[content.Type]Conversion {
 			cnvmap[content.Clean(ft)] = Conversion{
 				ft,
 				&d.Converters[i],
-				&d.GleanConfig.CustomDatasourceConfig,
+				&d.GleanDatasource.CustomDatasourceConfig,
 			}
 		}
 	}
