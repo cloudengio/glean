@@ -11,12 +11,13 @@ import (
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/outlinks"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/extensions/benchling"
 	"cloudeng.io/glean/extensions/biorxiv"
 	"cloudeng.io/glean/extensions/papersapp"
 	"cloudeng.io/glean/extensions/protocolsio"
+	"cloudeng.io/glean/extensions/testcmd"
+	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/webapi/operations/apitokens"
 )
 
@@ -31,7 +32,7 @@ func LinkExtractors() map[content.Type]outlinks.Extractor {
 // it will panic on encountering an error.
 func MustDocumentConverters() *content.Registry[converters.Document] {
 	cnv, err := converters.CreateDocumentRegistry(
-		converters.NewHTML(),
+		NewHTML(), // Use the Glean HTML converter.
 		protocolsio.NewDocumentConverter(),
 		benchling.NewDocumentConverter(),
 		papersapp.NewDocumentConverter(),
@@ -55,37 +56,14 @@ func MustUserConverters() *content.Registry[converters.User] {
 	return cnv
 }
 
-func MustCrawlProcessors() gleancfg.CrawlProcessors {
-	return gleancfg.CrawlProcessors{
-		Extractors: LinkExtractors(),
-	}
-}
-
-func MustIndexProcessors() gleancfg.IndexProcessors {
-	return gleancfg.IndexProcessors{
-		DocumentConverters: MustDocumentConverters(),
-		UserConverters:     MustUserConverters(),
-	}
-}
-
 // APIExtensions returns the builtin API related commands.
-func APIExtensions(parents ...string) []gleancfg.Extension {
-	return NewExtensions(parents,
+func APIExtensions(parents ...string) []extensions.Extension {
+	return extensions.NewExtensions(parents,
 		protocolsio.ExtensionSpec,
 		benchling.ExtensionSpec,
 		papersapp.ExtensionSpec,
 		biorxiv.ExtensionSpec,
 	)
-}
-
-// NewExtensions creates the command specified extensions.
-func NewExtensions(parents []string, specs ...gleancfg.ExtensionSpec) []gleancfg.Extension {
-	var exts []gleancfg.Extension
-	for _, spec := range specs {
-		ext := gleancfg.NewExtension(spec, parents)
-		exts = append(exts, ext)
-	}
-	return exts
 }
 
 func TokenReaders() *apitokens.Readers {
@@ -95,10 +73,16 @@ func TokenReaders() *apitokens.Readers {
 	return def
 }
 
-func New() gleancfg.StaticResources {
-	return gleancfg.StaticResources{
-		CrawlProcessors: MustCrawlProcessors(),
-		IndexProcessors: MustIndexProcessors(),
-		TokenReaders:    TokenReaders(),
+func New() extensions.StaticResources {
+	return extensions.StaticResources{
+		Extractors:         LinkExtractors(),
+		DocumentConverters: MustDocumentConverters(),
+		UserConverters:     MustUserConverters(),
+		TokenReaders:       TokenReaders(),
 	}
+}
+
+// Extensions returns any top-level commands.
+func Extensions(parents ...string) []extensions.Extension {
+	return extensions.NewExtensions(parents, testcmd.ExtensionSpec)
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type AuthFileFlag struct {
-	AuthFile string `subcmd:"auth-file,$HOME/.glean-auth.yaml,'file containing authentication tokens for glean instances'"`
+	AuthFile string `subcmd:"glean-auth,$HOME/.glean-auth.yaml,'file containing authentication tokens for glean instances'"`
 }
 
 type Auth []struct {

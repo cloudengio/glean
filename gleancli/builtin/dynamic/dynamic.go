@@ -13,8 +13,8 @@ import (
 	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/crawlcmd"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/path/cloudpath"
 	"cloudeng.io/webapi/operations"
 )
@@ -63,19 +63,20 @@ func NewCheckpointOp(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (checkp
 // NewOperationsFS returns an operations.FS appropriate for the given path and
 // configuration.
 func NewOperationsFS(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error) {
-	match := cloudpath.DefaultMatchers.Match(cfg.Downloads)
+	dp, _ := cfg.Paths()
+	match := cloudpath.DefaultMatchers.Match(dp)
 	switch match.Scheme {
 	case "s3":
 		return newS3FS(ctx, cfg.ServiceConfig)
 	case "unix":
 		return newLocalFS(ctx)
 	}
-	return nil, fmt.Errorf("unsupported cache path: %v", cfg.Downloads)
+	return nil, fmt.Errorf("unsupported cache path: %v", dp)
 }
 
 // New returns a set of dynamic resources for use with the Glean CLI.
-func New() gleancfg.DynamicResources {
-	return gleancfg.DynamicResources{
+func New() extensions.DynamicResources {
+	return extensions.DynamicResources{
 		PopulateCrawlFS: PopulateCrawlFS,
 		NewContentFS:    NewContentFS,
 		NewCheckpointOp: NewCheckpointOp,

@@ -1,8 +1,8 @@
-- datasource: biorxiv
+- datasource: biorxiv.org
   email: cnicolaou@glean.dev
   api_crawls:
     biorxiv:
-      service:
+      service_config:
         service_url: https://api.biorxiv.org/pubs/biorxiv
         start_date: 2000-01-01
       rate_control:
@@ -13,8 +13,8 @@
         steps: 10
         status_codes: [408]
       cache:
-        downloads: s3://cloudeng-s3fs/biorxiv/crawl/downloads
-        checkpoint: s3://cloudeng-s3fs/biorxiv/crawl/checkpoints
+        downloads: ${S3_GLEAN_BUCKET}/biorxiv/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/biorxiv/crawl/checkpoints
         sharding_prefix_len: 1
         concurrency: 20
         service_config:
@@ -47,7 +47,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     papersapp:
-      service:
+      service_config:
         service_url: https://api.papers.ai
         refresh_token_url: https://services.readcube.com/api/token
         list_items_page_size: 50
@@ -59,8 +59,8 @@
         steps: 10
         status_codes: [429]
       cache:
-        downloads: s3://cloudeng-s3fs/papersapp/crawl/downloads
-        checkpoint: s3://cloudeng-s3fs/papersapp/crawl/checkpoints
+        downloads: ${S3_GLEAN_BUCKET}/papersapp/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/papersapp/crawl/checkpoints
         concurrency: 20
         service_config:
           aws: true
@@ -93,7 +93,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     benchling:
-      service:
+      service_config:
         service_url: https://altoslabs.benchling.com/api/v2/
         users_page_size: 100
         entries_page_size: 100
@@ -104,8 +104,8 @@
         steps: 10
         status_codes: [429]
       cache:
-        downloads: s3://cloudeng-s3fs/benchling/crawl/downloads
-        checkpoint: s3://cloudeng-s3fs/benchling/crawl/checkpoints
+        downloads: ${S3_GLEAN_BUCKET}/benchling/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/benchling/crawl/checkpoints
         concurrency: 20
         service_config:
           aws: true
@@ -138,13 +138,13 @@
   email: cnicolaou@glean.dev
   api_crawls:
     protocols.io:
-      service:
+      service_config:
         order_direction: asc
         order_field: id
         filter: public
       cache:
-        downloads: s3://cloudeng-s3fs/protocolsio/crawl/downloads
-        checkpoint: s3://cloudeng-s3fs/protocolsio/crawl/checkpoints
+        downloads: ${S3_GLEAN_BUCKET}/protocolsio/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/protocolsio/crawl/checkpoints
         sharding_prefix_len: 1
         concurrency: 20
         service_config:
@@ -179,7 +179,7 @@
 - datasource: altos-static-content
   email: "cnicolaou@altoslabs.com"
   crawls:
-    - name: static-content
+    - name: s3-content
       depth: 10
       seeds:
         - s3://altos-lab-static-content/bioinf_2023_CK_L1_explorations/index.html
@@ -216,8 +216,8 @@
       rewrite:
         - "s%(.*)/$%${1}/index.html%"
       cache:
-        downloads: s3://cloudeng-s3fs/altos-static/downloads
-        checkpoint: s3://cloudeng-s3fs/altos-static/checkpoints
+        downloads: ${S3_GLEAN_BUCKET}/altos-static/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/altos-static/checkpoints
         clear_before_crawl: true
         sharding_prefix_len: 1
         concurrency: 20

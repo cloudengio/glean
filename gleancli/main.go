@@ -15,6 +15,7 @@ import (
 func main() {
 	opts := cmds.Options{
 		StaticResources:  static.New(),
+		Extensions:       static.Extensions("test"),
 		APIExtensions:    static.APIExtensions("api"),
 		DynamicResources: dynamic.New(),
 	}

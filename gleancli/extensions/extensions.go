@@ -1,17 +1,15 @@
-// Copyright 2023 cloudeng llc. All rights reserved.
+// Copyright 2024 cloudeng llc. All rights reserved.
 // Use of this source code is governed by the Apache-2.0
 // license that can be found in the LICENSE file.
 
-// Package extensions contains a set of subcmd extensions that can
-// be used by gleancli implementations. Each such extension is a
-// submodule so that its dependencies are imported only by
-// gleancli implementations that use it.
-package config
+// Package extensions defines an extension mechanism for gleancli
+// implementations and utilities for creating, managing and
+// implementing extensions.
+package extensions
 
 import (
 	"context"
 
-	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/content"
@@ -35,30 +33,20 @@ type DynamicResources struct {
 	NewOperationsFS func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 
-// CrawlProcessors represents the set of available Extractors for crawling.
-type CrawlProcessors struct {
-	Extractors map[content.Type]outlinks.Extractor
-}
-
-// IndexProcessor represents the set of available converters for indexing.
-type IndexProcessors struct {
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-}
-
 // StaticResources provides a set of resources that are typically required
 // by commands and command extensions that are statically configured
 // per application instance.
 type StaticResources struct {
-	CrawlProcessors CrawlProcessors
-	IndexProcessors IndexProcessors
-	TokenReaders    *apitokens.Readers
+	DocumentConverters *content.Registry[converters.Document]
+	UserConverters     *content.Registry[converters.User]
+	Extractors         map[content.Type]outlinks.Extractor
+
+	// TokenReaders provides a set of readers for reading API tokens.
+	TokenReaders *apitokens.Readers
 }
 
 // ExtensionsOptions are the options that are passed to each extension.
 type ExtensionOptions struct {
-	Glean
-
 	StaticResources
 
 	DynamicResources
@@ -106,6 +94,17 @@ type ExtensionSpec struct {
 	AddFunc func(extension Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error
 }
 
+// NewExtensions creates all of the command extensions specified by specs.
+func NewExtensions(parents []string, specs ...ExtensionSpec) []Extension {
+	var exts []Extension
+	for _, spec := range specs {
+		ext := NewExtension(spec, parents)
+		exts = append(exts, ext)
+	}
+	return exts
+}
+
+// NewExtension creates a new extension from the supplied spec.
 func NewExtension(spec ExtensionSpec, parents []string) Extension {
 	ext := &extension{
 		authCfgType:    spec.AuthCfg,
@@ -115,19 +114,4 @@ func NewExtension(spec ExtensionSpec, parents []string) Extension {
 		return spec.AddFunc(ext, cmdSet, parents)
 	})
 	return ext
-}
-
-type APIKey struct {
-	APIKey string `yaml:"api_key" cmd:"API key in apitokens format"`
-}
-
-func (k *APIKey) ParseAndRead(ctx context.Context, filename string, readers *apitokens.Readers) (*apitokens.T, error) {
-	if err := cmdyaml.ParseConfigFile(ctx, filename, &k); err != nil {
-		return nil, err
-	}
-	tok := apitokens.New(k.APIKey)
-	if err := tok.Read(ctx, readers); err != nil {
-		return nil, err
-	}
-	return tok, nil
 }

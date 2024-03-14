@@ -30,7 +30,7 @@ const datasourcesSpec = `- datasource: static-corpus
   index:
     force_restart: true
     force_deletion: true
-  datasource_config:
+  glean_datasource_config:
     glean_instance: glean-dev
     name: internal-documentation"
     displayname: display-internal-documentation"
@@ -73,11 +73,11 @@ func TestDataSource(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.CustomDatasourceConfig.GetHomeUrl(), "static.example.com"; got != want {
+	if got, want := ds0.GleanDatasource.GetHomeUrl(), "static.example.com"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.CustomDatasourceConfig.GetDatasourceCategory(), "PUBLISHED_CONTENT"; got != want {
+	if got, want := ds0.GleanDatasource.GetDatasourceCategory(), "PUBLISHED_CONTENT"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 

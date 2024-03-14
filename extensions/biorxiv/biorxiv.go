@@ -7,14 +7,14 @@ package biorxiv
 
 import (
 	"context"
+	"fmt"
 
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/checkpoint"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/webapi/apis/biorxiv/biorxivcmd"
 	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/operations/apicrawlcmd"
 )
 
 type CommonFlags struct {
@@ -64,7 +64,7 @@ const (
 `
 )
 
-var ExtensionSpec = gleancfg.ExtensionSpec{
+var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
 	AuthCfg:    struct{}{},
@@ -72,7 +72,7 @@ var ExtensionSpec = gleancfg.ExtensionSpec{
 	AddFunc:    AddExtension,
 }
 
-func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
 	c := &command{parent: extension}
 	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
 	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
@@ -81,21 +81,21 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 }
 
 type command struct {
-	parent gleancfg.Extension
+	parent extensions.Extension
 	fs     operations.FS
 	chkpt  checkpoint.Operation
 }
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, datasource string) (*biorxivcmd.Command, error) {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, "", datasource)
 	if err != nil {
 		return nil, err
 	}
-	resources := apicrawlcmd.Resources{
-		NewOperationsFS: cmd.parent.Options().NewOperationsFS,
-		NewCheckpointOp: cmd.parent.Options().NewCheckpointOp,
+	first, ok := extensions.FirstAPICrawl(cfg.APICrawls)
+	if !ok {
+		return nil, fmt.Errorf("no api crawl defined for %v", datasource)
 	}
-	return biorxivcmd.NewCommand(ctx, cfg.APICrawls[datasource], resources)
+	return biorxivcmd.NewCommand(ctx, first, resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {

@@ -10,8 +10,8 @@ import (
 
 	"cloudeng.io/cmdutil"
 	"cloudeng.io/cmdutil/subcmd"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/crawl"
+	"cloudeng.io/glean/gleancli/extensions"
 )
 
 const baseCommands = `name: gleancli
@@ -89,9 +89,9 @@ commands:
   {{.}}{{end}}
 `
 
-var cmdExtensions []gleancfg.Extension
+var cmdExtensions []extensions.Extension
 
-func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
+func asSubcmdExtensions(exts []extensions.Extension) []subcmd.Extension {
 	subext := []subcmd.Extension{}
 	for _, e := range exts {
 		subext = append(subext, e)
@@ -100,19 +100,19 @@ func asSubcmdExtensions(exts []gleancfg.Extension) []subcmd.Extension {
 }
 
 type Options struct {
-	gleancfg.StaticResources
+	extensions.StaticResources
 
-	gleancfg.DynamicResources
+	extensions.DynamicResources
 
-	Extensions    []gleancfg.Extension
-	APIExtensions []gleancfg.Extension
+	Extensions    []extensions.Extension
+	APIExtensions []extensions.Extension
 
 	InitContext func(ctx context.Context) (context.Context, error)
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
 
-	cmdExtensions = append([]gleancfg.Extension{}, options.Extensions...)
+	cmdExtensions = append([]extensions.Extension{}, options.Extensions...)
 	cmdExtensions = append(cmdExtensions, options.APIExtensions...)
 
 	cmdSet := subcmd.MustFromYAMLTemplate(baseCommands,
@@ -162,8 +162,7 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 		if err != nil {
 			return err
 		}
-		extOpts := gleancfg.ExtensionOptions{
-			//Glean:            globalConfig,
+		extOpts := extensions.ExtensionOptions{
 			StaticResources:  options.StaticResources,
 			DynamicResources: options.DynamicResources,
 		}

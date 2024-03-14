@@ -7,11 +7,14 @@ package index
 import (
 	"context"
 
-	gleancfg "cloudeng.io/glean/config"
+	"cloudeng.io/file/content"
+	"cloudeng.io/file/crawl/crawlcmd"
 	"cloudeng.io/glean/crawlindex/config"
+	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/crawlindex/internal"
 	"cloudeng.io/glean/gleanclientsdk"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations"
 	"cloudeng.io/webapi/operations/apitokens"
 )
 
@@ -26,10 +29,11 @@ type BulkFlags struct {
 
 // Resources represents the resources needed by an indexer.
 type Resources struct {
-	IndexingToken *apitokens.T
-	ClientToken   *apitokens.T
-	gleancfg.IndexProcessors
-	gleancfg.DynamicResources
+	IndexingToken      *apitokens.T
+	ClientToken        *apitokens.T
+	DocumentConverters *content.Registry[converters.Document]
+	UserConverters     *content.Registry[converters.User]
+	NewOperationsFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 
 // Indexer represents a Glean indexer.

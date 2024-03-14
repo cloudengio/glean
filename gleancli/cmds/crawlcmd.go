@@ -15,9 +15,10 @@ type Crawl struct {
 }
 
 func (cmd *Crawl) Run(ctx context.Context, values interface{}, args []string) error {
-	crawler := crawl.Crawler{
-		CrawlProcessors:  cmd.StaticResources.CrawlProcessors,
-		DynamicResources: cmd.DynamicResources,
-	}
+	crawler := crawl.New(crawl.Resources{
+		Extractors:      cmd.StaticResources.Extractors,
+		PopulateCrawlFS: cmd.DynamicResources.PopulateCrawlFS,
+		NewContentFS:    cmd.DynamicResources.NewContentFS,
+	})
 	return crawler.Run(ctx, values.(*crawl.Flags), args[0])
 }

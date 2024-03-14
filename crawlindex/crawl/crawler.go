@@ -7,8 +7,9 @@ package crawl
 import (
 	"context"
 
+	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/crawlcmd"
-	gleancfg "cloudeng.io/glean/config"
+	"cloudeng.io/file/crawl/outlinks"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/sync/errgroup"
 )
@@ -20,11 +21,22 @@ type Flags struct {
 	Progress bool `subcmd:"progress,true,'display progress of downloads'"`
 }
 
+// Resources represents the resources that are used by the crawler.
+type Resources struct {
+	Extractors      map[content.Type]outlinks.Extractor
+	PopulateCrawlFS func(ctx context.Context, cfg config.CrawlService, factories map[string]crawlcmd.FSFactory) error
+	NewContentFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (content.FS, error)
+}
+
 // Crawler represents a crawler instance that contains global configuration
 // information.
 type Crawler struct {
-	gleancfg.CrawlProcessors
-	gleancfg.DynamicResources
+	resourses Resources
+}
+
+// New creates a new Crawler instance.
+func New(resources Resources) *Crawler {
+	return &Crawler{resources}
 }
 
 func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
@@ -35,14 +47,14 @@ func (c *Crawler) Run(ctx context.Context, fv *Flags, datasource string) error {
 
 	fsmap := map[string]crawlcmd.FSFactory{}
 	for _, crawl := range cfg.Crawls {
-		if err := c.PopulateCrawlFS(ctx, crawl.Service, fsmap); err != nil {
+		if err := c.resourses.PopulateCrawlFS(ctx, crawl.Service, fsmap); err != nil {
 			return err
 		}
 	}
 	resources := crawlcmd.Resources{
-		Extractors:          c.CrawlProcessors.Extractors,
+		Extractors:          c.resourses.Extractors,
 		CrawlStoreFactories: fsmap,
-		NewContentFS:        c.NewContentFS,
+		NewContentFS:        c.resourses.NewContentFS,
 	}
 
 	// Run all of the crawlers concurrently.

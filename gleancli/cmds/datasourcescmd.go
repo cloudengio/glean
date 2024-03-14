@@ -12,10 +12,10 @@ import (
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/structdoc"
 	"cloudeng.io/errors"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/datasources"
+	"cloudeng.io/glean/gleancli/extensions"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,7 +30,7 @@ type RegisterFlags struct {
 
 type Datasources struct {
 	Options
-	extensions []gleancfg.Extension
+	extensions []extensions.Extension
 }
 
 func (ds Datasources) Download(ctx context.Context, values any, args []string) error {
@@ -90,7 +90,7 @@ func explain(out *strings.Builder, indent int, cfg any) error {
 	return nil
 }
 
-func explainConfig(out *strings.Builder, extensions []gleancfg.Extension) error {
+func explainConfig(out *strings.Builder, extensions []extensions.Extension) error {
 	var errs errors.M
 
 	fmt.Fprintf(out, "Authentication for Glean instances")
