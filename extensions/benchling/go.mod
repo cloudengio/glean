@@ -7,9 +7,9 @@ toolchain go1.21.6
 require (
 	cloudeng.io/cmdutil v0.0.0-20240318182131-625a2f6ed3f4
 	cloudeng.io/file v0.0.0-20240318182131-625a2f6ed3f4
-	cloudeng.io/glean/crawlindex v0.0.0-20240301201538-0c1b418e4eb8
+	cloudeng.io/glean/crawlindex v0.0.0-20240318202821-b55471b97494
 	cloudeng.io/glean/gleancli v0.0.0-20240318191745-5a77d9b33388
-	cloudeng.io/glean/gleansdk v0.0.0-20240301201538-0c1b418e4eb8
+	cloudeng.io/glean/gleansdk v0.0.0-20240318202821-b55471b97494
 	cloudeng.io/webapi/apis/benchling v0.0.0-20240316214827-31cdacec1247
 	cloudeng.io/webapi/benchling v0.0.0-20240304015302-6256cc401d35
 	cloudeng.io/webapi/operations v0.0.0-20240316214827-31cdacec1247

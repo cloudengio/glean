@@ -6,26 +6,26 @@ toolchain go1.21.6
 
 require (
 	cloudeng.io/aws v0.0.0-20240301160019-e47d52cd5d84
-	cloudeng.io/cmdutil v0.0.0-20240316212519-c83428bae4cf
+	cloudeng.io/cmdutil v0.0.0-20240318182131-625a2f6ed3f4
 	cloudeng.io/file v0.0.0-20240318182131-625a2f6ed3f4
 	cloudeng.io/glean/config v0.0.0-20240301201538-0c1b418e4eb8
-	cloudeng.io/glean/crawlindex v0.0.0-20240301201538-0c1b418e4eb8
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240301201538-0c1b418e4eb8
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240301201538-0c1b418e4eb8
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240301201538-0c1b418e4eb8
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240301201538-0c1b418e4eb8
+	cloudeng.io/glean/crawlindex v0.0.0-20240318202821-b55471b97494
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240318202821-b55471b97494
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240318202821-b55471b97494
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240318202821-b55471b97494
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240318202821-b55471b97494
 	cloudeng.io/path v0.0.9
 	cloudeng.io/webapi/operations v0.0.0-20240316214827-31cdacec1247
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	cloudeng.io/algo v0.0.0-20240301160019-e47d52cd5d84 // indirect
+	cloudeng.io/algo v0.0.0-20240318182131-625a2f6ed3f4 // indirect
 	cloudeng.io/errors v0.0.10 // indirect
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240301201538-0c1b418e4eb8 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20240301201538-0c1b418e4eb8 // indirect
-	cloudeng.io/net v0.0.0-20240315173010-822871381e62 // indirect
-	cloudeng.io/os v0.0.0-20240316212519-c83428bae4cf // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20240318202821-b55471b97494 // indirect
+	cloudeng.io/net v0.0.0-20240318182131-625a2f6ed3f4 // indirect
+	cloudeng.io/os v0.0.0-20240318182131-625a2f6ed3f4 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
 	cloudeng.io/webapi/apis/benchling v0.0.0-20240316214827-31cdacec1247 // indirect
@@ -61,7 +61,7 @@ require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/invopop/yaml v0.2.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
