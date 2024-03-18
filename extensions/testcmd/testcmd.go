@@ -6,12 +6,15 @@ package testcmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log"
 
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/crawl/crawlcmd"
+	"cloudeng.io/file/filewalk"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/webapi/operations"
@@ -85,8 +88,7 @@ func (cmd *command) testCaches(ctx context.Context, values interface{}, args []s
 			return err
 		}
 		downloads, _ := cache.Paths()
-		log.Printf("found %v items in cache for %v in %v\n", n, datasource, downloads)
-
+		log.Printf("found %v total items in cache for %v in %v\n", n, datasource, downloads)
 	}
 	return nil
 }
@@ -94,20 +96,33 @@ func (cmd *command) testCaches(ctx context.Context, values interface{}, args []s
 func scanCache(ctx context.Context, datasource string, fs operations.FS, cache crawlcmd.CrawlCacheConfig, showN int) (int, error) {
 	items := 0
 	downloads, _ := cache.Paths()
-	sc := fs.LevelScanner(downloads)
-	for sc.Scan(ctx, 100) {
-		contents := sc.Contents()
-		items += len(contents)
+
+	if _, err := fs.Stat(ctx, downloads); err != nil {
+		return 0, fmt.Errorf("failed to stat %v: %w", downloads, err)
+	}
+
+	handler := func(ctx context.Context, prefix string, contents []filewalk.Entry, err error) error {
+		if err != nil {
+			return err
+		}
 		for _, c := range contents {
-			p := fs.Join(downloads, c.Name)
+			if items >= showN {
+				return filewalk.SkipAll
+			}
+			items++
+			p := fs.Join(prefix, c.Name)
 			fmt.Printf("%v\n", p)
 			if items%100 == 0 {
-				log.Printf("found %v items in cache for %v in %v\n", items, datasource, p)
+				log.Printf("found %v items in cache for %v\n", items, datasource)
 			}
-			if items >= showN {
-				return items, sc.Err()
-			}
+
 		}
+		return nil
 	}
-	return items, sc.Err()
+	err := filewalk.ContentsOnly(ctx, fs, downloads, handler,
+		filewalk.WithScanSize(showN))
+	if !errors.Is(err, io.EOF) {
+		return items, err
+	}
+	return items, nil
 }
