@@ -86,6 +86,13 @@ type cacheWalker struct {
 }
 
 func (w *cacheWalker) ContentsHandler(ctx context.Context, prefix string, contents []filewalk.Entry, err error) error {
+	if err != nil {
+		if w.fs.IsPermissionError(err) {
+			log.Printf("permission error: %v: %v\n", prefix, err)
+			return nil
+		}
+		return err
+	}
 	var req Request
 	var mu sync.Mutex
 

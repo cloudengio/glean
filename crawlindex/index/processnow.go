@@ -16,7 +16,7 @@ type ProcessNowFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) ProcessNow(ctx context.Context, fv *ProcessNowFlags) error {
+func (idx *Indexer) ProcessNow(ctx context.Context, _ *ProcessNowFlags) error {
 	ctx, client := idx.newGleanIndexingClient(ctx)
 	req := gleansdk.NewProcessAllDocumentsRequest()
 	req.SetDatasource(idx.datasourceName)

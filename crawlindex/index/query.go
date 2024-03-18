@@ -23,7 +23,7 @@ type QueryFlags struct {
 	ShowIndexingStatus bool `subcmd:"show-indexing-status,true,show indexing status for all returned documents"`
 }
 
-func (idx *Indexer) query(ctx context.Context, numDocs int, cfg config.Datasource, query string) (*gleanclientsdk.SearchResponse, error) {
+func (idx *Indexer) query(ctx context.Context, numDocs int, query string) (*gleanclientsdk.SearchResponse, error) {
 	ctx, client := idx.newGleanClient(ctx)
 	si := gleanclientsdk.NewSearchRequestSourceInfo("FULLPAGE")
 	si.SetDomain(idx.datasource.GleanDomain)
@@ -46,11 +46,10 @@ func (idx *Indexer) query(ctx context.Context, numDocs int, cfg config.Datasourc
 }
 
 func (idx *Indexer) Query(ctx context.Context, fv *QueryFlags, datasource string, query string) error {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
-	if err != nil {
+	if _, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource); err != nil {
 		return err
 	}
-	results, err := idx.query(ctx, fv.NumDocuments, cfg, query)
+	results, err := idx.query(ctx, fv.NumDocuments, query)
 	if err != nil {
 		return err
 	}
@@ -72,7 +71,7 @@ func (idx *Indexer) Query(ctx context.Context, fv *QueryFlags, datasource string
 		}
 	}
 	if fv.ShowIndexingStatus {
-		return idx.indexingStatus(ctx, cfg, results.Results)
+		return idx.indexingStatus(ctx, results.Results)
 	}
 	for _, r := range results.Results {
 		fmt.Printf("%v: %v\n", r.Document.GetId(), r.Document.GetDocType())
@@ -80,7 +79,7 @@ func (idx *Indexer) Query(ctx context.Context, fv *QueryFlags, datasource string
 	return nil
 }
 
-func (idx *Indexer) indexingStatus(ctx context.Context, cfg config.Datasource, results []gleanclientsdk.SearchResult) error {
+func (idx *Indexer) indexingStatus(ctx context.Context, results []gleanclientsdk.SearchResult) error {
 	ctx, client := idx.newGleanIndexingClient(ctx)
 	for _, r := range results {
 		objType := strings.ToLower(r.Document.GetDocType())

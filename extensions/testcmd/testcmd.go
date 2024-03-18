@@ -12,7 +12,6 @@ import (
 	"log"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/crawl/crawlcmd"
 	"cloudeng.io/file/filewalk"
 	"cloudeng.io/glean/crawlindex/config"
@@ -58,8 +57,6 @@ func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML,
 
 type command struct {
 	parent extensions.Extension
-	fs     operations.FS
-	chkpt  checkpoint.Operation
 }
 
 func (cmd *command) testCaches(ctx context.Context, values interface{}, args []string) error {
@@ -101,7 +98,7 @@ func scanCache(ctx context.Context, datasource string, fs operations.FS, cache c
 		return 0, fmt.Errorf("failed to stat %v: %w", downloads, err)
 	}
 
-	handler := func(ctx context.Context, prefix string, contents []filewalk.Entry, err error) error {
+	handler := func(_ context.Context, prefix string, contents []filewalk.Entry, err error) error {
 		if err != nil {
 			return err
 		}

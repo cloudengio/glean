@@ -17,7 +17,7 @@ type StatsFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) Stats(ctx context.Context, fv *StatsFlags) error {
+func (idx *Indexer) Stats(ctx context.Context, _ *StatsFlags) error {
 	ctx, client := idx.newGleanIndexingClient(ctx)
 
 	var req gleansdk.GetDocumentCountRequest

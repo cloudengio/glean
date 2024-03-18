@@ -10,11 +10,9 @@ import (
 	"fmt"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/webapi/apis/biorxiv/biorxivcmd"
-	"cloudeng.io/webapi/operations"
 )
 
 type CommonFlags struct {
@@ -82,8 +80,6 @@ func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML,
 
 type command struct {
 	parent extensions.Extension
-	fs     operations.FS
-	chkpt  checkpoint.Operation
 }
 
 func (cmd *command) new(ctx context.Context, fv CommonFlags, datasource string) (*biorxivcmd.Command, error) {

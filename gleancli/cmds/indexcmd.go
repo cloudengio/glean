@@ -65,6 +65,7 @@ func initTokens(ctx context.Context, domain string, tokenReaders *apitokens.Read
 
 	if indexingToken.Scheme == "" || clientToken.Scheme == "" {
 		err = fmt.Errorf("invalid indexing or client token found for domain: %v", domain)
+		return
 	}
 
 	if err = indexingToken.Read(ctx, tokenReaders); err != nil {

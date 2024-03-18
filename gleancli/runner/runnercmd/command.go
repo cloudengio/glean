@@ -153,7 +153,7 @@ func (c *T) crawlAndProcess(ctx context.Context, fv *CrawlFlags, datasource stri
 	return c.RunCommands(ctx, datasource, c.ProcessCommands)
 }
 
-func (c *T) CrawlAll(ctx context.Context, values interface{}, args []string) error {
+func (c *T) CrawlAll(ctx context.Context, values interface{}, _ []string) error {
 	fv := values.(*CrawlFlags)
 	var g errgroup.T
 	for _, ds := range c.Datasources {
@@ -165,11 +165,11 @@ func (c *T) CrawlAll(ctx context.Context, values interface{}, args []string) err
 	return g.Wait()
 }
 
-func (c *T) Index(ctx context.Context, values interface{}, args []string) error {
+func (c *T) Index(ctx context.Context, _ interface{}, args []string) error {
 	return c.RunCommands(ctx, args[0], c.IndexCommands)
 }
 
-func (c *T) IndexAll(ctx context.Context, values interface{}, args []string) error {
+func (c *T) IndexAll(ctx context.Context, _ interface{}, _ []string) error {
 	var g errgroup.T
 	for _, ds := range c.Datasources {
 		ds := ds
@@ -180,15 +180,15 @@ func (c *T) IndexAll(ctx context.Context, values interface{}, args []string) err
 	return g.Wait()
 }
 
-func (c *T) CrawlIndex(ctx context.Context, values interface{}, args []string) error {
+func (c *T) CrawlIndex(ctx context.Context, _ interface{}, args []string) error {
 	return c.RunCommands(ctx, args[0], c.CrawlCommands, c.IndexCommands)
 }
 
-func (c *T) TestCache(ctx context.Context, values interface{}, args []string) error {
+func (c *T) TestCache(ctx context.Context, _ interface{}, args []string) error {
 	return c.RunCommands(ctx, args[0], c.TestCacheCommands)
 }
 
-func (c *T) TestCacheAll(ctx context.Context, values interface{}, args []string) error {
+func (c *T) TestCacheAll(ctx context.Context, _ interface{}, _ []string) error {
 	for _, ds := range c.Datasources {
 		if err := c.RunCommands(ctx, ds, c.TestCacheCommands); err != nil {
 			return err
@@ -211,7 +211,7 @@ func (c *T) formatCommands(out io.Writer, cmds map[string][]string) error {
 	return nil
 }
 
-func (c *T) ShowAll(ctx context.Context, values interface{}, args []string) error {
+func (c *T) ShowAll(_ context.Context, _ interface{}, _ []string) error {
 	fmt.Printf("Crawl commands\n")
 	var errs errors.M
 	err := c.formatCommands(os.Stdout, c.CrawlCommands)

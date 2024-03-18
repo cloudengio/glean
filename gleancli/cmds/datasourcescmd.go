@@ -71,7 +71,7 @@ func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []stri
 
 }
 
-func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, _ []string) error {
+func (ds Datasources) ExplainConfig(_ context.Context, _ interface{}, _ []string) error {
 	var out strings.Builder
 	if err := explainConfig(&out, ds.extensions); err != nil {
 		return err

@@ -31,14 +31,14 @@ func (idx *Indexer) Delete(ctx context.Context, fv *DeleteFlags, query string) e
 	if len(fv.Type) == 0 {
 		return fmt.Errorf("must specify object type to delete")
 	}
-	results, err := idx.query(ctx, fv.NumDocuments, idx.datasource, query)
+	results, err := idx.query(ctx, fv.NumDocuments, query)
 	if err != nil {
 		return err
 	}
-	return idx.delete(ctx, idx.datasource, results.Results, fv.Type)
+	return idx.delete(ctx, results.Results, fv.Type)
 }
 
-func (idx *Indexer) delete(ctx context.Context, cfg config.Datasource, results []gleanclientsdk.SearchResult, objectType string) error {
+func (idx *Indexer) delete(ctx context.Context, results []gleanclientsdk.SearchResult, objectType string) error {
 	ctx, client := idx.newGleanIndexingClient(ctx)
 	for _, r := range results {
 		if r.Document.GetDocType() != objectType {
@@ -60,7 +60,7 @@ func (idx *Indexer) delete(ctx context.Context, cfg config.Datasource, results [
 	return nil
 }
 
-func (idx *Indexer) DeleteAll(ctx context.Context, fv *DeleteAllFlags) error {
+func (idx *Indexer) DeleteAll(ctx context.Context, _ *DeleteAllFlags) error {
 	ctx, client := idx.newGleanIndexingClient(ctx)
 	bulkReq := gleansdk.BulkIndexDocumentsRequest{}
 	bulkReq.SetDatasource(idx.datasourceName)
