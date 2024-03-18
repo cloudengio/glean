@@ -22,6 +22,7 @@ require (
 require (
 	cloudeng.io/algo v0.0.0-20240318182131-625a2f6ed3f4 // indirect
 	cloudeng.io/errors v0.0.10 // indirect
+	cloudeng.io/glean v0.0.0-20240318203941-4e11880e1c98 // indirect
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240301201538-0c1b418e4eb8 // indirect
 	cloudeng.io/glean/gleansdk v0.0.0-20240318202821-b55471b97494 // indirect
 	cloudeng.io/net v0.0.0-20240318182131-625a2f6ed3f4 // indirect
