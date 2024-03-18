@@ -7,7 +7,7 @@ toolchain go1.21.6
 require (
 	cloudeng.io/aws v0.0.0-20240301160019-e47d52cd5d84
 	cloudeng.io/cmdutil v0.0.0-20240316212519-c83428bae4cf
-	cloudeng.io/file v0.0.0-20240316212519-c83428bae4cf
+	cloudeng.io/file v0.0.0-20240318182131-625a2f6ed3f4
 	cloudeng.io/glean/config v0.0.0-20240301201538-0c1b418e4eb8
 	cloudeng.io/glean/crawlindex v0.0.0-20240301201538-0c1b418e4eb8
 	cloudeng.io/glean/extensions/benchling v0.0.0-20240301201538-0c1b418e4eb8
