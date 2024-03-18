@@ -10,10 +10,8 @@ import (
 
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/file/content"
-	"cloudeng.io/glean/config"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/webapi/operations/apicrawlcmd"
-	"gopkg.in/yaml.v3"
 )
 
 type DatasourceName struct {
@@ -25,13 +23,20 @@ type FileFlags struct {
 	ConfigFile string `subcmd:"datasource-configs,,datasource config file"`
 }
 
+// GleanDatasource represents the configuration of the datasource with
+// Glean's API.
+type GleanDatasource struct {
+	// GleanConfig is the datasource configuration for the Glean instance.
+	gleansdk.CustomDatasourceConfig `yaml:",inline" cmd:"glean custom datasource configuration"`
+}
+
 // Datasource represents a single datasource or corpus to be crawled and
 // indexed.
 type Datasource struct {
 	// Datasource name.
 	Datasource string `yaml:"datasource" cmd:"name of the datasource"`
 
-	Crawls []Crawl `yaml:"crawls,omitempty" cmd:"http crawls to run for this datasource"`
+	Crawls []Crawl `yaml:"crawls,omitempty" cmd:"file based crawls to run for this datasource"`
 	// File/download orientend Crawls that obtain data for this datasource.
 
 	// API based 'crawls' that obtain data for this datasource.
@@ -39,25 +44,19 @@ type Datasource struct {
 
 	// Bulk index configuration for this datasource.
 	*BulkIndex `yaml:"bulk_index,omitempty" cmd:"bulk index configuration for this datasource"`
+
 	// Incremental index configuration for this datasource.
 	*IncrementalIndex `yaml:"incremental_index,omitempty" cmd:"incremental index configuration for this datasource"`
-
-	// Cache configuration for this datasource.
-	Cache `yaml:"cache,omitempty" cmd:"path to the cache for this datasource"`
 
 	// Converters (from download.Result to Glean document) configuration.
 	Converters []Converter `yaml:"converters,omitempty" cmd:"converters for this datasource"`
 
+	// GleanDomain is the domain of the Glean instance to use.
+	GleanDomain string `yaml:"glean_domain" cmd:"glean domain to use"`
+
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	config.DatasourceConfig `yaml:"datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
-}
-
-// Cache represents a cache configuration.
-type Cache struct {
-	// Path is the location of the cache for this datasource.
-	Path          string    `yaml:"path,omitempty" cmd:"path to the cache for this datasource"`
-	ServiceConfig yaml.Node `yaml:"service_config,omitempty" cmd:"cache specific configuration"`
+	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
 }
 
 // Datasources represents a list of named datasources.
@@ -106,7 +105,7 @@ func (d Datasource) ConfigForContentType() map[content.Type]Conversion {
 			cnvmap[content.Clean(ft)] = Conversion{
 				ft,
 				&d.Converters[i],
-				&d.DatasourceConfig.CustomDatasourceConfig,
+				&d.GleanDatasource.CustomDatasourceConfig,
 			}
 		}
 	}

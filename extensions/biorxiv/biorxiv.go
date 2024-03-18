@@ -7,14 +7,12 @@ package biorxiv
 
 import (
 	"context"
-	"os"
+	"fmt"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/webapi/biorxiv/biorxivcmd"
-	"cloudeng.io/webapi/operations"
+	"cloudeng.io/glean/gleancli/extensions"
+	"cloudeng.io/webapi/apis/biorxiv/biorxivcmd"
 )
 
 type CommonFlags struct {
@@ -64,15 +62,15 @@ const (
 `
 )
 
-var ExtensionSpec = gleancfg.ExtensionSpec{
+var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    biorxivcmd.Auth{},
+	AuthCfg:    struct{}{},
 	ServiceCfg: biorxivcmd.Service{},
 	AddFunc:    AddExtension,
 }
 
-func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
 	c := &command{parent: extension}
 	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
 	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanDownloadsCmd, &ScanFlags{})
@@ -81,31 +79,24 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 }
 
 type command struct {
-	parent gleancfg.Extension
-	fs     operations.FS
-	chkpt  checkpoint.Operation
+	parent extensions.Extension
 }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, _ biorxivcmd.CommonFlags, datasource string) (*biorxivcmd.Command, error) {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+func (cmd *command) new(ctx context.Context, fv CommonFlags, datasource string) (*biorxivcmd.Command, error) {
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, "", datasource)
 	if err != nil {
 		return nil, err
 	}
-	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
-	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
+	first, ok := extensions.FirstAPICrawl(cfg.APICrawls)
+	if !ok {
+		return nil, fmt.Errorf("no api crawl defined for %v", datasource)
 	}
-	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
-	}
-	return biorxivcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cacheRoot, cmd.chkpt, cmdName)
+	return biorxivcmd.NewCommand(ctx, first, resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
@@ -114,7 +105,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 
 func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*ScanFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.ScanFlags.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
@@ -123,7 +114,7 @@ func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, ar
 
 func (cmd *command) lookupDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*LookupFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.LookupFlags.CommonFlags, args[0])
+	c, err := cmd.new(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}

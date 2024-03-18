@@ -5,12 +5,15 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 
+	"cloudeng.io/glean/gleanclientsdk"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/operations/apitokens"
 )
 
 // ParseGleanError parses the error returned by the glean API and returns a
@@ -38,4 +41,22 @@ func ParseGleanError(r *http.Response, err error) error {
 		return fmt.Errorf("%s: %v", body, err)
 	}
 	return err
+}
+
+func NewIndexingClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleansdk.APIClient) {
+	templateVars := map[string]string{
+		"domain": domain,
+	}
+	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
+	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, token.Token())
+	return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration())
+}
+
+func NewClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleanclientsdk.APIClient) {
+	templateVars := map[string]string{
+		"domain": domain,
+	}
+	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
+	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, token.Token())
+	return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration())
 }

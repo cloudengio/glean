@@ -44,12 +44,12 @@ func TestCrawlConfig(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := crawl.ServiceName, "aws"; got != want {
+	if got, want := crawl.Service.Name, "aws"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
 	var awscfg awsconfig.AWSFlags
-	if err := crawl.ServiceConfig.Decode(&awscfg); err != nil {
+	if err := crawl.Service.Config.Decode(&awscfg); err != nil {
 		t.Fatal(err)
 	}
 	if got, want := awscfg.AWS, true; got != want {
@@ -58,5 +58,4 @@ func TestCrawlConfig(t *testing.T) {
 	if got, want := awscfg.AWSRegion, "us-east-1"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
-
 }

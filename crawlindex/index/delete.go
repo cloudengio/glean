@@ -27,37 +27,29 @@ type DeleteAllFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) Delete(ctx context.Context, fv *DeleteFlags, datasource string, query string) error {
+func (idx *Indexer) Delete(ctx context.Context, fv *DeleteFlags, query string) error {
 	if len(fv.Type) == 0 {
 		return fmt.Errorf("must specify object type to delete")
 	}
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+	results, err := idx.query(ctx, fv.NumDocuments, query)
 	if err != nil {
 		return err
 	}
-	results, err := idx.query(ctx, fv.NumDocuments, cfg, query)
-	if err != nil {
-		return err
-	}
-	return idx.delete(ctx, cfg, results.Results, fv.Type)
+	return idx.delete(ctx, results.Results, fv.Type)
 }
 
-func (idx *Indexer) delete(ctx context.Context, cfg config.Datasource, results []gleanclientsdk.SearchResult, objectType string) error {
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return err
-	}
+func (idx *Indexer) delete(ctx context.Context, results []gleanclientsdk.SearchResult, objectType string) error {
+	ctx, client := idx.newGleanIndexingClient(ctx)
 	for _, r := range results {
 		if r.Document.GetDocType() != objectType {
 			continue
 		}
 		objType := strings.ToLower(r.Document.GetDocType())
 		docid := r.Document.GetId()
-		prefix := fmt.Sprintf("CUSTOM_%v_%v_", strings.ToUpper(cfg.DatasourceConfig.Name), objType)
+		prefix := fmt.Sprintf("CUSTOM_%v_%v_", strings.ToUpper(idx.datasourceName), objType)
 		docid = strings.TrimPrefix(docid, prefix)
 		fmt.Printf("deleting: %v %v\n", objType, docid)
-		sr := gleansdk.NewDeleteDocumentRequest(cfg.DatasourceConfig.Name,
-			objType, docid)
+		sr := gleansdk.NewDeleteDocumentRequest(idx.datasourceName, objType, docid)
 		_, err := client.DocumentsApi.DeletedocumentPost(ctx).DeleteDocumentRequest(*sr).Execute()
 		if err != nil {
 			fmt.Printf("ERR: %v: docid %v, objType: %v\n", err, docid, objType)
@@ -68,17 +60,10 @@ func (idx *Indexer) delete(ctx context.Context, cfg config.Datasource, results [
 	return nil
 }
 
-func (idx *Indexer) DeleteAll(ctx context.Context, fv *DeleteAllFlags, datasource string) error {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
-	if err != nil {
-		return err
-	}
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return err
-	}
+func (idx *Indexer) DeleteAll(ctx context.Context, _ *DeleteAllFlags) error {
+	ctx, client := idx.newGleanIndexingClient(ctx)
 	bulkReq := gleansdk.BulkIndexDocumentsRequest{}
-	bulkReq.SetDatasource(cfg.CustomDatasourceConfig.Name)
+	bulkReq.SetDatasource(idx.datasourceName)
 	bulkReq.SetForceRestartUpload(true)
 	bulkReq.SetIsFirstPage(true)
 	bulkReq.SetIsLastPage(true)

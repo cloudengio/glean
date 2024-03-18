@@ -1,8 +1,8 @@
-- datasource: biorxiv
+- datasource: biorxiv.org
   email: cnicolaou@glean.dev
   api_crawls:
     biorxiv:
-      service:
+      service_config:
         service_url: https://api.biorxiv.org/pubs/biorxiv
         start_date: 2000-01-01
       rate_control:
@@ -12,16 +12,15 @@
         initial_delay: 30s
         steps: 10
         status_codes: [408]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_sharding_prefix_len: 1
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/biorxiv/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: ${S3_GLEAN_BUCKET}/biorxiv/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/biorxiv/crawl/checkpoints
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
@@ -34,8 +33,8 @@
         name: "biorxiv"
         email: "biorxiv@altoslabs.com"
         userid: "biorxiv"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "biorxiv"
     displayname: "biorxiv"
     homeurl: "https://www.biorxiv.org"
@@ -48,7 +47,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     papersapp:
-      service:
+      service_config:
         service_url: https://api.papers.ai
         refresh_token_url: https://services.readcube.com/api/token
         list_items_page_size: 50
@@ -59,15 +58,14 @@
         initial_delay: 30s
         steps: 10
         status_codes: [429]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/papersapp/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: ${S3_GLEAN_BUCKET}/papersapp/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/papersapp/crawl/checkpoints
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: false
@@ -81,8 +79,8 @@
         name: "papersapp"
         email: "papersapp@altoslabs.com"
         userid: "papersapp"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "papersapp"
     displayname: "ReadCube"
     homeurl: "https://app.readcube.com"
@@ -95,7 +93,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     benchling:
-      service:
+      service_config:
         service_url: https://altoslabs.benchling.com/api/v2/
         users_page_size: 100
         entries_page_size: 100
@@ -105,15 +103,14 @@
         initial_delay: 30s
         steps: 10
         status_codes: [429]
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/benchling/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+      cache:
+        downloads: ${S3_GLEAN_BUCKET}/benchling/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/benchling/crawl/checkpoints
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
   bulk_index:
     force_restart: true
     force_deletion: true
@@ -127,8 +124,8 @@
         name: "benchling"
         email: "benchling@altoslabs.com"
         userid: "benchling"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: "benchling"
     displayname: "Benchling"
     homeurl: "https://altoslabs.benchling.com"
@@ -141,15 +138,19 @@
   email: cnicolaou@glean.dev
   api_crawls:
     protocols.io:
-      service:
+      service_config:
         order_direction: asc
         order_field: id
         filter: public
-      cache_prefix: downloads
-      cache_checkpoint: checkpoints
-      cache_sharding_prefix_len: 1
-      cache_concurrency: 20
-      incremental: true
+      cache:
+        downloads: ${S3_GLEAN_BUCKET}/protocolsio/crawl/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/protocolsio/crawl/checkpoints
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
       exponential_backoff:
         initial_delay: 60s
         steps: 10
@@ -160,17 +161,12 @@
     readdir_entries: 50
     document_request_size: 20
     cache_concurrency: 20
-  cache:
-    path: s3://cloudeng-s3fs/protocolsio/crawl/
-    service_config:
-      aws: true
-      aws_profile: cloudeng-admin
-      aws_region: us-west-2
+
   converters:
     - from_content_types: ["protocols.io/protocol"]
       default_author:
         email: "protocolsio@altoslabs.com"
-  datasource_config:
+  glean_datasource_config:
     glean_instance: glean-dev
     name: "protocolsio"
     displayname: "protocols.io"
@@ -183,7 +179,7 @@
 - datasource: altos-static-content
   email: "cnicolaou@altoslabs.com"
   crawls:
-    - name: static-content
+    - name: s3-content
       depth: 10
       seeds:
         - s3://altos-lab-static-content/bioinf_2023_CK_L1_explorations/index.html
@@ -209,7 +205,6 @@
         - s3://altos-lab-static-content/igv/index.html
         - s3://altos-lab-static-content/standards/index.html
         - s3://altos-lab-static-content/techdocs/index.html
-
       nofollow:
         - "^#.*"
         - "^https://.*"
@@ -221,11 +216,15 @@
       rewrite:
         - "s%(.*)/$%${1}/index.html%"
       cache:
-        cache_prefix: downloads
-        cache_checkpoint: checkpoints
-        cache_clear_before_crawl: true
-        cache_sharding_prefix_len: 1
-        cache_concurrency: 20
+        downloads: ${S3_GLEAN_BUCKET}/altos-static/downloads
+        checkpoint: ${S3_GLEAN_BUCKET}/altos-static/checkpoints
+        clear_before_crawl: true
+        sharding_prefix_len: 1
+        concurrency: 20
+        service_config:
+          aws: true
+          aws_profile: cloudeng-admin
+          aws_region: us-west-2
       download:
         default_concurrency: 4 # 0 will default to all available CPUs
         default_request_chan_size: 100
@@ -238,8 +237,6 @@
         aws: true
         aws_profile: altos-labs
         aws_region: us-west-2
-  cache:
-    path: $HOME/.glean/altos-static
   bulk_index:
     force_restart: true
     force_deletion: false
@@ -252,8 +249,8 @@
         email: "mkdocs@altoslabs.com"
       view_url_rewrites:
         - "s%^(s3://altos-lab-static-content/)(.*)%https://static.lab.altoslabs.com/${2}%"
-  datasource_config:
-    glean_instance: altos
+  glean_domain: altoslabs.com
+  glean_datasource_config:
     name: internalDocumentation
     displayname: "Altos Internal"
     homeurl: "https://static.lab.altoslabs.com"

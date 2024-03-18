@@ -8,24 +8,23 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"path"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
 	"cloudeng.io/file/content"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
+	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/webapi/apis/protocolsio"
+	"cloudeng.io/webapi/apis/protocolsio/protocolsiocmd"
+	"cloudeng.io/webapi/apis/protocolsio/protocolsiosdk"
 	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/protocolsio"
-	"cloudeng.io/webapi/protocolsio/protocolsiocmd"
-	"cloudeng.io/webapi/protocolsio/protocolsiosdk"
 )
 
 type CommonFlags struct {
 	config.FileFlags
+	AuthFile string `subcmd:"protocolsio-auth,$HOME/.protocolsio.yaml,'protocols.io auth config file'"`
 }
 
 type ScanFlags struct {
@@ -66,15 +65,15 @@ const (
 `
 )
 
-var ExtensionSpec = gleancfg.ExtensionSpec{
+var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    protocolsiocmd.Auth{},
+	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: protocolsiocmd.Service{},
 	AddFunc:    AddExtension,
 }
 
-func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
 	c := &command{parent: extension}
 	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(
 		c.scanDownloadsCmd, &ScanFlags{})
@@ -86,41 +85,33 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 }
 
 type command struct {
-	parent    gleancfg.Extension
-	cacheRoot string
-	fs        operations.FS
-	chkpt     checkpoint.Operation
+	parent extensions.Extension
 }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv protocolsiocmd.CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
+	first, ok := extensions.FirstAPICrawl(cfg.APICrawls)
+	if !ok {
+		return nil, fmt.Errorf("no api crawl defined for %v", datasource)
 	}
-	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
-	}
-	return protocolsiocmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmd.chkpt, cmdName, pfv.ProtocolsConfig)
+	return protocolsiocmd.NewCommand(ctx, first, resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
-	return c.Crawl(ctx, cmd.fs, cmd.cacheRoot, &fv.CrawlFlags)
+	return c.Crawl(ctx, &fv.CrawlFlags)
 }
 
 func (cmd *command) getCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*GetFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.GetFlags.CommonFlags, fv.Datasource)
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, fv.Datasource)
 	if err != nil {
 		return err
 	}
@@ -129,11 +120,11 @@ func (cmd *command) getCmd(ctx context.Context, values interface{}, args []strin
 
 func (cmd *command) scanDownloadsCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*ScanFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.ScanFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
-	return c.ScanDownloaded(ctx, cmd.cacheRoot, &fv.ScanFlags)
+	return c.ScanDownloaded(ctx, &fv.ScanFlags)
 }
 
 type converter struct {

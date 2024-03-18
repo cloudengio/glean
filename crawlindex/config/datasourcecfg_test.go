@@ -25,12 +25,12 @@ const datasourcesSpec = `- datasource: static-corpus
         default_request_chan_size: 100
         default_downloads_chan_size: 100
         concurrency: [1, 2, 4]
-  cache:
-    path: $HOME/.cache/test-crawl
+      cache:
+        downloads: $HOME/.cache/test-crawl
   index:
     force_restart: true
     force_deletion: true
-  datasource_config:
+  glean_datasource_config:
     glean_instance: glean-dev
     name: internal-documentation"
     displayname: display-internal-documentation"
@@ -56,7 +56,7 @@ func TestDataSource(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.Cache.Path, "$HOME/.cache/test-crawl"; got != want {
+	if got, want := ds0.Crawls[0].Cache.Downloads, "$HOME/.cache/test-crawl"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
@@ -73,11 +73,11 @@ func TestDataSource(t *testing.T) {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.CustomDatasourceConfig.GetHomeUrl(), "static.example.com"; got != want {
+	if got, want := ds0.GleanDatasource.GetHomeUrl(), "static.example.com"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 
-	if got, want := ds0.CustomDatasourceConfig.GetDatasourceCategory(), "PUBLISHED_CONTENT"; got != want {
+	if got, want := ds0.GleanDatasource.GetDatasourceCategory(), "PUBLISHED_CONTENT"; got != want {
 		t.Errorf("got %v, want %v", got, want)
 	}
 

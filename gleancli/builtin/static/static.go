@@ -11,27 +11,18 @@ import (
 
 	"cloudeng.io/file/content"
 	"cloudeng.io/file/crawl/outlinks"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/extensions/benchling"
 	"cloudeng.io/glean/extensions/biorxiv"
 	"cloudeng.io/glean/extensions/papersapp"
 	"cloudeng.io/glean/extensions/protocolsio"
+	"cloudeng.io/glean/extensions/testcmd"
+	"cloudeng.io/glean/gleancli/extensions"
+	"cloudeng.io/webapi/operations/apitokens"
 )
 
-// CrawlProcessors represents the set of available Extractors for crawling.
-type CrawlProcessors struct {
-	Extractors map[content.Type]outlinks.Extractor
-}
-
-// IndexProcessor represents the set of available converters for indexing.
-type IndexProcessors struct {
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-}
-
-// Extractors represents the set of available outlink extractors.
-func Extractors() map[content.Type]outlinks.Extractor {
+// LinkExtractors represents the set of available outlink extractors.
+func LinkExtractors() map[content.Type]outlinks.Extractor {
 	return map[content.Type]outlinks.Extractor{
 		"text/html;charset=utf-8": outlinks.NewHTML(),
 	}
@@ -41,7 +32,7 @@ func Extractors() map[content.Type]outlinks.Extractor {
 // it will panic on encountering an error.
 func MustDocumentConverters() *content.Registry[converters.Document] {
 	cnv, err := converters.CreateDocumentRegistry(
-		converters.NewHTML(),
+		NewHTML(), // Use the Glean HTML converter.
 		protocolsio.NewDocumentConverter(),
 		benchling.NewDocumentConverter(),
 		papersapp.NewDocumentConverter(),
@@ -65,22 +56,9 @@ func MustUserConverters() *content.Registry[converters.User] {
 	return cnv
 }
 
-func MustCrawlProcessors() CrawlProcessors {
-	return CrawlProcessors{
-		Extractors: Extractors(),
-	}
-}
-
-func MustIndexProcessors() IndexProcessors {
-	return IndexProcessors{
-		DocumentConverters: MustDocumentConverters(),
-		UserConverters:     MustUserConverters(),
-	}
-}
-
 // APIExtensions returns the builtin API related commands.
-func APIExtensions(parents ...string) []gleancfg.Extension {
-	return NewExtensions(parents,
+func APIExtensions(parents ...string) []extensions.Extension {
+	return extensions.NewExtensions(parents,
 		protocolsio.ExtensionSpec,
 		benchling.ExtensionSpec,
 		papersapp.ExtensionSpec,
@@ -88,12 +66,23 @@ func APIExtensions(parents ...string) []gleancfg.Extension {
 	)
 }
 
-// NewExtensions creates the command specified extensions.
-func NewExtensions(parents []string, specs ...gleancfg.ExtensionSpec) []gleancfg.Extension {
-	var exts []gleancfg.Extension
-	for _, spec := range specs {
-		ext := gleancfg.NewExtensionC(spec, parents)
-		exts = append(exts, ext)
+func TokenReaders() *apitokens.Readers {
+	def := apitokens.CloneReaders(apitokens.DefaultReaders)
+	// Add any additional token readers go here, eg. for reading
+	// from AWS secrets manager.
+	return def
+}
+
+func New() extensions.StaticResources {
+	return extensions.StaticResources{
+		Extractors:         LinkExtractors(),
+		DocumentConverters: MustDocumentConverters(),
+		UserConverters:     MustUserConverters(),
+		TokenReaders:       TokenReaders(),
 	}
-	return exts
+}
+
+// Extensions returns any top-level commands.
+func Extensions(parents ...string) []extensions.Extension {
+	return extensions.NewExtensions(parents, testcmd.ExtensionSpec)
 }

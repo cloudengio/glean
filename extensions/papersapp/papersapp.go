@@ -6,17 +6,17 @@ package papersapp
 
 import (
 	"context"
-	"os"
+	"fmt"
 
 	"cloudeng.io/cmdutil/subcmd"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/papersapp/papersappcmd"
+	"cloudeng.io/glean/gleancli/extensions"
+	"cloudeng.io/webapi/apis/papersapp/papersappcmd"
 )
 
 type CommonFlags struct {
 	config.FileFlags
+	AuthFile string `subcmd:"papersapp-auth,$HOME/.benchling.yaml,'papersapp.io auth config file'"`
 }
 
 type CrawlFlags struct {
@@ -46,15 +46,15 @@ const (
 `
 )
 
-var ExtensionSpec = gleancfg.ExtensionSpec{
+var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    papersappcmd.Auth{},
+	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: papersappcmd.Service{},
 	AddFunc:    AddExtension,
 }
 
-func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
 	c := &command{parent: extension}
 	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
 	cmdSet.Set(append(parents, cmdName, "scan-downloaded")...).MustRunner(c.scanCmd, &ScanFlags{})
@@ -62,38 +62,35 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 }
 
 type command struct {
-	parent    gleancfg.Extension
-	cacheRoot string
-	fs        operations.FS
+	parent extensions.Extension
 }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv papersappcmd.CommonFlags, datasource string) (*papersappcmd.Command, error) {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*papersappcmd.Command, error) {
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cmd.cacheRoot = os.ExpandEnv(cfg.Cache.Path)
-	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cmd.cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
+	first, ok := extensions.FirstAPICrawl(cfg.APICrawls)
+	if !ok {
+		return nil, fmt.Errorf("no api crawl defined for %v", datasource)
 	}
-	return papersappcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmdName, pfv.PapersAppConfig)
+	return papersappcmd.NewCommand(ctx, first, resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
-	return c.Crawl(ctx, cmd.cacheRoot, &fv.CrawlFlags)
+	return c.Crawl(ctx, &fv.CrawlFlags)
 }
 
 func (cmd *command) scanCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*ScanFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.ScanFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
-	return c.ScanDownloaded(ctx, cmd.cacheRoot, &fv.ScanFlags)
+	return c.ScanDownloaded(ctx, &fv.ScanFlags)
 }

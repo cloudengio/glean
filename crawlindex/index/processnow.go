@@ -16,17 +16,10 @@ type ProcessNowFlags struct {
 	config.FileFlags
 }
 
-func (idx *Indexer) ProcessNow(ctx context.Context, fv *ProcessNowFlags, datasource string) error {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
-	if err != nil {
-		return err
-	}
-	ctx, client, err := idx.GleanConfig.NewIndexingAPIClient(ctx, cfg.GleanInstance)
-	if err != nil {
-		return err
-	}
+func (idx *Indexer) ProcessNow(ctx context.Context, _ *ProcessNowFlags) error {
+	ctx, client := idx.newGleanIndexingClient(ctx)
 	req := gleansdk.NewProcessAllDocumentsRequest()
-	req.SetDatasource(cfg.DatasourceConfig.Name)
-	_, err = client.DocumentsApi.ProcessalldocumentsPost(ctx).ProcessAllDocumentsRequest(*req).Execute()
+	req.SetDatasource(idx.datasourceName)
+	_, err := client.DocumentsApi.ProcessalldocumentsPost(ctx).ProcessAllDocumentsRequest(*req).Execute()
 	return err
 }

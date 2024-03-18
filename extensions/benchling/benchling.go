@@ -6,19 +6,18 @@ package benchling
 
 import (
 	"context"
-	"os"
+	"fmt"
 	"strings"
 
 	"cloudeng.io/cmdutil/subcmd"
-	"cloudeng.io/file/checkpoint"
-	gleancfg "cloudeng.io/glean/config"
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/webapi/benchling/benchlingcmd"
-	"cloudeng.io/webapi/operations"
+	"cloudeng.io/glean/gleancli/extensions"
+	"cloudeng.io/webapi/apis/benchling/benchlingcmd"
 )
 
 type CommonFlags struct {
 	config.FileFlags
+	AuthFile string `subcmd:"benchling-auth,$HOME/.benchling.yaml,'benchling.io auth config file'"`
 }
 
 type CrawlFlags struct {
@@ -49,15 +48,15 @@ const (
 `
 )
 
-var ExtensionSpec = gleancfg.ExtensionSpec{
+var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    benchlingcmd.Auth{},
+	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: benchlingcmd.Service{},
 	AddFunc:    AddExtension,
 }
 
-func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error {
 	c := &command{parent: extension}
 	cmdSet.Set(append(parents, cmdName, "crawl")...).MustRunner(c.crawlCmd, &CrawlFlags{})
 	cmdSet.Set(append(parents, cmdName, "create-indexable-documents")...).MustRunner(c.indexCmd, &IndexFlags{})
@@ -65,31 +64,24 @@ func AddExtension(extension gleancfg.Extension, cmdSet *subcmd.CommandSetYAML, p
 }
 
 type command struct {
-	parent gleancfg.Extension
-	fs     operations.FS
-	chkpt  checkpoint.Operation
+	parent extensions.Extension
 }
 
-func (cmd *command) new(ctx context.Context, fv CommonFlags, pfv benchlingcmd.CommonFlags, datasource string) (*benchlingcmd.Command, error) {
-	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
+func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*benchlingcmd.Command, error) {
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
 	if err != nil {
 		return nil, err
 	}
-	cacheRoot := os.ExpandEnv(cfg.Cache.Path)
-	cmd.fs, err = cmd.parent.Options().CreateStoreFS(ctx, cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
+	first, ok := extensions.FirstAPICrawl(cfg.APICrawls)
+	if !ok {
+		return nil, fmt.Errorf("no api crawl defined for %v", datasource)
 	}
-	cmd.chkpt, err = cmd.parent.Options().CreateCheckpointOp(ctx, cacheRoot, cfg.Cache.ServiceConfig)
-	if err != nil {
-		return nil, err
-	}
-	return benchlingcmd.NewCommand(ctx, cfg.APICrawls, cmd.fs, cmd.chkpt, cacheRoot, cmdName, pfv.BenchlingConfig)
+	return benchlingcmd.NewCommand(ctx, first, resources)
 }
 
 func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*CrawlFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.CrawlFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
@@ -99,7 +91,7 @@ func (cmd *command) crawlCmd(ctx context.Context, values interface{}, args []str
 
 func (cmd *command) indexCmd(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*IndexFlags)
-	c, err := cmd.new(ctx, fv.CommonFlags, fv.IndexFlags.CommonFlags, args[0])
+	c, err := cmd.newCommand(ctx, fv.CommonFlags, args[0])
 	if err != nil {
 		return err
 	}
