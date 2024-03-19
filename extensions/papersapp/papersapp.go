@@ -11,7 +11,7 @@ import (
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleancli/extensions"
-	"cloudeng.io/webapi/apis/papersapp/papersappcmd"
+	"cloudeng.io/webapi/clients/papersapp/papersappcmd"
 )
 
 type CommonFlags struct {
