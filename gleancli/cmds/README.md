@@ -14,6 +14,15 @@ func MustNew(options Options) *subcmd.CommandSetYAML
 
 
 ## Types
+### Type BulkFlags
+```go
+type BulkFlags struct {
+	index.BulkFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
 ### Type Crawl
 ```go
 type Crawl struct {
@@ -33,6 +42,7 @@ func (cmd *Crawl) Run(ctx context.Context, values interface{}, args []string) er
 ### Type Datasources
 ```go
 type Datasources struct {
+	Options
 	// contains filtered or unexported fields
 }
 ```
@@ -40,12 +50,12 @@ type Datasources struct {
 ### Methods
 
 ```go
-func (ds Datasources) Download(ctx context.Context, _ interface{}, args []string) error
+func (ds Datasources) Download(ctx context.Context, values any, args []string) error
 ```
 
 
 ```go
-func (ds Datasources) ExplainConfig(ctx context.Context, _ interface{}, _ []string) error
+func (ds Datasources) ExplainConfig(_ context.Context, _ interface{}, _ []string) error
 ```
 
 
@@ -61,10 +71,28 @@ func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []stri
 
 
 
-### Type GlobalFlags
+### Type DeleteAllFlags
 ```go
-type GlobalFlags struct {
-	gleancfg.GleanFlags
+type DeleteAllFlags struct {
+	index.DeleteAllFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
+### Type DeleteFlags
+```go
+type DeleteFlags struct {
+	index.DeleteFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
+### Type DownloadFlags
+```go
+type DownloadFlags struct {
+	crawlindex.AuthFileFlag
 }
 ```
 
@@ -73,24 +101,58 @@ type GlobalFlags struct {
 ```go
 type Index struct {
 	Options
+	// contains filtered or unexported fields
 }
-```
-
-
-### Type Option
-```go
-type Option func(o *Options)
 ```
 
 
 ### Type Options
 ```go
 type Options struct {
-	CrawlProcessors static.CrawlProcessors
-	IndexProcessors static.IndexProcessors
-	CreateFS        func(name string, cfg yaml.Node, factories map[string]crawlcmd.FSFactory) error
-	CreateContentFS func(ctx context.Context, path string, cfg yaml.Node) (content.FS, error)
-	APIExtensions   []gleancfg.Extension
+	extensions.StaticResources
+
+	extensions.DynamicResources
+
+	Extensions    []extensions.Extension
+	APIExtensions []extensions.Extension
+
+	InitContext func(ctx context.Context) (context.Context, error)
+}
+```
+
+
+### Type ProcessNowFlags
+```go
+type ProcessNowFlags struct {
+	index.ProcessNowFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
+### Type QueryFlags
+```go
+type QueryFlags struct {
+	index.QueryFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
+### Type RegisterFlags
+```go
+type RegisterFlags struct {
+	config.FileFlags
+	crawlindex.AuthFileFlag
+}
+```
+
+
+### Type StatsFlags
+```go
+type StatsFlags struct {
+	index.StatsFlags
+	crawlindex.AuthFileFlag
 }
 ```
 

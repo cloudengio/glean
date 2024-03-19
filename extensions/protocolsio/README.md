@@ -5,15 +5,30 @@ import cloudeng.io/glean/extensions/protocolsio
 ```
 
 
-## Functions
-### Func Extension
+## Variables
+### ExtensionSpec
 ```go
-func Extension(parents ...string) gleancfg.Extension
+ExtensionSpec = extensions.ExtensionSpec{
+	Name:       cmdName,
+	CmdSpec:    cmdSpec,
+	AuthCfg:    extensions.APIKey{},
+	ServiceCfg: protocolsiocmd.Service{},
+	AddFunc:    AddExtension,
+}
+
 ```
 
-### Func NewConverter
+
+
+## Functions
+### Func AddExtension
 ```go
-func NewConverter() converters.T
+func AddExtension(extension extensions.Extension, cmdSet *subcmd.CommandSetYAML, parents []string) error
+```
+
+### Func NewDocumentConverter
+```go
+func NewDocumentConverter() converters.Document
 ```
 
 
@@ -23,6 +38,7 @@ func NewConverter() converters.T
 ```go
 type CommonFlags struct {
 	config.FileFlags
+	AuthFile string `subcmd:"protocolsio-auth,$HOME/.protocolsio.yaml,'protocols.io auth config file'"`
 }
 ```
 

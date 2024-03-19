@@ -10,15 +10,21 @@ the Glean CLI.
 ## Functions
 ### Func APIExtensions
 ```go
-func APIExtensions(parents ...string) []gleancfg.Extension
+func APIExtensions(parents ...string) []extensions.Extension
 ```
 APIExtensions returns the builtin API related commands.
 
-### Func Extractors
+### Func Extensions
 ```go
-func Extractors() map[content.Type]outlinks.Extractor
+func Extensions(parents ...string) []extensions.Extension
 ```
-Extractors represents the set of available outlink extractors.
+Extensions returns any top-level commands.
+
+### Func LinkExtractors
+```go
+func LinkExtractors() map[content.Type]outlinks.Extractor
+```
+LinkExtractors represents the set of available outlink extractors.
 
 ### Func MustDocumentConverters
 ```go
@@ -34,39 +40,43 @@ func MustUserConverters() *content.Registry[converters.User]
 MustUserConverters returns the available converters, it will panic on
 encountering an error.
 
+### Func New
+```go
+func New() extensions.StaticResources
+```
+
+### Func NewHTML
+```go
+func NewHTML() converters.Document
+```
+NewHTML returns a new install of HTML.
+
+### Func TokenReaders
+```go
+func TokenReaders() *apitokens.Readers
+```
+
 
 
 ## Types
-### Type CrawlProcessors
+### Type HTML
 ```go
-type CrawlProcessors struct {
-	Extractors map[content.Type]outlinks.Extractor
+type HTML struct {
+	// contains filtered or unexported fields
 }
 ```
-CrawlProcessors represents the set of available Extractors for crawling.
+HTML represents an html to glean document converter. It differs from
+converters.HTML only in that it sets the object type to statichtml.
 
-### Functions
+### Methods
 
 ```go
-func MustCrawlProcessors() CrawlProcessors
+func (cnv *HTML) Convert(ctx context.Context, datasource string, cfg config.Conversion, ctype content.Type, data []byte) (gleansdk.DocumentDefinition, error)
 ```
 
 
-
-
-### Type IndexProcessors
 ```go
-type IndexProcessors struct {
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-}
-```
-IndexProcessor represents the set of available converters for indexing.
-
-### Functions
-
-```go
-func MustIndexProcessors() IndexProcessors
+func (cnv *HTML) Type() content.Type
 ```
 
 

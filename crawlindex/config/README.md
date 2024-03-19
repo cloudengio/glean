@@ -9,23 +9,16 @@ import cloudeng.io/glean/crawlindex/config
 ### Type BulkIndex
 ```go
 type BulkIndex struct {
-	ForceDeletion  bool `yaml:"force_deletion"`  // Glean's force deletion flag
-	ForceRestart   bool `yaml:"force_restart"`   // Glean's force restart flag
-	ReaddirEntries int  `yaml:"readdir_entries"` // number of entries per Readdir call.
-	RequestSize    int  `yaml:"request_size"`    // number of documents to include in a single request in a single bulk index request.
+	ForceDeletion       bool `yaml:"force_deletion"`        // Glean's force deletion flag
+	ForceRestart        bool `yaml:"force_restart"`         // Glean's force restart flag
+	ReaddirEntries      int  `yaml:"readdir_entries"`       // number of entries per Readdir call.
+	DocumentRequestSize int  `yaml:"document_request_size"` // number of documents to include in a single request in a single bulk index request.
+	UserRequestSize     int  `yaml:"user_request_size"`     // number of user to include in a single request in a single bulk index request.
+	CacheConcurrency    int  `yaml:"cache_concurrency"`     // number of concurrent cache reads.
 }
 ```
 BulkIndex represents the configuration info for a Glean builk index
 operation.
-
-
-### Type Cache
-```go
-type Cache struct {
-	Path string // Path is the location of the cache for this datasource.
-}
-```
-Cache represents a cache configuration.
 
 
 ### Type Conversion
@@ -69,34 +62,50 @@ Converters represents a set of converters.
 ### Type Crawl
 ```go
 type Crawl struct {
-	crawlcmd.Config `yaml:",inline"`
-	AWS             awsconfig.AWSFlags `yaml:"aws,omitempty"`
+	crawlcmd.Config `yaml:",inline" cmd:"crawl configuration"`
+	Service         CrawlService `yaml:",inline" cmd:"service to be crawled"`
 }
 ```
 Crawl represents a single crawl that contributes data to a datasource.
 
 
+### Type CrawlService
+```go
+type CrawlService struct {
+	Name   string    `yaml:"service_name" cmd:"name of service to crawl, eg. s3/aws"`
+	Config yaml.Node `yaml:"service_config" cmd:"service specific configuration, eg. cloudeng.io/aws/awsconfig.AWSFlags"`
+}
+```
+CrawlService represents the configuration of a specific service to be
+crawled, eg. to contain configuration for accessing a cloud service.
+
+
 ### Type Datasource
 ```go
 type Datasource struct {
-	Datasource string // Datasource name.
+	// Datasource name.
+	Datasource string `yaml:"datasource" cmd:"name of the datasource"`
 
-	Crawls []Crawl `yaml:"crawls,omitempty"`
+	Crawls []Crawl `yaml:"crawls,omitempty" cmd:"file based crawls to run for this datasource"`
 
 	// API based 'crawls' that obtain data for this datasource.
-	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty"`
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty" cmd:"api crawls to run for this datasource"`
 
 	// Bulk index configuration for this datasource.
-	*BulkIndex `yaml:"bulk_index,omitempty"`
-	// Incremental index configuration for this datasource.
-	*IncrementalIndex `yaml:"incremental_index,omitempty"`
+	*BulkIndex `yaml:"bulk_index,omitempty" cmd:"bulk index configuration for this datasource"`
 
-	Cache                  // Cache configuration for this datasource.
-	Converters []Converter // Converters (from download.Result to Glean document) configuration.
+	// Incremental index configuration for this datasource.
+	*IncrementalIndex `yaml:"incremental_index,omitempty" cmd:"incremental index configuration for this datasource"`
+
+	// Converters (from download.Result to Glean document) configuration.
+	Converters []Converter `yaml:"converters,omitempty" cmd:"converters for this datasource"`
+
+	// GleanDomain is the domain of the Glean instance to use.
+	GleanDomain string `yaml:"glean_domain" cmd:"glean domain to use"`
 
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	config.DatasourceConfig `yaml:"datasource_config"`
+	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
 }
 ```
 Datasource represents a single datasource or corpus to be crawled and
@@ -154,6 +163,17 @@ type FileFlags struct {
 }
 ```
 FileFlags represents a command line flag for the datasource config file.
+
+
+### Type GleanDatasource
+```go
+type GleanDatasource struct {
+	// GleanConfig is the datasource configuration for the Glean instance.
+	gleansdk.CustomDatasourceConfig `yaml:",inline" cmd:"glean custom datasource configuration"`
+}
+```
+GleanDatasource represents the configuration of the datasource with Glean's
+API.
 
 
 ### Type IncrementalIndex
