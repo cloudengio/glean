@@ -1,30 +1,28 @@
 module cloudeng.io/glean/gleancli
 
-go 1.21
-
-toolchain go1.21.6
+go 1.22.0
 
 require (
 	cloudeng.io/aws v0.0.0-20240319175704-bc8f0484b406
 	cloudeng.io/cmdutil v0.0.0-20240319175704-bc8f0484b406
 	cloudeng.io/errors v0.0.10
 	cloudeng.io/file v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/glean v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/crawlindex v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/gleansdk v0.0.0-20240318214507-dc44170308d2
+	cloudeng.io/glean/crawlindex v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/extensions/testcmd v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/glean/gleansdk v0.0.0-20240319200739-26df468c8d49
 	cloudeng.io/path v0.0.9
 	cloudeng.io/sync v0.0.8
-	cloudeng.io/webapi/operations v0.0.0-20240319185451-f9475e19804d
+	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
 	cloudeng.io/algo v0.0.0-20240319175704-bc8f0484b406 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240318214507-dc44170308d2 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240319200739-26df468c8d49 // indirect
 	cloudeng.io/net v0.0.0-20240319175704-bc8f0484b406 // indirect
 	cloudeng.io/os v0.0.0-20240319175704-bc8f0484b406 // indirect
 	cloudeng.io/text v0.0.11 // indirect
@@ -34,6 +32,10 @@ require (
 	cloudeng.io/webapi/apis/protocolsio v0.0.0-20240319185451-f9475e19804d // indirect
 	cloudeng.io/webapi/benchling v0.0.0-20240304015302-6256cc401d35 // indirect
 	cloudeng.io/webapi/biorxiv v0.0.0-20240304015302-6256cc401d35 // indirect
+	cloudeng.io/webapi/clients/benchling v0.0.0-20240319190321-d664c9bc247a // indirect
+	cloudeng.io/webapi/clients/biorxiv v0.0.0-20240319190321-d664c9bc247a // indirect
+	cloudeng.io/webapi/clients/papersapp v0.0.0-20240319190321-d664c9bc247a // indirect
+	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240319190321-d664c9bc247a // indirect
 	cloudeng.io/webapi/papersapp v0.0.0-20240304015302-6256cc401d35 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
