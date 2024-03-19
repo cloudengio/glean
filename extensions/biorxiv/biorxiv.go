@@ -12,7 +12,7 @@ import (
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleancli/extensions"
-	"cloudeng.io/webapi/apis/biorxiv/biorxivcmd"
+	"cloudeng.io/webapi/clients/biorxiv/biorxivcmd"
 )
 
 type CommonFlags struct {

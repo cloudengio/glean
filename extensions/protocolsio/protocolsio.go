@@ -16,9 +16,9 @@ import (
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleancli/extensions"
 	"cloudeng.io/glean/gleansdk"
-	"cloudeng.io/webapi/apis/protocolsio"
-	"cloudeng.io/webapi/apis/protocolsio/protocolsiocmd"
-	"cloudeng.io/webapi/apis/protocolsio/protocolsiosdk"
+	"cloudeng.io/webapi/clients/protocolsio"
+	"cloudeng.io/webapi/clients/protocolsio/protocolsiocmd"
+	"cloudeng.io/webapi/clients/protocolsio/protocolsiosdk"
 	"cloudeng.io/webapi/operations"
 )
 

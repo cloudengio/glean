@@ -12,7 +12,7 @@ import (
 	"cloudeng.io/cmdutil/subcmd"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/gleancli/extensions"
-	"cloudeng.io/webapi/apis/benchling/benchlingcmd"
+	"cloudeng.io/webapi/clients/benchling/benchlingcmd"
 )
 
 type CommonFlags struct {
