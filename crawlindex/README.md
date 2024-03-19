@@ -5,48 +5,33 @@ import cloudeng.io/glean/crawlindex
 ```
 
 
-## Functions
-### Func WriteDocument
-```go
-func WriteDocument(v Document, dir, file string) error
-```
-WriteDocument writes the provided document to the specified file.
-
-
-
 ## Types
-### Type Document
+### Type Auth
 ```go
-type Document struct {
-	Time     time.Time
-	Type     content.Type
-	Download *download.Result
+type Auth []struct {
+	Domain string `yaml:"domain" cmd:"domain name of the glean instance"`
+	Auth   struct {
+		BearerToken       string `yaml:"indexing_token" cmd:"indexing token for the glean instance"`
+		ClientBearerToken string `yaml:"client_token" cmd:"client bearer token for the glean instance"`
+	}
 }
 ```
-Document represents a downloaded document, whether it be a file, a http get
-or the result of a Rest API call.
-
-### Functions
-
-```go
-func NewDownloadDocument(d *download.Result, ctype content.Type) Document
-```
-
-
-```go
-func ReadDocument(dir, file string) (Document, error)
-```
-ReadDocument reads a Document from the specified file.
-
-
 
 ### Methods
 
 ```go
-func (d Document) WriteToFile(dir, file string) error
+func (a Auth) TokensForDomain(domain string) (indexingToken, clientToken *apitokens.T)
 ```
 
 
+
+
+### Type AuthFileFlag
+```go
+type AuthFileFlag struct {
+	AuthFile string `subcmd:"glean-auth,$HOME/.glean-auth.yaml,'file containing authentication tokens for glean instances'"`
+}
+```
 
 
 

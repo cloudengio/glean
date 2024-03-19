@@ -9,13 +9,20 @@ import cloudeng.io/glean/crawlindex/crawl
 ### Type Crawler
 ```go
 type Crawler struct {
-	GleanConfig gleancfg.Glean
-	Extractors  func() map[content.Type]outlinks.Extractor
-	FSForCrawl  func(config.Crawl) map[string]file.FSFactory
+	// contains filtered or unexported fields
 }
 ```
 Crawler represents a crawler instance that contains global configuration
 information.
+
+### Functions
+
+```go
+func New(resources Resources) *Crawler
+```
+New creates a new Crawler instance.
+
+
 
 ### Methods
 
@@ -35,6 +42,17 @@ type Flags struct {
 }
 ```
 Flags represents the flags that are used to control the crawl.
+
+
+### Type Resources
+```go
+type Resources struct {
+	Extractors      map[content.Type]outlinks.Extractor
+	PopulateCrawlFS func(ctx context.Context, cfg config.CrawlService, factories map[string]crawlcmd.FSFactory) error
+	NewContentFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (content.FS, error)
+}
+```
+Resources represents the resources that are used by the crawler.
 
 
 

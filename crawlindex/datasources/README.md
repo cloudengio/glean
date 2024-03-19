@@ -5,40 +5,16 @@ import cloudeng.io/glean/crawlindex/datasources
 ```
 
 
-## Types
-### Type Flags
+## Functions
+### Func Download
 ```go
-type Flags struct {
-	config.FileFlags
-}
+func Download(ctx context.Context, domain, datasource string, token *apitokens.T) error
 ```
 
-
-### Type T
+### Func Register
 ```go
-type T struct {
-	GleanConfig gleancfg.Glean
-}
+func Register(ctx context.Context, cfg config.Datasource, name string, token *apitokens.T) error
 ```
-
-### Methods
-
-```go
-func (d *T) Download(ctx context.Context, instance, datasource string) error
-```
-
-
-```go
-func (d *T) Register(ctx context.Context, fv *Flags, datasource string) error
-```
-
-
-```go
-func (d *T) ShowConfig(ctx context.Context, filename string) error
-```
-
-
-
 
 
 

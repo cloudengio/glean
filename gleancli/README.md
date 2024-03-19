@@ -7,10 +7,7 @@ Usage of `gleancli`
 
     datasources - register or list Glean SDK data sources
           crawl - crawl a web site or filesystem
+            api - API releated commands
           index - crawl a web site or filesystem
-
-global flags: [--config=$HOME/.glean.yaml]
-
-    -config string
-      glean config file (default "$HOME/.glean.yaml")
+           test - test configuration for the glean cli
 
