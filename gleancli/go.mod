@@ -3,17 +3,17 @@ module cloudeng.io/glean/gleancli
 go 1.22.0
 
 require (
-	cloudeng.io/aws v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/cmdutil v0.0.0-20240319175704-bc8f0484b406
+	cloudeng.io/aws v0.0.0-20240320165904-589635c00463
+	cloudeng.io/cmdutil v0.0.0-20240320165904-589635c00463
 	cloudeng.io/errors v0.0.10
-	cloudeng.io/file v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/glean/crawlindex v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/extensions/testcmd v0.0.0-20240319200739-26df468c8d49
-	cloudeng.io/glean/gleansdk v0.0.0-20240319200739-26df468c8d49
+	cloudeng.io/file v0.0.0-20240320180605-37c89732d78f
+	cloudeng.io/glean/crawlindex v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/extensions/testcmd v0.0.0-20240319212705-34c56aa77a09
+	cloudeng.io/glean/gleansdk v0.0.0-20240319212705-34c56aa77a09
 	cloudeng.io/path v0.0.9
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
@@ -21,10 +21,10 @@ require (
 )
 
 require (
-	cloudeng.io/algo v0.0.0-20240319175704-bc8f0484b406 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240319200739-26df468c8d49 // indirect
-	cloudeng.io/net v0.0.0-20240319175704-bc8f0484b406 // indirect
-	cloudeng.io/os v0.0.0-20240319175704-bc8f0484b406 // indirect
+	cloudeng.io/algo v0.0.0-20240320165904-589635c00463 // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240319212705-34c56aa77a09 // indirect
+	cloudeng.io/net v0.0.0-20240320165904-589635c00463 // indirect
+	cloudeng.io/os v0.0.0-20240320165904-589635c00463 // indirect
 	cloudeng.io/text v0.0.11 // indirect
 	cloudeng.io/webapi/apis/benchling v0.0.0-20240319185451-f9475e19804d // indirect
 	cloudeng.io/webapi/apis/biorxiv v0.0.0-20240319185451-f9475e19804d // indirect
