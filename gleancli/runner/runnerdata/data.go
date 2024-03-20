@@ -54,6 +54,7 @@ var (
 
 	BulkIndexCommand = []string{
 		"index", "bulk",
+		"--dry-run={{.Flags.IndexingDryRun}}",
 		`--glean-auth={{AuthFile "glean.com"}}`,
 		"--datasource-configs={{.DatasourceConfigFile}}",
 		"{{.DatasourceName}}",

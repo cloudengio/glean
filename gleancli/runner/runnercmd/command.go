@@ -60,6 +60,15 @@ type CrawlFlags struct {
 	ProcessDownloads bool `subcmd:"process-downloads,true,'process downloaded files'"`
 }
 
+type IndexFlags struct {
+	IndexingDryRun bool `subcmd:"indexing-dry-run,false,'dry run only'"`
+}
+
+type CrawlIndexFlags struct {
+	CrawlFlags
+	IndexFlags
+}
+
 // CommandSpec represents a simple top-level command that can
 // be added to a subcmd.CommandSetYAML.
 type CommandSpec struct {
@@ -82,17 +91,17 @@ func (c *T) Spec() (string, []CommandSpec) {
 		},
 		{
 			Name:       "index",
-			FlagValues: &struct{}{},
+			FlagValues: &IndexFlags{},
 			Runner:     c.Index,
 		},
 		{
 			Name:       "index-all",
-			FlagValues: &struct{}{},
+			FlagValues: &IndexFlags{},
 			Runner:     c.IndexAll,
 		},
 		{
 			Name:       "crawl-index",
-			FlagValues: &struct{}{},
+			FlagValues: &CrawlIndexFlags{},
 			Runner:     c.CrawlIndex,
 		},
 		{
@@ -113,25 +122,32 @@ func (c *T) Spec() (string, []CommandSpec) {
 	}
 }
 
-func (c *T) NewRunnerOpts(datasource string) []cmdexec.Option {
+func (c *T) NewRunnerOpts(datasource string, flags any) []cmdexec.Option {
 	opts := append([]cmdexec.Option{}, c.GlobalExecOpts...)
+	vars := TemplateVars{
+		DatasourceName:       datasource,
+		DatasourceConfigFile: c.DatasourceConfigFile,
+		Flags:                flags,
+	}
 	opts = append(opts,
 		cmdexec.WithTemplateFuncs(TemplateFuncs(c.AuthFiles)),
-		cmdexec.WithTemplateVars(TemplateVars{DatasourceName: datasource, DatasourceConfigFile: c.DatasourceConfigFile}))
+		cmdexec.WithTemplateVars(vars))
 	return opts
-
-}
-func (c *T) NewRunner(datasource string) *cmdexec.Runner {
-	return cmdexec.New(datasource, c.NewRunnerOpts(datasource)...)
 }
 
-func (c *T) RunCommands(ctx context.Context, datasource string, cmdsets ...map[string][]string) error {
+func (c *T) NewRunner(datasource string, flags any) *cmdexec.Runner {
+	return cmdexec.New(datasource, c.NewRunnerOpts(datasource, flags)...)
+}
+
+// RunCommands runs the supplied commands for the specified datasource. Flags represents
+// the flags made availabe as template variables.
+func (c *T) RunCommands(ctx context.Context, datasource string, flags any, cmdsets ...map[string][]string) error {
 	for _, cmdmap := range cmdsets {
 		cmds, ok := cmdmap[datasource]
 		if !ok {
 			return fmt.Errorf("no commands for datasource: %v", datasource)
 		}
-		if err := c.NewRunner(datasource).Run(ctx, cmds...); err != nil {
+		if err := c.NewRunner(datasource, flags).Run(ctx, cmds...); err != nil {
 			return err
 		}
 	}
@@ -150,7 +166,7 @@ func (c *T) crawlAndProcess(ctx context.Context, fv *CrawlFlags, datasource stri
 	if !fv.ProcessDownloads || len(c.ProcessCommands[datasource]) == 0 {
 		return nil
 	}
-	return c.RunCommands(ctx, datasource, c.ProcessCommands)
+	return c.RunCommands(ctx, datasource, fv, c.ProcessCommands)
 }
 
 func (c *T) CrawlAll(ctx context.Context, values interface{}, _ []string) error {
@@ -165,32 +181,32 @@ func (c *T) CrawlAll(ctx context.Context, values interface{}, _ []string) error 
 	return g.Wait()
 }
 
-func (c *T) Index(ctx context.Context, _ interface{}, args []string) error {
-	return c.RunCommands(ctx, args[0], c.IndexCommands)
+func (c *T) Index(ctx context.Context, values interface{}, args []string) error {
+	return c.RunCommands(ctx, args[0], values, c.IndexCommands)
 }
 
-func (c *T) IndexAll(ctx context.Context, _ interface{}, _ []string) error {
+func (c *T) IndexAll(ctx context.Context, values interface{}, _ []string) error {
 	var g errgroup.T
 	for _, ds := range c.Datasources {
 		ds := ds
 		g.Go(func() error {
-			return c.RunCommands(ctx, ds, c.IndexCommands)
+			return c.RunCommands(ctx, ds, values, c.IndexCommands)
 		})
 	}
 	return g.Wait()
 }
 
-func (c *T) CrawlIndex(ctx context.Context, _ interface{}, args []string) error {
-	return c.RunCommands(ctx, args[0], c.CrawlCommands, c.IndexCommands)
+func (c *T) CrawlIndex(ctx context.Context, values interface{}, args []string) error {
+	return c.RunCommands(ctx, args[0], values, c.CrawlCommands, c.IndexCommands)
 }
 
-func (c *T) TestCache(ctx context.Context, _ interface{}, args []string) error {
-	return c.RunCommands(ctx, args[0], c.TestCacheCommands)
+func (c *T) TestCache(ctx context.Context, values interface{}, args []string) error {
+	return c.RunCommands(ctx, args[0], values, c.TestCacheCommands)
 }
 
-func (c *T) TestCacheAll(ctx context.Context, _ interface{}, _ []string) error {
+func (c *T) TestCacheAll(ctx context.Context, values interface{}, _ []string) error {
 	for _, ds := range c.Datasources {
-		if err := c.RunCommands(ctx, ds, c.TestCacheCommands); err != nil {
+		if err := c.RunCommands(ctx, ds, values, c.TestCacheCommands); err != nil {
 			return err
 		}
 	}
@@ -202,7 +218,7 @@ func (c *T) formatCommands(out io.Writer, cmds map[string][]string) error {
 		if len(cmd) == 0 {
 			continue
 		}
-		cl, err := c.NewRunner("").ExpandCommandLine(cmd...)
+		cl, err := c.NewRunner("", struct{}{}).ExpandCommandLine(cmd...)
 		if err != nil {
 			return err
 		}
@@ -253,4 +269,5 @@ func TemplateFuncs(authFiles map[string]string) template.FuncMap {
 type TemplateVars struct {
 	DatasourceName       string
 	DatasourceConfigFile string
+	Flags                any
 }
