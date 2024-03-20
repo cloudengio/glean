@@ -121,6 +121,7 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 	)
 
 	ds := Datasources{
+		Options:    options,
 		extensions: cmdExtensions,
 	}
 	cmdSet.Set("datasources", "download").MustRunner(ds.Download, &DownloadFlags{})
