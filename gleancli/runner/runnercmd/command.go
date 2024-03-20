@@ -139,8 +139,8 @@ func (c *T) NewRunner(datasource string, flags any) *cmdexec.Runner {
 	return cmdexec.New(datasource, c.NewRunnerOpts(datasource, flags)...)
 }
 
-// RunCommands runs the supplied commands for the specified datasource. Flags represents
-// the flags made availabe as template variables.
+// RunCommands runs the supplied commands for the specified datasource.
+// Flags represents the flags made available as template variables.
 func (c *T) RunCommands(ctx context.Context, datasource string, flags any, cmdsets ...map[string][]string) error {
 	for _, cmdmap := range cmdsets {
 		cmds, ok := cmdmap[datasource]
