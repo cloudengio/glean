@@ -5,22 +5,22 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	cloudeng.io/algo v0.0.0-20240319175704-bc8f0484b406
+	cloudeng.io/algo v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8
-	cloudeng.io/cmdutil v0.0.0-20240319175704-bc8f0484b406
+	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/errors v0.0.10
-	cloudeng.io/file v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/gleansdk v0.0.0-20240318214507-dc44170308d2
+	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/text v0.0.11
-	cloudeng.io/webapi/operations v0.0.0-20240319185451-f9475e19804d
+	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	cloudeng.io/net v0.0.0-20240319175704-bc8f0484b406 // indirect
-	cloudeng.io/os v0.0.0-20240319175704-bc8f0484b406 // indirect
+	cloudeng.io/net v0.0.0-20240325034551-a3e69ef2d955 // indirect
+	cloudeng.io/os v0.0.0-20240325034551-a3e69ef2d955 // indirect
 	cloudeng.io/path v0.0.9 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.5 // indirect
