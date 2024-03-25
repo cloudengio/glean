@@ -1,23 +1,21 @@
 module cloudeng.io/glean/extensions/protocolsio
 
-go 1.21
-
-toolchain go1.21.6
+go 1.22.0
 
 require (
-	cloudeng.io/cmdutil v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/file v0.0.0-20240319175704-bc8f0484b406
-	cloudeng.io/glean/crawlindex v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/gleancli v0.0.0-20240318214507-dc44170308d2
-	cloudeng.io/glean/gleansdk v0.0.0-20240318214507-dc44170308d2
+	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
+	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
+	cloudeng.io/glean/crawlindex v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/glean/gleancli v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240319190321-d664c9bc247a
-	cloudeng.io/webapi/operations v0.0.0-20240319185451-f9475e19804d
+	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
 )
 
 require (
 	cloudeng.io/errors v0.0.10 // indirect
-	cloudeng.io/net v0.0.0-20240319175704-bc8f0484b406 // indirect
-	cloudeng.io/os v0.0.0-20240319175704-bc8f0484b406 // indirect
+	cloudeng.io/net v0.0.0-20240325034551-a3e69ef2d955 // indirect
+	cloudeng.io/os v0.0.0-20240325034551-a3e69ef2d955 // indirect
 	cloudeng.io/path v0.0.9 // indirect
 	cloudeng.io/sync v0.0.8 // indirect
 	cloudeng.io/text v0.0.11 // indirect
