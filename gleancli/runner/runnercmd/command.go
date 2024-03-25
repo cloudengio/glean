@@ -207,7 +207,7 @@ func (c *T) CrawlIndex(ctx context.Context, values interface{}, args []string) e
 	return c.RunCommands(ctx, args[0], values, c.CrawlCommands, c.IndexCommands)
 }
 
-func (c *T) CrawlIndexAll(ctx context.Context, values interface{}, args []string) error {
+func (c *T) CrawlIndexAll(ctx context.Context, values interface{}, _ []string) error {
 	fv := values.(*CrawlIndexFlags)
 	var g errgroup.T
 	for _, ds := range c.Datasources {
