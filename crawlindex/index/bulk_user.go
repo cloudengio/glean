@@ -7,6 +7,7 @@ package index
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"cloudeng.io/algo/container/circular"
@@ -77,10 +78,10 @@ func (idx *bulkUserIndexer) handleNextRequest(ctx context.Context, atleast, atmo
 	req.SetUploadId(idx.id)
 	req.Users = users
 
-	fmt.Printf("user: request with %v\n", len(req.Users))
+	log.Printf("user: request with %v\n", len(req.Users))
 	reqStart := time.Now()
 	if idx.dryRun {
-		fmt.Printf("user: would index %v users, %v invocations\n", len(req.Users), idx.invocations+1)
+		log.Printf("user: would index %v users, %v invocations\n", len(req.Users), idx.invocations+1)
 	} else {
 		resp, err := idx.client.PermissionsApi.BulkindexusersPost(ctx).BulkIndexUsersRequest(req).Execute()
 		if err := handleHTTPError(resp, err); err != nil {
@@ -93,7 +94,7 @@ func (idx *bulkUserIndexer) handleNextRequest(ctx context.Context, atleast, atmo
 	idx.indexed += len(req.Users)
 	idx.invocations++
 
-	fmt.Printf("user: indexed: total # docs: % 5v, per req # docs: % 3v in % 8v\n", idx.indexed, len(req.Users), took)
+	log.Printf("user: indexed: total # docs: % 5v, per req # docs: % 3v in % 8v\n", idx.indexed, len(req.Users), took)
 
 	return false, nil
 }
@@ -103,7 +104,7 @@ func (idx *bulkUserIndexer) finish(ctx context.Context) error {
 		return err
 	}
 	if idx.dryRun {
-		fmt.Printf("user: last page: sent %v users over %v invocations\n", idx.indexed, idx.invocations)
+		log.Printf("user: last page: sent %v users over %v invocations\n", idx.indexed, idx.invocations)
 		return nil
 	}
 	bulkReq := gleansdk.BulkIndexUsersRequest{}
