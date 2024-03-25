@@ -48,7 +48,7 @@ func NewIndexingClient(ctx context.Context, domain string, token *apitokens.T) (
 		"domain": domain,
 	}
 	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
-	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, token.Token())
+	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Token()))
 	return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration())
 }
 
@@ -57,6 +57,6 @@ func NewClient(ctx context.Context, domain string, token *apitokens.T) (context.
 		"domain": domain,
 	}
 	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
-	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, token.Token())
+	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Token()))
 	return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration())
 }

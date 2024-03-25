@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/internal"
@@ -41,7 +42,7 @@ func Register(ctx context.Context, cfg config.Datasource, name string, token *ap
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Registering custom datasource:\n%s\n", buf)
+	log.Printf("Registering custom datasource:\n%s\n", buf)
 
 	ctx, client := internal.NewIndexingClient(ctx, cfg.GleanDomain, token)
 	getDatasourceConfigRequest := gleansdk.NewGetDatasourceConfigRequest()

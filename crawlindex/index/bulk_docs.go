@@ -7,6 +7,7 @@ package index
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"cloudeng.io/algo/container/circular"
@@ -70,10 +71,10 @@ func (idx *bulkDocumentIndexer) handleNextRequest(ctx context.Context, atleast, 
 	req.SetUploadId(idx.id)
 	req.Documents = docs
 
-	fmt.Printf("documents: sending request with %v (req size: %v)\n", len(req.Documents), idx.docReqSize)
+	log.Printf("documents: sending request with %v (req size: %v)\n", len(req.Documents), idx.docReqSize)
 	reqStart := time.Now()
 	if idx.dryRun {
-		fmt.Printf("documents: would index %v documents, %v invocations\n", len(req.Documents), idx.invocations+1)
+		log.Printf("documents: would index %v documents, %v invocations\n", len(req.Documents), idx.invocations+1)
 	} else {
 		resp, err := idx.client.DocumentsApi.BulkindexdocumentsPost(ctx).BulkIndexDocumentsRequest(req).Execute()
 		if err != nil {
@@ -85,7 +86,7 @@ func (idx *bulkDocumentIndexer) handleNextRequest(ctx context.Context, atleast, 
 	idx.indexed += len(req.Documents)
 	idx.invocations++
 
-	fmt.Printf("documents: indexed: total # docs: % 5v, per req # docs: % 3v in % 8v\n", len(req.Documents), len(req.Documents), took)
+	log.Printf("documents: indexed: total # docs: % 5v, per req # docs: % 3v in % 8v\n", len(req.Documents), len(req.Documents), took)
 
 	return false, nil
 }
@@ -95,7 +96,7 @@ func (idx *bulkDocumentIndexer) finish(ctx context.Context) error {
 		return err
 	}
 	if idx.dryRun {
-		fmt.Printf("document: last page: sent %v documents over %v invocations\n", idx.indexed, idx.invocations)
+		log.Printf("document: last page: sent %v documents over %v invocations\n", idx.indexed, idx.invocations)
 		return nil
 	}
 	bulkReq := gleansdk.BulkIndexDocumentsRequest{}
