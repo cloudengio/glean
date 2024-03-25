@@ -46,6 +46,8 @@ commands:
     summary: crawl and index a datasource
     arguments:
       - name - datasource
+  - name: crawl-index-all
+    summary: crawl and index all datasources
   - name: show-all
     summary: show all commands
   - name: test-cache
@@ -105,6 +107,11 @@ func (c *T) Spec() (string, []CommandSpec) {
 			Runner:     c.CrawlIndex,
 		},
 		{
+			Name:       "crawl-index-all",
+			FlagValues: &CrawlIndexFlags{},
+			Runner:     c.CrawlIndexAll,
+		},
+		{
 			Name:       "show-all",
 			FlagValues: &struct{}{},
 			Runner:     c.ShowAll,
@@ -160,7 +167,7 @@ func (c *T) Crawl(ctx context.Context, values interface{}, args []string) error 
 }
 
 func (c *T) crawlAndProcess(ctx context.Context, fv *CrawlFlags, datasource string) error {
-	if err := c.RunCommands(ctx, datasource, c.CrawlCommands); err != nil {
+	if err := c.RunCommands(ctx, datasource, fv, c.CrawlCommands); err != nil {
 		return err
 	}
 	if !fv.ProcessDownloads || len(c.ProcessCommands[datasource]) == 0 {
@@ -198,6 +205,21 @@ func (c *T) IndexAll(ctx context.Context, values interface{}, _ []string) error 
 
 func (c *T) CrawlIndex(ctx context.Context, values interface{}, args []string) error {
 	return c.RunCommands(ctx, args[0], values, c.CrawlCommands, c.IndexCommands)
+}
+
+func (c *T) CrawlIndexAll(ctx context.Context, values interface{}, _ []string) error {
+	fv := values.(*CrawlIndexFlags)
+	var g errgroup.T
+	for _, ds := range c.Datasources {
+		ds := ds
+		g.Go(func() error {
+			if err := c.crawlAndProcess(ctx, &fv.CrawlFlags, ds); err != nil {
+				return err
+			}
+			return c.RunCommands(ctx, ds, &fv.IndexFlags, c.IndexCommands)
+		})
+	}
+	return g.Wait()
 }
 
 func (c *T) TestCache(ctx context.Context, values interface{}, args []string) error {

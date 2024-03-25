@@ -64,6 +64,7 @@ var (
 		"biorxiv.org":   BulkIndexCommand,
 		"papersapp.com": BulkIndexCommand,
 		"benchling.com": BulkIndexCommand,
+		"protocols.io":  BulkIndexCommand,
 		"files":         BulkIndexCommand,
 	}
 
