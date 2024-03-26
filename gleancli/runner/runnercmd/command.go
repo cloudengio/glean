@@ -18,15 +18,15 @@ import (
 )
 
 type T struct {
-	Datasources           []string
-	CrawlCommands         map[string][]string
-	ProcessCommands       map[string][]string
-	IndexCommands         map[string][]string
-	IndexingStatsCommands map[string][]string
-	TestCacheCommands     map[string][]string
-	AuthFiles             map[string]string
-	GlobalExecOpts        []cmdexec.Option
-	DatasourceConfigFile  string
+	Datasources          []string
+	CrawlCommands        map[string][]string
+	ProcessCommands      map[string][]string
+	IndexCommands        map[string][]string
+	IndexStatsCommands   map[string][]string
+	TestCacheCommands    map[string][]string
+	AuthFiles            map[string]string
+	GlobalExecOpts       []cmdexec.Option
+	DatasourceConfigFile string
 }
 
 const cmdSpec = `name: runner
@@ -265,7 +265,7 @@ func (c *T) IndexingStats(ctx context.Context, values interface{}, args []string
 		datasources = c.Datasources
 	}
 	for _, ds := range datasources {
-		if err := c.RunCommands(ctx, ds, values, c.IndexingStatsCommands); err != nil {
+		if err := c.RunCommands(ctx, ds, values, c.IndexStatsCommands); err != nil {
 			return err
 		}
 	}
