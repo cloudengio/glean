@@ -13,10 +13,14 @@ cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a h1:wJ8iv8QmlIeXHyk7/2hoEWEWl
 cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a/go.mod h1:cmNGFILlDaNku6KiLsXeAGjY/227h2Pdb3pY763KG9s=
 cloudeng.io/glean/crawlindex v0.0.0-20240320234425-033fda93db05 h1:CDyIBd3sCewIpvP3liWE9yQuQfbakc724gAIS9IQISk=
 cloudeng.io/glean/crawlindex v0.0.0-20240320234425-033fda93db05/go.mod h1:4BDR4UQ7cTTUv2El6KPe6HFSRk1D96UVih3EMTm9eXk=
+cloudeng.io/glean/crawlindex v0.0.0-20240326201209-9c527276faad h1:EOEMYjBv78VtjGcXZV3+SSJmxSFPVeNbH2/TikcP5rw=
+cloudeng.io/glean/crawlindex v0.0.0-20240326201209-9c527276faad/go.mod h1:F0kwsZAEIUOSjHQu4GOgy10C/YmzOwg+8QNGL1Otw4Q=
 cloudeng.io/glean/gleancli v0.0.0-20240320234425-033fda93db05 h1:M6rd2s11brq3wf1yIIcegO9vovdoGfEz95haRMO2F3g=
 cloudeng.io/glean/gleancli v0.0.0-20240320234425-033fda93db05/go.mod h1:f+nNHY2C8G5HLovpaG+R7FNAoDwvNO/kWWF1PQaHuHI=
 cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05 h1:TfNrlRcU+mcH+vpgqMniNVJ1nKfiSEHfSRqSK90CFoM=
 cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05/go.mod h1:NwJ9nu7hBX9RF7RbUw5akHkEszq3LnMtq47M01AW+ss=
+cloudeng.io/glean/gleansdk v0.0.0-20240326201209-9c527276faad h1:hufVwc4W9UoNh7N+owCdoLoF3Dlu8uayTBGuFIu9ks4=
+cloudeng.io/glean/gleansdk v0.0.0-20240326201209-9c527276faad/go.mod h1:NwJ9nu7hBX9RF7RbUw5akHkEszq3LnMtq47M01AW+ss=
 cloudeng.io/net v0.0.0-20240325034551-a3e69ef2d955 h1:WucL63psAgJrG9XahSQafM6BE/IbBNapsQqUS4wVz5I=
 cloudeng.io/net v0.0.0-20240325034551-a3e69ef2d955/go.mod h1:1MmRGFc96u3Ml+XNlnsq/Pjmu5XwDxXi9zvkKpkTPlk=
 cloudeng.io/os v0.0.0-20240325034551-a3e69ef2d955 h1:b4BLv3+Go5Z6vKZ1BL5pn0IGw9Jg9FbDXnWvqNLKZ8M=
