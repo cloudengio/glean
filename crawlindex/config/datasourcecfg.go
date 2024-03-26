@@ -54,6 +54,9 @@ type Datasource struct {
 	// GleanDomain is the domain of the Glean instance to use.
 	GleanDomain string `yaml:"glean_domain" cmd:"glean domain to use"`
 
+	// GleanTokenName is the name of the glean token to use to access the Glean instance.
+	GleanTokenName string `yaml:"glean_token_name" cmd:"glean token name to use, if empty the glean_domain will be used"`
+
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
 	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
