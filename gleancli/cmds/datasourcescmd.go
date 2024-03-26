@@ -20,6 +20,7 @@ import (
 )
 
 type DownloadFlags struct {
+	config.FileFlags
 	crawlindex.AuthFileFlag
 }
 
@@ -35,12 +36,16 @@ type Datasources struct {
 
 func (ds Datasources) Download(ctx context.Context, values any, args []string) error {
 	fv := values.(*DownloadFlags)
-	domain, name := args[0], args[1]
-	indexingToken, _, err := initTokens(ctx, domain, ds.TokenReaders, fv.AuthFile)
+	datasource := args[0]
+	cfg, err := config.DatasourceForName(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return err
 	}
-	return datasources.Download(ctx, domain, name, indexingToken)
+	indexingToken, _, err := initTokens(ctx, cfg, ds.TokenReaders, fv.AuthFile)
+	if err != nil {
+		return err
+	}
+	return datasources.Download(ctx, cfg.GleanDomain, datasource, indexingToken)
 }
 
 func (ds Datasources) Register(ctx context.Context, values interface{}, args []string) error {
@@ -50,7 +55,7 @@ func (ds Datasources) Register(ctx context.Context, values interface{}, args []s
 	if err != nil {
 		return err
 	}
-	indexingToken, _, err := initTokens(ctx, cfg.GleanDomain, ds.TokenReaders, fv.AuthFile)
+	indexingToken, _, err := initTokens(ctx, cfg, ds.TokenReaders, fv.AuthFile)
 	if err != nil {
 		return err
 	}

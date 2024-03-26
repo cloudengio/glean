@@ -17,12 +17,13 @@ var GlobalFlagValues runnerglobals.Flags
 func main() {
 	ctx := context.Background()
 	cmdspecs := &runnercmd.T{
-		Datasources:       runnerdata.Datasources,
-		CrawlCommands:     runnerdata.CrawlCommands,
-		ProcessCommands:   runnerdata.ProcessCommands,
-		IndexCommands:     runnerdata.IndexCommands,
-		TestCacheCommands: runnerdata.TestCacheCommands,
-		AuthFiles:         runnerdata.AuthFiles,
+		Datasources:           runnerdata.Datasources,
+		CrawlCommands:         runnerdata.CrawlCommands,
+		ProcessCommands:       runnerdata.ProcessCommands,
+		IndexCommands:         runnerdata.IndexCommands,
+		IndexingStatsCommands: runnerdata.IndexStatsCommands,
+		TestCacheCommands:     runnerdata.TestCacheCommands,
+		AuthFiles:             runnerdata.AuthFiles,
 	}
 	yamlSpec, cmds := cmdspecs.Spec()
 	cmdset := runnercmd.NewCmdSet(yamlSpec, cmds, &GlobalFlagValues)

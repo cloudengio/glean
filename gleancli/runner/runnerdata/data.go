@@ -68,6 +68,21 @@ var (
 		"files":         BulkIndexCommand,
 	}
 
+	IndexStatsCommand = []string{
+		"index", "stats",
+		`--glean-auth={{AuthFile "glean.com"}}`,
+		"--datasource-configs={{.DatasourceConfigFile}}",
+		"{{.DatasourceName}}",
+	}
+
+	IndexStatsCommands = map[string][]string{
+		"biorxiv.org":   IndexStatsCommand,
+		"papersapp.com": IndexStatsCommand,
+		"benchling.com": IndexStatsCommand,
+		"protocols.io":  IndexStatsCommand,
+		"files":         IndexStatsCommand,
+	}
+
 	TestCacheCommands = map[string][]string{
 		"biorxiv.org": {"test", "cache",
 			"--datasource-configs={{.DatasourceConfigFile}}",
