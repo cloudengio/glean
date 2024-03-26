@@ -4,11 +4,11 @@ go 1.22.0
 
 require (
 	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
-	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
-	cloudeng.io/glean/crawlindex v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a
+	cloudeng.io/glean/crawlindex v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/gleancli v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240319190321-d664c9bc247a
+	cloudeng.io/glean/gleansdk v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240326200628-ccb06fbdd668
 	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
 )
 

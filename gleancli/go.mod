@@ -6,14 +6,14 @@ require (
 	cloudeng.io/aws v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/errors v0.0.10
-	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
-	cloudeng.io/glean/crawlindex v0.0.0-20240325184858-f8d125342dc3
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/extensions/testcmd v0.0.0-20240320234425-033fda93db05
-	cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a
+	cloudeng.io/glean/crawlindex v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/extensions/benchling v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/extensions/testcmd v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/gleansdk v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/path v0.0.9
 	cloudeng.io/sync v0.0.8
 	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
@@ -28,10 +28,10 @@ require (
 	cloudeng.io/text v0.0.11 // indirect
 	cloudeng.io/webapi/benchling v0.0.0-20240304015302-6256cc401d35 // indirect
 	cloudeng.io/webapi/biorxiv v0.0.0-20240304015302-6256cc401d35 // indirect
-	cloudeng.io/webapi/clients/benchling v0.0.0-20240319190321-d664c9bc247a // indirect
-	cloudeng.io/webapi/clients/biorxiv v0.0.0-20240319190321-d664c9bc247a // indirect
-	cloudeng.io/webapi/clients/papersapp v0.0.0-20240319190321-d664c9bc247a // indirect
-	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240319190321-d664c9bc247a // indirect
+	cloudeng.io/webapi/clients/benchling v0.0.0-20240326200628-ccb06fbdd668 // indirect
+	cloudeng.io/webapi/clients/biorxiv v0.0.0-20240326200628-ccb06fbdd668 // indirect
+	cloudeng.io/webapi/clients/papersapp v0.0.0-20240326200628-ccb06fbdd668 // indirect
+	cloudeng.io/webapi/clients/protocolsio v0.0.0-20240326200628-ccb06fbdd668 // indirect
 	cloudeng.io/webapi/papersapp v0.0.0-20240304015302-6256cc401d35 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
