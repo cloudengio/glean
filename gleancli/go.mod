@@ -12,7 +12,7 @@ require (
 	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/extensions/papersapp v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240326201209-9c527276faad
-	cloudeng.io/glean/extensions/testcmd v0.0.0-20240320234425-033fda93db05
+	cloudeng.io/glean/extensions/testcmd v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/gleansdk v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/path v0.0.9
 	cloudeng.io/sync v0.0.8

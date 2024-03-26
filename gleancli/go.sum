@@ -35,6 +35,8 @@ cloudeng.io/glean/extensions/protocolsio v0.0.0-20240326201209-9c527276faad h1:T
 cloudeng.io/glean/extensions/protocolsio v0.0.0-20240326201209-9c527276faad/go.mod h1:uxP1TU4TWJpZRLDD/dimf1LNYW8m/8viUVerYdxTJ0A=
 cloudeng.io/glean/extensions/testcmd v0.0.0-20240320234425-033fda93db05 h1:Ql0CEBJsLfXyxybL6GTZu7Ez0AqTeVpqtV7i6RpxvQY=
 cloudeng.io/glean/extensions/testcmd v0.0.0-20240320234425-033fda93db05/go.mod h1:5EYSdCzxpy1df16oetN8uSVBJUhuwUIO0p5TWxwW4fs=
+cloudeng.io/glean/extensions/testcmd v0.0.0-20240326201209-9c527276faad h1:Oxya4zqw5pKFMqlYHFM6sC+Mmt/9vVbievl4m0ufNss=
+cloudeng.io/glean/extensions/testcmd v0.0.0-20240326201209-9c527276faad/go.mod h1:BTBOalpzCtnPyomKHJl06A9xPMRnnRNYMuYjeCYpmlo=
 cloudeng.io/glean/gleanclientsdk v0.0.0-20240320234425-033fda93db05 h1:j3nS769k1Eo92WVYUyQk+YMf+4VN4pRtqgaWqc9ptG8=
 cloudeng.io/glean/gleanclientsdk v0.0.0-20240320234425-033fda93db05/go.mod h1:WwI841PxpnER4glA7pSQ3mrxJuZzCqmERGnKIdtR7Nw=
 cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05 h1:TfNrlRcU+mcH+vpgqMniNVJ1nKfiSEHfSRqSK90CFoM=
