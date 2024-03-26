@@ -35,7 +35,7 @@ func PopulateCrawlFS(_ context.Context, cfg config.CrawlService, factories map[s
 // NewContentFS creates a content.FS appropriate for the given crawl downloads
 // cache configuration.
 func NewContentFS(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (content.FS, error) {
-	dp, _ := cfg.Paths()
+	dp := cfg.DownloadPath()
 	match := cloudpath.DefaultMatchers.Match(dp)
 	switch match.Scheme {
 	case "s3":
@@ -49,7 +49,7 @@ func NewContentFS(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (content.F
 // NewCheckpointOp creates a checkpoint.Operation appropriate for the given
 // crawl checkpoint configuration.
 func NewCheckpointOp(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (checkpoint.Operation, error) {
-	_, cp := cfg.Paths()
+	cp := cfg.CheckpointPath()
 	match := cloudpath.DefaultMatchers.Match(cp)
 	switch match.Scheme {
 	case "s3":
@@ -63,7 +63,7 @@ func NewCheckpointOp(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (checkp
 // NewOperationsFS returns an operations.FS appropriate for the given path and
 // configuration.
 func NewOperationsFS(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error) {
-	dp, _ := cfg.Paths()
+	dp := cfg.DownloadPath()
 	match := cloudpath.DefaultMatchers.Match(dp)
 	switch match.Scheme {
 	case "s3":

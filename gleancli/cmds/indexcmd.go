@@ -51,7 +51,7 @@ type ProcessNowFlags struct {
 	crawlindex.AuthFileFlag
 }
 
-func initTokens(ctx context.Context, domain string, tokenReaders *apitokens.Readers, authFile string) (indexingToken, clientToken *apitokens.T, err error) {
+func initTokens(ctx context.Context, domain, datasource string, tokenReaders *apitokens.Readers, authFile string) (indexingToken, clientToken *apitokens.T, err error) {
 
 	var auth crawlindex.Auth
 	if err = cmdyaml.ParseConfigFile(ctx, authFile, &auth); err != nil {
@@ -81,7 +81,7 @@ func initConfigAndTokens(ctx context.Context, tokenReaders *apitokens.Readers, c
 	if err != nil {
 		return
 	}
-	indexingToken, clientToken, err = initTokens(ctx, cfg.GleanDomain, tokenReaders, authFile)
+	indexingToken, clientToken, err = initTokens(ctx, cfg.GleanDomain, datasource, tokenReaders, authFile)
 	return
 }
 

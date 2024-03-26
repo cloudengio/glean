@@ -62,10 +62,9 @@ func (w *walker) run(ctx context.Context) error {
 func (w *walker) newCacheWalker(ctx context.Context, crawl crawlcmd.CrawlCacheConfig, concurrency int) (*cacheWalker, error) {
 	fs, err := w.resources.NewOperationsFS(ctx, crawl)
 	store := stores.New(fs, concurrency)
-	downloads, _ := crawl.Paths()
 	return &cacheWalker{
 		idxCh:      w.idxCh,
-		root:       downloads,
+		root:       crawl.DownloadPath(),
 		fs:         fs,
 		store:      store,
 		datasource: w.datasource.GleanDatasource.GetName(),
