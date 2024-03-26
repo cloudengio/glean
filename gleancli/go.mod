@@ -7,7 +7,7 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/errors v0.0.10
 	cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a
-	cloudeng.io/glean/crawlindex v0.0.0-20240326201209-9c527276faad
+	cloudeng.io/glean/crawlindex v0.0.0-20240326211153-ef901684ce29
 	cloudeng.io/glean/extensions/benchling v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240326201209-9c527276faad
 	cloudeng.io/glean/extensions/papersapp v0.0.0-20240326201209-9c527276faad

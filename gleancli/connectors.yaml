@@ -34,6 +34,7 @@
         email: "biorxiv@altoslabs.com"
         userid: "biorxiv"
   glean_domain: altos
+  glean_token_name: altos
   glean_datasource_config:
     name: "biorxiv"
     displayname: "biorxiv"
@@ -80,6 +81,7 @@
         email: "papersapp@altoslabs.com"
         userid: "papersapp"
   glean_domain: altos
+  glean_token_name: altos
   glean_datasource_config:
     name: "papersapp"
     displayname: "ReadCube"
@@ -125,6 +127,7 @@
         email: "benchling@altoslabs.com"
         userid: "benchling"
   glean_domain: altos
+  glean_token_name: altos
   glean_datasource_config:
     name: "benchling"
     displayname: "Benchling"
@@ -250,6 +253,7 @@
       view_url_rewrites:
         - "s%^(s3://altos-lab-static-content/)(.*)%https://static.lab.altoslabs.com/${2}%"
   glean_domain: altos
+  glean_token_name: altos
   glean_datasource_config:
     name: internalDocumentation
     displayname: "Altos Internal"

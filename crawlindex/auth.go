@@ -13,16 +13,19 @@ type AuthFileFlag struct {
 }
 
 type Auth []struct {
-	Domain string `yaml:"domain" cmd:"domain name of the glean instance"`
-	Auth   struct {
+	Name string `yaml:"name" cmd:"name of the glean token instance"`
+	Auth struct {
 		BearerToken       string `yaml:"indexing_token" cmd:"indexing token for the glean instance"`
 		ClientBearerToken string `yaml:"client_token" cmd:"client bearer token for the glean instance"`
 	}
 }
 
-func (a Auth) TokensForDomain(domain string) (indexingToken, clientToken *apitokens.T) {
+func (a Auth) TokensForName(name, domain string) (indexingToken, clientToken *apitokens.T) {
+	if len(name) == 0 {
+		name = domain
+	}
 	for _, cfg := range a {
-		if cfg.Domain == domain {
+		if cfg.Name == name {
 			return apitokens.New(cfg.Auth.BearerToken), apitokens.New(cfg.Auth.ClientBearerToken)
 		}
 	}

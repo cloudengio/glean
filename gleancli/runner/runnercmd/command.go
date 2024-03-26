@@ -18,14 +18,15 @@ import (
 )
 
 type T struct {
-	Datasources          []string
-	CrawlCommands        map[string][]string
-	ProcessCommands      map[string][]string
-	IndexCommands        map[string][]string
-	TestCacheCommands    map[string][]string
-	AuthFiles            map[string]string
-	GlobalExecOpts       []cmdexec.Option
-	DatasourceConfigFile string
+	Datasources           []string
+	CrawlCommands         map[string][]string
+	ProcessCommands       map[string][]string
+	IndexCommands         map[string][]string
+	IndexingStatsCommands map[string][]string
+	TestCacheCommands     map[string][]string
+	AuthFiles             map[string]string
+	GlobalExecOpts        []cmdexec.Option
+	DatasourceConfigFile  string
 }
 
 const cmdSpec = `name: runner
@@ -56,7 +57,11 @@ commands:
       - name - datasource
   - name: test-cache-all
     summary: test the cache configuration for all datasources
- `
+  - name: indexing-stats
+    summary: indexing stats
+    arguments:
+      - datasource... - datasource to display stats for
+`
 
 type CrawlFlags struct {
 	ProcessDownloads bool `subcmd:"process-downloads,true,'process downloaded files'"`
@@ -125,6 +130,11 @@ func (c *T) Spec() (string, []CommandSpec) {
 			Name:       "test-cache-all",
 			FlagValues: &struct{}{},
 			Runner:     c.TestCacheAll,
+		},
+		{
+			Name:       "indexing-stats",
+			FlagValues: &struct{}{},
+			Runner:     c.IndexingStats,
 		},
 	}
 }
@@ -245,6 +255,19 @@ func (c *T) formatCommands(out io.Writer, cmds map[string][]string) error {
 			return err
 		}
 		fmt.Fprintf(out, " %v: %v\n", arg, cl)
+	}
+	return nil
+}
+
+func (c *T) IndexingStats(ctx context.Context, values interface{}, args []string) error {
+	datasources := args
+	if len(datasources) == 0 {
+		datasources = c.Datasources
+	}
+	for _, ds := range datasources {
+		if err := c.RunCommands(ctx, ds, values, c.IndexingStatsCommands); err != nil {
+			return err
+		}
 	}
 	return nil
 }

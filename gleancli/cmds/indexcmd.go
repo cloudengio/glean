@@ -51,20 +51,19 @@ type ProcessNowFlags struct {
 	crawlindex.AuthFileFlag
 }
 
-func initTokens(ctx context.Context, domain string, tokenReaders *apitokens.Readers, authFile string) (indexingToken, clientToken *apitokens.T, err error) {
-
+func initTokens(ctx context.Context, cfg config.Datasource, tokenReaders *apitokens.Readers, authFile string) (indexingToken, clientToken *apitokens.T, err error) {
 	var auth crawlindex.Auth
 	if err = cmdyaml.ParseConfigFile(ctx, authFile, &auth); err != nil {
 		return
 	}
-	indexingToken, clientToken = auth.TokensForDomain(domain)
+	indexingToken, clientToken = auth.TokensForName(cfg.GleanTokenName, cfg.GleanDomain)
 	if indexingToken == nil || clientToken == nil {
-		err = fmt.Errorf("no tokens found for domain: %v", domain)
+		err = fmt.Errorf("no tokens found for token name: %q, or glean doman: %q", cfg.GleanTokenName, cfg.GleanDomain)
 		return
 	}
 
 	if indexingToken.Scheme == "" || clientToken.Scheme == "" {
-		err = fmt.Errorf("invalid indexing or client token found for domain: %v", domain)
+		err = fmt.Errorf("invalid indexing or client token found for token name: %q, or glean doman: %q", cfg.GleanTokenName, cfg.GleanDomain)
 		return
 	}
 
@@ -81,7 +80,7 @@ func initConfigAndTokens(ctx context.Context, tokenReaders *apitokens.Readers, c
 	if err != nil {
 		return
 	}
-	indexingToken, clientToken, err = initTokens(ctx, cfg.GleanDomain, tokenReaders, authFile)
+	indexingToken, clientToken, err = initTokens(ctx, cfg, tokenReaders, authFile)
 	return
 }
 
