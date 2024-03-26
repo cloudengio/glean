@@ -9,7 +9,7 @@ require (
 	cloudeng.io/aws v0.0.0-20240119231719-f985f7cde7e8
 	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
 	cloudeng.io/errors v0.0.10
-	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
+	cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a
 	cloudeng.io/glean/gleanclientsdk v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/glean/gleansdk v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/sync v0.0.8

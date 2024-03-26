@@ -84,18 +84,17 @@ func (cmd *command) testCaches(ctx context.Context, values interface{}, args []s
 		if err != nil {
 			return err
 		}
-		downloads, _ := cache.Paths()
-		log.Printf("found %v total items in cache for %v in %v\n", n, datasource, downloads)
+		log.Printf("found %v total items in cache for %v in %v\n", n, datasource, cache.DownloadPath())
 	}
 	return nil
 }
 
 func scanCache(ctx context.Context, datasource string, fs operations.FS, cache crawlcmd.CrawlCacheConfig, showN int) (int, error) {
 	items := 0
-	downloads, _ := cache.Paths()
+	downloadPath := cache.DownloadPath()
 
-	if _, err := fs.Stat(ctx, downloads); err != nil {
-		return 0, fmt.Errorf("failed to stat %v: %w", downloads, err)
+	if _, err := fs.Stat(ctx, downloadPath); err != nil {
+		return 0, fmt.Errorf("failed to stat %v: %w", downloadPath, err)
 	}
 
 	handler := func(_ context.Context, prefix string, contents []filewalk.Entry, err error) error {
@@ -116,7 +115,7 @@ func scanCache(ctx context.Context, datasource string, fs operations.FS, cache c
 		}
 		return nil
 	}
-	err := filewalk.ContentsOnly(ctx, fs, downloads, handler,
+	err := filewalk.ContentsOnly(ctx, fs, downloadPath, handler,
 		filewalk.WithScanSize(showN))
 	if !errors.Is(err, io.EOF) {
 		return items, err
