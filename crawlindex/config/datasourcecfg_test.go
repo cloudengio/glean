@@ -30,8 +30,9 @@ const datasourcesSpec = `- datasource: static-corpus
   index:
     force_restart: true
     force_deletion: true
+  glean_domain: static.example.com
+  glean_token_name: token
   glean_datasource_config:
-    glean_instance: glean-dev
     name: internal-documentation"
     displayname: display-internal-documentation"
     homeurl: static.example.com
