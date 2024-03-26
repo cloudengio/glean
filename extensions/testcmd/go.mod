@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	cloudeng.io/cmdutil v0.0.0-20240325034551-a3e69ef2d955
-	cloudeng.io/file v0.0.0-20240325034551-a3e69ef2d955
+	cloudeng.io/file v0.0.0-20240326195459-e2c53ed6771a
 	cloudeng.io/glean/crawlindex v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/glean/gleancli v0.0.0-20240320234425-033fda93db05
 	cloudeng.io/webapi/operations v0.0.0-20240319190321-d664c9bc247a
