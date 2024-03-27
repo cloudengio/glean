@@ -57,8 +57,8 @@ commands:
       - name - datasource
   - name: test-cache-all
     summary: test the cache configuration for all datasources
-  - name: indexing-stats
-    summary: indexing stats
+  - name: index-stats
+    summary: stats for indexed data for a given datasource, or for all datasources if none are specified on the command line
     arguments:
       - datasource... - datasource to display stats for
 `
@@ -132,7 +132,7 @@ func (c *T) Spec() (string, []CommandSpec) {
 			Runner:     c.TestCacheAll,
 		},
 		{
-			Name:       "indexing-stats",
+			Name:       "index-stats",
 			FlagValues: &struct{}{},
 			Runner:     c.IndexingStats,
 		},
