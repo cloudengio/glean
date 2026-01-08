@@ -27,39 +27,39 @@ type FileFlags struct {
 // Glean's API.
 type GleanDatasource struct {
 	// GleanConfig is the datasource configuration for the Glean instance.
-	gleansdk.CustomDatasourceConfig `yaml:",inline" cmd:"glean custom datasource configuration"`
+	gleansdk.CustomDatasourceConfig `yaml:",inline" doc:"glean custom datasource configuration"`
 }
 
 // Datasource represents a single datasource or corpus to be crawled and
 // indexed.
 type Datasource struct {
 	// Datasource name.
-	Datasource string `yaml:"datasource" cmd:"name of the datasource"`
+	Datasource string `yaml:"datasource" doc:"name of the datasource"`
 
-	Crawls []Crawl `yaml:"crawls,omitempty" cmd:"file based crawls to run for this datasource"`
+	Crawls []Crawl `yaml:"crawls,omitempty" doc:"file based crawls to run for this datasource"`
 	// File/download orientend Crawls that obtain data for this datasource.
 
 	// API based 'crawls' that obtain data for this datasource.
-	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty" cmd:"api crawls to run for this datasource"`
+	APICrawls apicrawlcmd.Crawls `yaml:"api_crawls,omitempty" doc:"api crawls to run for this datasource"`
 
 	// Bulk index configuration for this datasource.
-	*BulkIndex `yaml:"bulk_index,omitempty" cmd:"bulk index configuration for this datasource"`
+	*BulkIndex `yaml:"bulk_index,omitempty" doc:"bulk index configuration for this datasource"`
 
 	// Incremental index configuration for this datasource.
-	*IncrementalIndex `yaml:"incremental_index,omitempty" cmd:"incremental index configuration for this datasource"`
+	*IncrementalIndex `yaml:"incremental_index,omitempty" doc:"incremental index configuration for this datasource"`
 
 	// Converters (from download.Result to Glean document) configuration.
-	Converters []Converter `yaml:"converters,omitempty" cmd:"converters for this datasource"`
+	Converters []Converter `yaml:"converters,omitempty" doc:"converters for this datasource"`
 
 	// GleanDomain is the domain of the Glean instance to use.
-	GleanDomain string `yaml:"glean_domain" cmd:"glean domain to use"`
+	GleanDomain string `yaml:"glean_domain" doc:"glean domain to use"`
 
 	// GleanIndexingTokenName is the name of the glean token to use to access the Glean instance.
-	GleanIndexingTokenName string `yaml:"glean_indexing_token_name" cmd:"glean indexing token name to use, if empty the glean_domain will be used"`
+	GleanIndexingTokenName string `yaml:"glean_indexing_token_name" doc:"glean indexing token name to use, if empty the glean_domain will be used"`
 
 	// The Glean datasource configuration in YAML as opposed to JSON
 	// format.
-	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" cmd:"glean datasource configuration, ie. the glean datasource to be indexed"`
+	GleanDatasource GleanDatasource `yaml:"glean_datasource_config" doc:"glean datasource configuration, ie. the glean datasource to be indexed"`
 }
 
 // Datasources represents a list of named datasources.

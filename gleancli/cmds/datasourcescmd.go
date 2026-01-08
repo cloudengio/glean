@@ -75,7 +75,7 @@ func (ds Datasources) ExplainConfig(_ context.Context, _ interface{}, _ []string
 }
 
 func explain(out *strings.Builder, indent int, cfg any) error {
-	desc, err := structdoc.Describe(cfg, "cmd", "YAML configuration file options\n")
+	desc, err := structdoc.Describe(cfg, "doc", "YAML configuration file options\n")
 	if err != nil {
 		return err
 	}
