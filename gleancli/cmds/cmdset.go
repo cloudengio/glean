@@ -216,7 +216,7 @@ func (lf *LocalKeysAndLogging) InitContext(ctx context.Context) (context.Context
 
 type noPlatformSpecificConfig struct{}
 
-func (n *noPlatformSpecificConfig) RegisterGlobalFlags(cmdset *subcmd.CommandSetYAML) {}
+func (n *noPlatformSpecificConfig) RegisterGlobalFlags(*subcmd.CommandSetYAML) {}
 
 func (n *noPlatformSpecificConfig) InitContext(ctx context.Context) (context.Context, error) {
 	return ctx, nil

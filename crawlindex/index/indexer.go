@@ -30,9 +30,9 @@ type BulkFlags struct {
 type Resources struct {
 	IndexingTokenOrName string
 	ClientTokenOrName   string
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-	NewOperationsFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
+	DocumentConverters  *content.Registry[converters.Document]
+	UserConverters      *content.Registry[converters.User]
+	NewOperationsFS     func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 
 // Indexer represents a Glean indexer.

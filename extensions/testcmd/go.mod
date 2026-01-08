@@ -5,14 +5,14 @@ go 1.25.5
 require (
 	cloudeng.io/cmdutil v0.0.0-20260108221821-c297f12474b8
 	cloudeng.io/file v0.0.0-20260108221821-c297f12474b8
-	cloudeng.io/glean/crawlindex v0.0.0-20260108231755-6d60d4e5cd16
-	cloudeng.io/glean/gleancli v0.0.0-20260108231755-6d60d4e5cd16
+	cloudeng.io/glean/crawlindex v0.0.0-20260108232117-2d578e5784d2
+	cloudeng.io/glean/gleancli v0.0.0-20260108232117-2d578e5784d2
 	cloudeng.io/webapi/operations v0.0.0-20260108225621-fc15d1afa620
 )
 
 require (
 	cloudeng.io/errors v0.0.13 // indirect
-	cloudeng.io/glean/gleansdk v0.0.0-20260108231755-6d60d4e5cd16 // indirect
+	cloudeng.io/glean/gleansdk v0.0.0-20260108232117-2d578e5784d2 // indirect
 	cloudeng.io/logging v0.0.0-20260108221821-c297f12474b8 // indirect
 	cloudeng.io/net v0.0.0-20260108221821-c297f12474b8 // indirect
 	cloudeng.io/os v0.0.0-20260108221821-c297f12474b8 // indirect

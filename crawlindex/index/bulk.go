@@ -26,7 +26,7 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		return fmt.Errorf("bulk_index block is missing from config file")
 	}
 
-	size := idx.datasource.BulkIndex.ReaddirEntries
+	size := idx.datasource.ReaddirEntries
 	if size == 0 {
 		size = 100
 	}
@@ -53,16 +53,16 @@ func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
 		docCnv:      idx.resources.DocumentConverters,
 		empCnv:      idx.resources.UserConverters,
 		idxCh:       reqCh,
-		concurrency: idx.datasource.BulkIndex.CacheConcurrency,
-		scanSize:    idx.datasource.BulkIndex.ReaddirEntries,
+		concurrency: idx.datasource.CacheConcurrency,
+		scanSize:    idx.datasource.ReaddirEntries,
 	}
 
 	indexer := newBulkIndexer(client, idx.datasource,
 		WithForceDelete(forceDeletion),
 		WithForceRestart(forceRestart),
 		WithBulkID(fv.UploadID),
-		WithReqSizes(idx.datasource.BulkIndex.DocumentRequestSize, idx.datasource.BulkIndex.UserRequestSize),
-		WithUsers(idx.datasource.BulkIndex.UserRequestSize > 0),
+		WithReqSizes(idx.datasource.DocumentRequestSize, idx.datasource.UserRequestSize),
+		WithUsers(idx.datasource.UserRequestSize > 0),
 		WithDryRun(fv.DryRun),
 	)
 
@@ -150,7 +150,7 @@ type bulkIndexer struct {
 	userIndexer     *bulkUserIndexer
 }
 
-// bewBulkIndexer creates a new bulk indexer.
+// newBulkIndexer creates a new bulk indexer.
 func newBulkIndexer(client *gleansdk.APIClient, datasource config.Datasource, opts ...BulkIndexOption) *bulkIndexer {
 	var options bulkOptions
 	for _, fn := range opts {

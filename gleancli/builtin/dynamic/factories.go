@@ -30,11 +30,11 @@ func s3FS(cfg yaml.Node) func(ctx context.Context) (file.FS, error) {
 	}
 }
 
-func newLocalFS(ctx context.Context) (*localfs.T, error) {
+func newLocalFS(_ context.Context) (*localfs.T, error) {
 	return localfs.New(), nil
 }
 
-func localFS(ctx context.Context) (file.FS, error) {
+func localFS(_ context.Context) (file.FS, error) {
 	return localfs.New(), nil
 }
 

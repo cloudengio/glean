@@ -6,7 +6,6 @@ package index
 
 import (
 	"context"
-	"log"
 	"path/filepath"
 	"sync"
 
@@ -17,6 +16,7 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/glean/gleansdk"
+	"cloudeng.io/logging/ctxlog"
 	"cloudeng.io/sync/errgroup"
 	"cloudeng.io/webapi/operations"
 )
@@ -51,7 +51,6 @@ func (w *walker) run(ctx context.Context) error {
 	opts := []filewalk.Option{filewalk.WithScanSize(w.scanSize)}
 	var g errgroup.T
 	for _, w := range cacheWalkers {
-		w := w
 		g.Go(func() error {
 			return filewalk.ContentsOnly(ctx, w.fs, w.root, w.ContentsHandler, opts...)
 		})
@@ -88,7 +87,7 @@ type cacheWalker struct {
 func (w *cacheWalker) ContentsHandler(ctx context.Context, prefix string, contents []filewalk.Entry, err error) error {
 	if err != nil {
 		if w.fs.IsPermissionError(err) {
-			log.Printf("permission error: %v: %v\n", prefix, err)
+			ctxlog.Error(ctx, "ContentsHandler: permission error", "prefix", prefix, "error", err.Error())
 			return nil
 		}
 		return err
@@ -103,12 +102,12 @@ func (w *cacheWalker) ContentsHandler(ctx context.Context, prefix string, conten
 
 	err = w.store.ReadV(ctx, prefix, names, func(ctx context.Context, prefix, name string, ctype content.Type, data []byte, err error) error {
 		if err != nil {
-			log.Printf("failed to read: %v: %v\n", filepath.Join(prefix, name), err)
+			ctxlog.Error(ctx, "ContentsHandler: failed to read document", "name", filepath.Join(prefix, name), "error", err.Error())
 			return err
 		}
 		gd, ok, err := w.convertDocument(ctx, ctype, data)
 		if err != nil {
-			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			ctxlog.Error(ctx, "ContentsHandler: failed to convert document", "name", filepath.Join(prefix, name), "error", err.Error())
 			return err
 		}
 		if ok {
@@ -118,7 +117,7 @@ func (w *cacheWalker) ContentsHandler(ctx context.Context, prefix string, conten
 		}
 		ge, ok, err := w.convertUser(ctx, ctype, data)
 		if err != nil {
-			log.Printf("failed to convert: %v: %v\n", filepath.Join(prefix, name), err)
+			ctxlog.Error(ctx, "ContentsHandler: failed to convert user", "name", filepath.Join(prefix, name), "error", err.Error())
 			return err
 		}
 		if ok {

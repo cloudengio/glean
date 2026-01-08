@@ -64,7 +64,7 @@ type command struct {
 }
 
 func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*papersappcmd.Command, error) {
-	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile,datasource)
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}

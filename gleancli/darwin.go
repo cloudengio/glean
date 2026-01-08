@@ -43,7 +43,7 @@ func (m *macosConfig) InitContext(ctx context.Context) (context.Context, error) 
 	logger := m.LoggingConfig().NewLoggerMust()
 	ctx = ctxlog.WithLogger(ctx, logger.Logger)
 	ims := keys.NewInMemoryKeyStore()
-	cfg := m.macosFlags.Config()
+	cfg := m.Config()
 	fs := plugins.NewFS(cfg.Binary, cfg)
 	contents, err := fs.ReadFileCtx(ctx, m.Name)
 	if err == nil {

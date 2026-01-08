@@ -12,7 +12,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-
 func (eo ExtensionOptions) ResourcesForDatasource(ctx context.Context, configFile, datasource string) (config.Datasource, apicrawlcmd.Resources, error) {
 	cfg, err := config.DatasourceForName(ctx, configFile, datasource)
 	if err != nil {

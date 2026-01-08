@@ -60,9 +60,9 @@ func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) e
 		return err
 	}
 	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		DocumentConverters: cmd.StaticResources.DocumentConverters,
-		UserConverters:     cmd.StaticResources.UserConverters,
-		NewOperationsFS:    cmd.DynamicResources.NewOperationsFS,
+		DocumentConverters: cmd.DocumentConverters,
+		UserConverters:     cmd.UserConverters,
+		NewOperationsFS:    cmd.NewOperationsFS,
 	})
 	if err != nil {
 		return err
