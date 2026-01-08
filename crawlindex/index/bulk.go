@@ -18,7 +18,10 @@ import (
 
 // Bulk indexes a datasource in bulk mode.
 func (idx *Indexer) Bulk(ctx context.Context, fv *BulkFlags) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 	if idx.datasource.BulkIndex == nil {
 		return fmt.Errorf("bulk_index block is missing from config file")
 	}

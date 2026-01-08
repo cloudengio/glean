@@ -17,7 +17,6 @@ import (
 
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"benchling-auth,$HOME/.benchling.yaml,'benchling.io auth config file'"`
 }
 
 type CrawlFlags struct {
@@ -51,7 +50,6 @@ const (
 var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: benchlingcmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -68,7 +66,7 @@ type command struct {
 }
 
 func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*benchlingcmd.Command, error) {
-	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}

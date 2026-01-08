@@ -13,11 +13,14 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+	pps := platformSpecificConfig()
 	opts := cmds.Options{
 		StaticResources:  static.New(),
 		Extensions:       static.Extensions("test"),
 		APIExtensions:    static.APIExtensions("api"),
 		DynamicResources: dynamic.New(),
+		PlatformSpecific: pps,
 	}
-	cmds.MustNew(opts).MustDispatch(context.Background())
+	cmds.MustNew(opts).MustDispatch(ctx)
 }

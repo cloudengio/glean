@@ -43,20 +43,28 @@ func ParseGleanError(r *http.Response, err error) error {
 	return err
 }
 
-func NewIndexingClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleansdk.APIClient) {
+func NewIndexingClient(ctx context.Context, domain, tokenName string) (context.Context, *gleansdk.APIClient, error) {
 	templateVars := map[string]string{
 		"domain": domain,
 	}
 	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
-	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Token()))
-	return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration())
+	token, ok := apitokens.TokenFromContext(ctx, tokenName)
+		if !ok {
+		return ctx, nil, fmt.Errorf("no token found for name %q", tokenName)
+	}
+		ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Value()))
+	return ctx, gleansdk.NewAPIClient(gleansdk.NewConfiguration()),nil
 }
 
-func NewClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleanclientsdk.APIClient) {
+func NewClient(ctx context.Context, domain, tokenName string) (context.Context, *gleanclientsdk.APIClient, error) {
 	templateVars := map[string]string{
 		"domain": domain,
 	}
 	ctx = context.WithValue(ctx, gleansdk.ContextServerVariables, templateVars)
-	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Token()))
-	return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration())
+		token, ok := apitokens.TokenFromContext(ctx, tokenName)
+	if !ok {
+		return ctx, nil, fmt.Errorf("no token found for name %q", tokenName)
+	}
+	ctx = context.WithValue(ctx, gleansdk.ContextAccessToken, string(token.Value()))
+		return ctx, gleanclientsdk.NewAPIClient(gleanclientsdk.NewConfiguration()),nil
 }

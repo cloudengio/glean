@@ -20,7 +20,7 @@ func newS3FS(ctx context.Context, cfg yaml.Node) (*s3fs.T, error) {
 	if err := cfg.Decode(&awscfg); err != nil {
 		return nil, err
 	}
-	s3f := &s3fs.Factory{Config: awscfg}
+	s3f := &s3fs.Factory{Config: awscfg.Config()}
 	return s3f.New(ctx)
 }
 

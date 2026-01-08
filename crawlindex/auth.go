@@ -4,30 +4,32 @@
 
 package crawlindex
 
-import (
-	"cloudeng.io/webapi/operations/apitokens"
-)
-
+/*
 type AuthFileFlag struct {
-	AuthFile string `subcmd:"glean-auth,$HOME/.glean-auth.yaml,'file containing authentication tokens for glean instances'"`
+	AuthFile string `subcmd:"glean-key-info,,'file or keychain item containing authentication tokens for glean instances'"`
+}
+
+func (f AuthFileFlag) KeyInfo() string {
+	return f.AuthFile
 }
 
 type Auth []struct {
 	Name string `yaml:"name" cmd:"name of the glean token instance"`
 	Auth struct {
-		BearerToken       string `yaml:"indexing_token" cmd:"indexing token for the glean instance"`
-		ClientBearerToken string `yaml:"client_token" cmd:"client bearer token for the glean instance"`
+		IndexingTokenName string `yaml:"indexing_token_name" cmd:"name of the indexing token for the glean instance"`
+		ClientTokenName   string `yaml:"client_token_name" cmd:"name of the client token for the glean instance"`
 	}
 }
 
-func (a Auth) TokensForName(name, domain string) (indexingToken, clientToken *apitokens.T) {
+func (a Auth) TokensForName(name, domain string) (indexingTokenOrName, clientTokenOrName string) {
 	if len(name) == 0 {
 		name = domain
 	}
 	for _, cfg := range a {
 		if cfg.Name == name {
-			return apitokens.New(cfg.Auth.BearerToken), apitokens.New(cfg.Auth.ClientBearerToken)
+			return cfg.Auth.IndexingTokenName, cfg.Auth.ClientTokenName
 		}
 	}
-	return nil, nil
+	return "", ""
 }
+*/

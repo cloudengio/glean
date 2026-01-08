@@ -9,9 +9,13 @@ import (
 	"os"
 
 	"cloudeng.io/cmdutil"
+	"cloudeng.io/cmdutil/keys"
 	"cloudeng.io/cmdutil/subcmd"
+	"cloudeng.io/file/localfs"
 	"cloudeng.io/glean/crawlindex/crawl"
 	"cloudeng.io/glean/gleancli/extensions"
+	"cloudeng.io/logging/ctxlog"
+	"github.com/oasdiff/yaml"
 )
 
 const baseCommands = `name: gleancli
@@ -23,7 +27,6 @@ commands:
       - name: download
         summary: download and display the configuration for the specified data source from its glean instance
         arguments:
-          - glean-domain-name   - the glean instance to use
           - datasource-name     - the datasource to be downloaded
       - name: register
         summary: add the named datasource to a glean instance using the configuration defined in the datasource configuration file specified using the --datasource-configs flag.
@@ -107,7 +110,7 @@ type Options struct {
 	Extensions    []extensions.Extension
 	APIExtensions []extensions.Extension
 
-	InitContext func(ctx context.Context) (context.Context, error)
+	PlatformSpecific PlatformSpecificConfig
 }
 
 func MustNew(options Options) *subcmd.CommandSetYAML {
@@ -150,16 +153,14 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 
 	cmdSet.MustAddExtensions()
 
-	initState := options.InitContext
-	if initState == nil {
-		initState = func(ctx context.Context) (context.Context, error) {
-			return ctx, nil
-		}
+	if options.PlatformSpecific == nil {
+		options.PlatformSpecific = &noPlatformSpecificConfig{}
 	}
+
 	cmdSet.WithMain(func(ctx context.Context, cmdRunner func(ctx context.Context) error) error {
 		ctx, cancel := context.WithCancel(ctx)
 		cmdutil.HandleSignals(cancel, os.Interrupt, os.Kill)
-		ctx, err := initState(ctx)
+		ctx, err := options.PlatformSpecific.InitContext(ctx)
 		if err != nil {
 			return err
 		}
@@ -172,5 +173,51 @@ func MustNew(options Options) *subcmd.CommandSetYAML {
 		}
 		return cmdRunner(ctx)
 	})
+	if options.PlatformSpecific != nil {
+		options.PlatformSpecific.RegisterGlobalFlags(cmdSet)
+	}
 	return cmdSet
+}
+
+type PlatformSpecificConfig interface {
+	RegisterGlobalFlags(*subcmd.CommandSetYAML)
+	InitContext(context.Context) (context.Context, error)
+}
+
+type LocalKeysAndLoggingFlags struct {
+	cmdutil.LoggingFlags
+	LocalKeyFile string `subcmd:"local-key-file,,'local cleartext file to use for retrieving keys'"`
+}
+
+type LocalKeysAndLogging struct {
+	LocalKeysAndLoggingFlags
+}
+
+func (lf *LocalKeysAndLogging) RegisterGlobalFlags(cmdset *subcmd.CommandSetYAML) {
+	fs := subcmd.NewFlagSet()
+	fs.MustRegisterFlagStruct(&lf.LocalKeysAndLoggingFlags, nil, nil)
+	cmdset.WithGlobalFlags(fs)
+}
+
+func (lf *LocalKeysAndLogging) InitContext(ctx context.Context) (context.Context, error) {
+	logger := lf.LoggingConfig().NewLoggerMust()
+	ctx = ctxlog.WithLogger(ctx, logger.Logger)
+	ims := keys.NewInMemoryKeyStore()
+	lfs := localfs.New()
+	contents, err := lfs.ReadFileCtx(ctx, lf.LocalKeyFile)
+	if err != nil {
+		return nil, err
+	}
+	if err := yaml.Unmarshal(contents, ims); err != nil {
+		return nil, err
+	}
+	return keys.ContextWithKeyStore(ctx, ims), nil
+}
+
+type noPlatformSpecificConfig struct{}
+
+func (n *noPlatformSpecificConfig) RegisterGlobalFlags(cmdset *subcmd.CommandSetYAML) {}
+
+func (n *noPlatformSpecificConfig) InitContext(ctx context.Context) (context.Context, error) {
+	return ctx, nil
 }

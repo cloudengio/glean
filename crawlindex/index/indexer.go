@@ -15,7 +15,6 @@ import (
 	"cloudeng.io/glean/gleanclientsdk"
 	"cloudeng.io/glean/gleansdk"
 	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/operations/apitokens"
 )
 
 // BulkFlags represents the flags to the bulk indexing command.
@@ -29,8 +28,8 @@ type BulkFlags struct {
 
 // Resources represents the resources needed by an indexer.
 type Resources struct {
-	IndexingToken      *apitokens.T
-	ClientToken        *apitokens.T
+	IndexingTokenOrName string
+	ClientTokenOrName   string
 	DocumentConverters *content.Registry[converters.Document]
 	UserConverters     *content.Registry[converters.User]
 	NewOperationsFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
@@ -55,10 +54,10 @@ func New(ctx context.Context, fv config.FileFlags, datasource string, resources 
 	}, nil
 }
 
-func (idx *Indexer) newGleanIndexingClient(ctx context.Context) (context.Context, *gleansdk.APIClient) {
-	return internal.NewIndexingClient(ctx, idx.datasource.GleanDomain, idx.resources.IndexingToken)
+func (idx *Indexer) newGleanIndexingClient(ctx context.Context) (context.Context, *gleansdk.APIClient, error) {
+	return internal.NewIndexingClient(ctx, idx.datasource.GleanDomain, idx.resources.IndexingTokenOrName)
 }
 
-func (idx *Indexer) newGleanClient(ctx context.Context) (context.Context, *gleanclientsdk.APIClient) {
-	return internal.NewClient(ctx, idx.datasource.GleanDomain, idx.resources.ClientToken)
+func (idx *Indexer) newGleanClient(ctx context.Context) (context.Context, *gleanclientsdk.APIClient, error) {
+	return internal.NewClient(ctx, idx.datasource.GleanDomain, idx.resources.ClientTokenOrName)
 }

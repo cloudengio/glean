@@ -11,14 +11,16 @@ import (
 	"log"
 
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/glean/crawlindex/internal"
+	"cloudeng.io/glean/crawlindex/internal"–
 	"cloudeng.io/glean/gleansdk"
-	"cloudeng.io/webapi/operations/apitokens"
 	"gopkg.in/yaml.v3"
 )
 
-func Download(ctx context.Context, domain, datasource string, token *apitokens.T) error {
-	ctx, client := internal.NewIndexingClient(ctx, domain, token)
+func Download(ctx context.Context, domain, datasource, indexingTokenName string) error {
+	ctx, client, err := internal.NewIndexingClient(ctx, domain, indexingTokenName)
+	if err != nil {
+		return err
+	}
 	return downloadDataSource(ctx, client, datasource)
 }
 
@@ -37,14 +39,17 @@ func downloadDataSource(ctx context.Context, client *gleansdk.APIClient, datasou
 	return nil
 }
 
-func Register(ctx context.Context, cfg config.Datasource, name string, token *apitokens.T) error {
+func Register(ctx context.Context, cfg config.Datasource, name, indexingTokenName string) error {
 	buf, err := yaml.Marshal(cfg.GleanDatasource.CustomDatasourceConfig)
 	if err != nil {
 		return err
 	}
 	log.Printf("Registering custom datasource:\n%s\n", buf)
 
-	ctx, client := internal.NewIndexingClient(ctx, cfg.GleanDomain, token)
+	ctx, client, err := internal.NewIndexingClient(ctx, cfg.GleanDomain, indexingTokenName)
+	if err != nil {
+		return err
+	}
 	getDatasourceConfigRequest := gleansdk.NewGetDatasourceConfigRequest()
 	getDatasourceConfigRequest.Name = &name
 	r, err := client.DatasourcesApi.AdddatasourcePost(ctx).CustomDatasourceConfig(cfg.GleanDatasource.CustomDatasourceConfig).Execute()

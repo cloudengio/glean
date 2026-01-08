@@ -24,7 +24,6 @@ import (
 
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"protocolsio-auth,$HOME/.protocolsio.yaml,'protocols.io auth config file'"`
 }
 
 type ScanFlags struct {
@@ -68,7 +67,6 @@ const (
 var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: protocolsiocmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -89,7 +87,7 @@ type command struct {
 }
 
 func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*protocolsiocmd.Command, error) {
-	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}
