@@ -18,7 +18,6 @@ func MustNew(options Options) *subcmd.CommandSetYAML
 ```go
 type BulkFlags struct {
 	index.BulkFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -75,7 +74,6 @@ func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []stri
 ```go
 type DeleteAllFlags struct {
 	index.DeleteAllFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -84,7 +82,6 @@ type DeleteAllFlags struct {
 ```go
 type DeleteFlags struct {
 	index.DeleteFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -92,7 +89,7 @@ type DeleteFlags struct {
 ### Type DownloadFlags
 ```go
 type DownloadFlags struct {
-	crawlindex.AuthFileFlag
+	config.FileFlags
 }
 ```
 
@@ -102,6 +99,36 @@ type DownloadFlags struct {
 type Index struct {
 	Options
 	// contains filtered or unexported fields
+}
+```
+
+
+### Type LocalKeysAndLogging
+```go
+type LocalKeysAndLogging struct {
+	LocalKeysAndLoggingFlags
+}
+```
+
+### Methods
+
+```go
+func (lf *LocalKeysAndLogging) InitContext(ctx context.Context) (context.Context, error)
+```
+
+
+```go
+func (lf *LocalKeysAndLogging) RegisterGlobalFlags(cmdset *subcmd.CommandSetYAML)
+```
+
+
+
+
+### Type LocalKeysAndLoggingFlags
+```go
+type LocalKeysAndLoggingFlags struct {
+	cmdutil.LoggingFlags
+	LocalKeyFile string `subcmd:"local-key-file,,'local cleartext file to use for retrieving keys'"`
 }
 ```
 
@@ -116,7 +143,16 @@ type Options struct {
 	Extensions    []extensions.Extension
 	APIExtensions []extensions.Extension
 
-	InitContext func(ctx context.Context) (context.Context, error)
+	PlatformSpecific PlatformSpecificConfig
+}
+```
+
+
+### Type PlatformSpecificConfig
+```go
+type PlatformSpecificConfig interface {
+	RegisterGlobalFlags(*subcmd.CommandSetYAML)
+	InitContext(context.Context) (context.Context, error)
 }
 ```
 
@@ -125,7 +161,6 @@ type Options struct {
 ```go
 type ProcessNowFlags struct {
 	index.ProcessNowFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -134,7 +169,6 @@ type ProcessNowFlags struct {
 ```go
 type QueryFlags struct {
 	index.QueryFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -143,7 +177,6 @@ type QueryFlags struct {
 ```go
 type RegisterFlags struct {
 	config.FileFlags
-	crawlindex.AuthFileFlag
 }
 ```
 
@@ -152,7 +185,6 @@ type RegisterFlags struct {
 ```go
 type StatsFlags struct {
 	index.StatsFlags
-	crawlindex.AuthFileFlag
 }
 ```
 

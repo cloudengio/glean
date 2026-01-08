@@ -11,7 +11,7 @@ import (
 	"log"
 
 	"cloudeng.io/glean/crawlindex/config"
-	"cloudeng.io/glean/crawlindex/internal"–
+	"cloudeng.io/glean/crawlindex/internal"
 	"cloudeng.io/glean/gleansdk"
 	"gopkg.in/yaml.v3"
 )

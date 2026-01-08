@@ -51,11 +51,6 @@ func NewHTML() converters.Document
 ```
 NewHTML returns a new install of HTML.
 
-### Func TokenReaders
-```go
-func TokenReaders() *apitokens.Readers
-```
-
 
 
 ## Types

@@ -6,7 +6,7 @@ import cloudeng.io/glean/gleancli/runner/runnerdata
 
 
 ## Variables
-### Datasources, AuthFiles, CrawlCommands, ProcessCommands, BulkIndexCommand, IndexCommands, TestCacheCommands
+### Datasources, AuthFiles, CrawlCommands, ProcessCommands, BulkIndexCommand, IndexCommands, IndexStatsCommand, IndexStatsCommands, TestCacheCommands
 ```go
 Datasources = []string{
 	"biorxiv.org",
@@ -53,6 +53,7 @@ ProcessCommands = map[string][]string{
 }
 BulkIndexCommand = []string{
 	"index", "bulk",
+	"--dry-run={{.Flags.IndexingDryRun}}",
 	`--glean-auth={{AuthFile "glean.com"}}`,
 	"--datasource-configs={{.DatasourceConfigFile}}",
 	"{{.DatasourceName}}",
@@ -61,7 +62,21 @@ IndexCommands = map[string][]string{
 	"biorxiv.org":   BulkIndexCommand,
 	"papersapp.com": BulkIndexCommand,
 	"benchling.com": BulkIndexCommand,
+	"protocols.io":  BulkIndexCommand,
 	"files":         BulkIndexCommand,
+}
+IndexStatsCommand = []string{
+	"index", "stats",
+	`--glean-auth={{AuthFile "glean.com"}}`,
+	"--datasource-configs={{.DatasourceConfigFile}}",
+	"{{.DatasourceName}}",
+}
+IndexStatsCommands = map[string][]string{
+	"biorxiv.org":   IndexStatsCommand,
+	"papersapp.com": IndexStatsCommand,
+	"benchling.com": IndexStatsCommand,
+	"protocols.io":  IndexStatsCommand,
+	"files":         IndexStatsCommand,
 }
 TestCacheCommands = map[string][]string{
 	"biorxiv.org": {"test", "cache",

@@ -8,12 +8,12 @@ import cloudeng.io/glean/crawlindex/internal
 ## Functions
 ### Func NewClient
 ```go
-func NewClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleanclientsdk.APIClient)
+func NewClient(ctx context.Context, domain, tokenName string) (context.Context, *gleanclientsdk.APIClient, error)
 ```
 
 ### Func NewIndexingClient
 ```go
-func NewIndexingClient(ctx context.Context, domain string, token *apitokens.T) (context.Context, *gleansdk.APIClient)
+func NewIndexingClient(ctx context.Context, domain, tokenName string) (context.Context, *gleansdk.APIClient, error)
 ```
 
 ### Func ParseGleanError

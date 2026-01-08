@@ -172,11 +172,11 @@ input channel is closed.
 ### Type Resources
 ```go
 type Resources struct {
-	IndexingToken      *apitokens.T
-	ClientToken        *apitokens.T
-	DocumentConverters *content.Registry[converters.Document]
-	UserConverters     *content.Registry[converters.User]
-	NewOperationsFS    func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
+	IndexingTokenOrName string
+	ClientTokenOrName   string
+	DocumentConverters  *content.Registry[converters.Document]
+	UserConverters      *content.Registry[converters.User]
+	NewOperationsFS     func(ctx context.Context, cfg crawlcmd.CrawlCacheConfig) (operations.FS, error)
 }
 ```
 Resources represents the resources needed by an indexer.

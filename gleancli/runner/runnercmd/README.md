@@ -41,6 +41,23 @@ type CrawlFlags struct {
 ```
 
 
+### Type CrawlIndexFlags
+```go
+type CrawlIndexFlags struct {
+	CrawlFlags
+	IndexFlags
+}
+```
+
+
+### Type IndexFlags
+```go
+type IndexFlags struct {
+	IndexingDryRun bool `subcmd:"indexing-dry-run,false,'dry run only'"`
+}
+```
+
+
 ### Type T
 ```go
 type T struct {
@@ -48,6 +65,7 @@ type T struct {
 	CrawlCommands        map[string][]string
 	ProcessCommands      map[string][]string
 	IndexCommands        map[string][]string
+	IndexStatsCommands   map[string][]string
 	TestCacheCommands    map[string][]string
 	AuthFiles            map[string]string
 	GlobalExecOpts       []cmdexec.Option
@@ -68,33 +86,45 @@ func (c *T) CrawlAll(ctx context.Context, values interface{}, _ []string) error
 
 
 ```go
-func (c *T) CrawlIndex(ctx context.Context, _ interface{}, args []string) error
+func (c *T) CrawlIndex(ctx context.Context, values interface{}, args []string) error
 ```
 
 
 ```go
-func (c *T) Index(ctx context.Context, _ interface{}, args []string) error
+func (c *T) CrawlIndexAll(ctx context.Context, values interface{}, _ []string) error
 ```
 
 
 ```go
-func (c *T) IndexAll(ctx context.Context, _ interface{}, _ []string) error
+func (c *T) Index(ctx context.Context, values interface{}, args []string) error
 ```
 
 
 ```go
-func (c *T) NewRunner(datasource string) *cmdexec.Runner
+func (c *T) IndexAll(ctx context.Context, values interface{}, _ []string) error
 ```
 
 
 ```go
-func (c *T) NewRunnerOpts(datasource string) []cmdexec.Option
+func (c *T) IndexingStats(ctx context.Context, values interface{}, args []string) error
 ```
 
 
 ```go
-func (c *T) RunCommands(ctx context.Context, datasource string, cmdsets ...map[string][]string) error
+func (c *T) NewRunner(datasource string, flags any) *cmdexec.Runner
 ```
+
+
+```go
+func (c *T) NewRunnerOpts(datasource string, flags any) []cmdexec.Option
+```
+
+
+```go
+func (c *T) RunCommands(ctx context.Context, datasource string, flags any, cmdsets ...map[string][]string) error
+```
+RunCommands runs the supplied commands for the specified datasource.
+Flags represents the flags made available as template variables.
 
 
 ```go
@@ -108,12 +138,12 @@ func (c *T) Spec() (string, []CommandSpec)
 
 
 ```go
-func (c *T) TestCache(ctx context.Context, _ interface{}, args []string) error
+func (c *T) TestCache(ctx context.Context, values interface{}, args []string) error
 ```
 
 
 ```go
-func (c *T) TestCacheAll(ctx context.Context, _ interface{}, _ []string) error
+func (c *T) TestCacheAll(ctx context.Context, values interface{}, _ []string) error
 ```
 
 
@@ -124,6 +154,7 @@ func (c *T) TestCacheAll(ctx context.Context, _ interface{}, _ []string) error
 type TemplateVars struct {
 	DatasourceName       string
 	DatasourceConfigFile string
+	Flags                any
 }
 ```
 TemplateVars represents the variables that can be accessed from templates.

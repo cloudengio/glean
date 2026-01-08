@@ -11,7 +11,6 @@ import cloudeng.io/glean/extensions/protocolsio
 ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: protocolsiocmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -38,7 +37,6 @@ func NewDocumentConverter() converters.Document
 ```go
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"protocolsio-auth,$HOME/.protocolsio.yaml,'protocols.io auth config file'"`
 }
 ```
 

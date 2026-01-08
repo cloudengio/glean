@@ -1,5 +1,3 @@
 module cloudeng.io/glean/gleanclientsdk
 
-go 1.21
-
-toolchain go1.21.6
+go 1.25.5
