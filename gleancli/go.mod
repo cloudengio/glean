@@ -7,13 +7,13 @@ require (
 	cloudeng.io/cmdutil v0.0.0-20260108221821-c297f12474b8
 	cloudeng.io/errors v0.0.13
 	cloudeng.io/file v0.0.0-20260108221821-c297f12474b8
-	cloudeng.io/glean/crawlindex v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/extensions/benchling v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/extensions/biorxiv v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/extensions/papersapp v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/extensions/protocolsio v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/extensions/testcmd v0.0.0-20240327164852-a1bc676b508c
-	cloudeng.io/glean/gleansdk v0.0.0-20240327164852-a1bc676b508c
+	cloudeng.io/glean/crawlindex v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/extensions/benchling v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/extensions/biorxiv v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/extensions/papersapp v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/extensions/protocolsio v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/extensions/testcmd v0.0.0-20260108233649-7587dca0c309
+	cloudeng.io/glean/gleansdk v0.0.0-20260108233649-7587dca0c309
 	cloudeng.io/logging v0.0.0-20260108221821-c297f12474b8
 	cloudeng.io/macos v0.0.0-20251216163411-986d24e80424
 	cloudeng.io/path v0.0.10-0.20251104042927-f7e1e5e3ef21
@@ -26,7 +26,7 @@ require (
 
 require (
 	cloudeng.io/algo v0.0.0-20260108221821-c297f12474b8 // indirect
-	cloudeng.io/glean/gleanclientsdk v0.0.0-20240327164852-a1bc676b508c // indirect
+	cloudeng.io/glean/gleanclientsdk v0.0.0-20260108233649-7587dca0c309 // indirect
 	cloudeng.io/net v0.0.0-20260108221821-c297f12474b8 // indirect
 	cloudeng.io/os v0.0.0-20260108221821-c297f12474b8 // indirect
 	cloudeng.io/sys v0.0.0-20260108221821-c297f12474b8 // indirect
