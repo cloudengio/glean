@@ -18,7 +18,6 @@ import (
 	"cloudeng.io/glean/extensions/protocolsio"
 	"cloudeng.io/glean/extensions/testcmd"
 	"cloudeng.io/glean/gleancli/extensions"
-	"cloudeng.io/webapi/operations/apitokens"
 )
 
 // LinkExtractors represents the set of available outlink extractors.
@@ -66,19 +65,11 @@ func APIExtensions(parents ...string) []extensions.Extension {
 	)
 }
 
-func TokenReaders() *apitokens.Readers {
-	def := apitokens.CloneReaders(apitokens.DefaultReaders)
-	// Add any additional token readers go here, eg. for reading
-	// from AWS secrets manager.
-	return def
-}
-
 func New() extensions.StaticResources {
 	return extensions.StaticResources{
 		Extractors:         LinkExtractors(),
 		DocumentConverters: MustDocumentConverters(),
 		UserConverters:     MustUserConverters(),
-		TokenReaders:       TokenReaders(),
 	}
 }
 

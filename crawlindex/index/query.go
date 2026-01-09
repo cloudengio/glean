@@ -24,7 +24,10 @@ type QueryFlags struct {
 }
 
 func (idx *Indexer) query(ctx context.Context, numDocs int, query string) (*gleanclientsdk.SearchResponse, error) {
-	ctx, client := idx.newGleanClient(ctx)
+	ctx, client, err := idx.newGleanClient(ctx)
+	if err != nil {
+		return nil, err
+	}
 	si := gleanclientsdk.NewSearchRequestSourceInfo("FULLPAGE")
 	si.SetDomain(idx.datasource.GleanDomain)
 	si.SetIsDebug(true)
@@ -80,7 +83,10 @@ func (idx *Indexer) Query(ctx context.Context, fv *QueryFlags, datasource string
 }
 
 func (idx *Indexer) indexingStatus(ctx context.Context, results []gleanclientsdk.SearchResult) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 	for _, r := range results {
 		objType := strings.ToLower(r.Document.GetDocType())
 		docid := r.Document.GetId()

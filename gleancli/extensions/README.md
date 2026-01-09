@@ -17,25 +17,6 @@ func FirstAPICrawl(crawls apicrawlcmd.Crawls) (apicrawlcmd.Crawl[yaml.Node], boo
 
 
 ## Types
-### Type APIKey
-```go
-type APIKey struct {
-	APIKey string `yaml:"api_key" cmd:"API key in apitokens format (ie. scheme://<value>)"`
-}
-```
-APIKey represents an API key in apitokens format.
-
-### Methods
-
-```go
-func (k *APIKey) ParseAndRead(ctx context.Context, filename string, readers *apitokens.Readers) (*apitokens.T, error)
-```
-ParseAndRead reads the API key from the specified file and returns it in
-apitokens format.
-
-
-
-
 ### Type DynamicResources
 ```go
 type DynamicResources struct {
@@ -93,7 +74,7 @@ ExtensionsOptions are the options that are passed to each extension.
 ### Methods
 
 ```go
-func (eo ExtensionOptions) ResourcesForDatasource(ctx context.Context, configFile, authFile, datasource string) (config.Datasource, apicrawlcmd.Resources, error)
+func (eo ExtensionOptions) ResourcesForDatasource(ctx context.Context, configFile, datasource string) (config.Datasource, apicrawlcmd.Resources, error)
 ```
 
 
@@ -119,9 +100,6 @@ type StaticResources struct {
 	DocumentConverters *content.Registry[converters.Document]
 	UserConverters     *content.Registry[converters.User]
 	Extractors         map[content.Type]outlinks.Extractor
-
-	// TokenReaders provides a set of readers for reading API tokens.
-	TokenReaders *apitokens.Readers
 }
 ```
 StaticResources provides a set of resources that are typically required

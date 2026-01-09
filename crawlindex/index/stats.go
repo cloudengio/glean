@@ -18,7 +18,10 @@ type StatsFlags struct {
 }
 
 func (idx *Indexer) Stats(ctx context.Context, _ *StatsFlags) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 
 	var req gleansdk.GetDocumentCountRequest
 	req.SetName(idx.datasourceName)

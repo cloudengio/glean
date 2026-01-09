@@ -20,3 +20,4 @@ annotate:
   ]
 usage: ["gousage", "--overwrite", "./..."]
 update: ["go", "get", "-u", "./...", ";", "go", "mod", "tidy"]
+build: ["go", "build", "./..."]

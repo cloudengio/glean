@@ -11,7 +11,6 @@ import cloudeng.io/glean/extensions/papersapp
 ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: papersappcmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -38,7 +37,6 @@ func NewDocumentConverter() converters.Document
 ```go
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"papersapp-auth,$HOME/.benchling.yaml,'papersapp.io auth config file'"`
 }
 ```
 

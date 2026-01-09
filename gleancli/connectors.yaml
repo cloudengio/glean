@@ -48,6 +48,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     papersapp:
+      key_id: altos-papersapp-api-key
       service_config:
         service_url: https://api.papers.ai
         refresh_token_url: https://services.readcube.com/api/token
@@ -95,6 +96,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     benchling:
+      key_id: altos-benchling-api-key
       service_config:
         service_url: https://altoslabs.benchling.com/api/v2/
         users_page_size: 100
@@ -141,6 +143,7 @@
   email: cnicolaou@glean.dev
   api_crawls:
     protocols.io:
+      key_id: altos-protocolsio-api-key
       service_config:
         order_direction: asc
         order_field: id
@@ -253,7 +256,7 @@
       view_url_rewrites:
         - "s%^(s3://altos-lab-static-content/)(.*)%https://static.lab.altoslabs.com/${2}%"
   glean_domain: altos
-  glean_token_name: altos
+  glean_indexing_token_name: altos-glean-indexing-token
   glean_datasource_config:
     name: internalDocumentation
     displayname: "Altos Internal"

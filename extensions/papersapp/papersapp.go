@@ -16,7 +16,6 @@ import (
 
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"papersapp-auth,$HOME/.benchling.yaml,'papersapp.io auth config file'"`
 }
 
 type CrawlFlags struct {
@@ -49,7 +48,6 @@ const (
 var ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: papersappcmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -66,7 +64,7 @@ type command struct {
 }
 
 func (cmd *command) newCommand(ctx context.Context, fv CommonFlags, datasource string) (*papersappcmd.Command, error) {
-	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, fv.AuthFile, datasource)
+	cfg, resources, err := cmd.parent.Options().ResourcesForDatasource(ctx, fv.ConfigFile, datasource)
 	if err != nil {
 		return nil, err
 	}

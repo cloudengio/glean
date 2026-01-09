@@ -39,7 +39,10 @@ func (idx *Indexer) Delete(ctx context.Context, fv *DeleteFlags, query string) e
 }
 
 func (idx *Indexer) delete(ctx context.Context, results []gleanclientsdk.SearchResult, objectType string) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 	for _, r := range results {
 		if r.Document.GetDocType() != objectType {
 			continue
@@ -61,7 +64,10 @@ func (idx *Indexer) delete(ctx context.Context, results []gleanclientsdk.SearchR
 }
 
 func (idx *Indexer) DeleteAll(ctx context.Context, _ *DeleteAllFlags) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 	bulkReq := gleansdk.BulkIndexDocumentsRequest{}
 	bulkReq.SetDatasource(idx.datasourceName)
 	bulkReq.SetForceRestartUpload(true)

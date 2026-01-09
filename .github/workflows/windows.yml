@@ -1,4 +1,4 @@
-name: windows
+name: go-windows
 
 on:
   push:
@@ -6,40 +6,31 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  test:
-    strategy:
-      matrix:
-        go-version: ["1.21.x"]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
+  check-description:
+    if: github.event_name == 'pull_request'
+    runs-on: "ubuntu-latest"
+    outputs:
+      should-run: ${{ steps.check.outputs.contains-pattern }}
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/checkout@v4
+      - name: Check PR description for 'test:windows'
+        id: check
+        uses: cloudengio/.github/.github/actions/check-pr-description@main
         with:
-          go-version: ${{ matrix.go-version }}
+          phrase: test:windows
+          pr-body: ${{ github.event.pull_request.body }}
 
-      - name: Set git to use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~\AppData\Local\go-build
-            ~\go\pkg\mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Install tools
-        run: |
-          go install cloudeng.io/citools/multimod@latest
-
-      - name: Test
-        run: multimod --config=.multimod.yaml test
+  test:
+    needs: check-description
+    if: github.event_name == 'push' || needs.check-description.outputs.should-run == 'true'
+    uses: cloudengio/.github/.github/workflows/go-test-multimod.yml@main
+    with:
+      runner: |
+        [ "windows-latest" ]
+      go-versions: |
+        [ "1.25.x" ]
+      multimod-action: "test-less-parallelism"

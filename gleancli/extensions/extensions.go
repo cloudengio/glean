@@ -18,7 +18,6 @@ import (
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/converters"
 	"cloudeng.io/webapi/operations"
-	"cloudeng.io/webapi/operations/apitokens"
 )
 
 // DynamicResources provides a set of functions that can be used to create
@@ -40,9 +39,6 @@ type StaticResources struct {
 	DocumentConverters *content.Registry[converters.Document]
 	UserConverters     *content.Registry[converters.User]
 	Extractors         map[content.Type]outlinks.Extractor
-
-	// TokenReaders provides a set of readers for reading API tokens.
-	TokenReaders *apitokens.Readers
 }
 
 // ExtensionsOptions are the options that are passed to each extension.

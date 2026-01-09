@@ -20,7 +20,7 @@ func newS3FS(ctx context.Context, cfg yaml.Node) (*s3fs.T, error) {
 	if err := cfg.Decode(&awscfg); err != nil {
 		return nil, err
 	}
-	s3f := &s3fs.Factory{Config: awscfg}
+	s3f := &s3fs.Factory{Config: awscfg.Config()}
 	return s3f.New(ctx)
 }
 
@@ -30,11 +30,11 @@ func s3FS(cfg yaml.Node) func(ctx context.Context) (file.FS, error) {
 	}
 }
 
-func newLocalFS(ctx context.Context) (*localfs.T, error) {
+func newLocalFS(_ context.Context) (*localfs.T, error) {
 	return localfs.New(), nil
 }
 
-func localFS(ctx context.Context) (file.FS, error) {
+func localFS(_ context.Context) (file.FS, error) {
 	return localfs.New(), nil
 }
 

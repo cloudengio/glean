@@ -6,100 +6,63 @@ package cmds
 
 import (
 	"context"
-	"fmt"
 
-	"cloudeng.io/cmdutil/cmdyaml"
-	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/index"
-	"cloudeng.io/webapi/operations/apitokens"
 )
 
 type Index struct {
 	Options
-	datasource                 config.Datasource
-	indexingToken, clientToken *apitokens.T
+	datasource config.Datasource
 }
 
 type BulkFlags struct {
 	index.BulkFlags
-	crawlindex.AuthFileFlag
 }
 
 type StatsFlags struct {
 	index.StatsFlags
-	crawlindex.AuthFileFlag
 }
 
 type QueryFlags struct {
 	index.QueryFlags
-	crawlindex.AuthFileFlag
 }
 
 type DeleteFlags struct {
 	index.DeleteFlags
-	crawlindex.AuthFileFlag
 }
 
 type DeleteAllFlags struct {
 	index.DeleteAllFlags
-	crawlindex.AuthFileFlag
 }
 
 type ProcessNowFlags struct {
 	index.ProcessNowFlags
-	crawlindex.AuthFileFlag
 }
 
-func initTokens(ctx context.Context, cfg config.Datasource, tokenReaders *apitokens.Readers, authFile string) (indexingToken, clientToken *apitokens.T, err error) {
-	var auth crawlindex.Auth
-	if err = cmdyaml.ParseConfigFile(ctx, authFile, &auth); err != nil {
-		return
-	}
-	indexingToken, clientToken = auth.TokensForName(cfg.GleanTokenName, cfg.GleanDomain)
-	if indexingToken == nil || clientToken == nil {
-		err = fmt.Errorf("no tokens found for token name: %q, or glean doman: %q", cfg.GleanTokenName, cfg.GleanDomain)
-		return
-	}
-
-	if indexingToken.Scheme == "" || clientToken.Scheme == "" {
-		err = fmt.Errorf("invalid indexing or client token found for token name: %q, or glean doman: %q", cfg.GleanTokenName, cfg.GleanDomain)
-		return
-	}
-
-	if err = indexingToken.Read(ctx, tokenReaders); err != nil {
-		return
-	}
-
-	err = clientToken.Read(ctx, tokenReaders)
-	return
-}
-
-func initConfigAndTokens(ctx context.Context, tokenReaders *apitokens.Readers, configFile, authFile, datasource string) (cfg config.Datasource, indexingToken, clientToken *apitokens.T, err error) {
+func initConfig(ctx context.Context, configFile, datasource string) (cfg config.Datasource, err error) {
 	cfg, err = config.DatasourceForName(ctx, configFile, datasource)
 	if err != nil {
 		return
 	}
-	indexingToken, clientToken, err = initTokens(ctx, cfg, tokenReaders, authFile)
+
 	return
 }
 
-func (cmd *Index) init(ctx context.Context, configFile, authFile, datasource string) (err error) {
-	cmd.datasource, cmd.indexingToken, cmd.clientToken, err = initConfigAndTokens(ctx, cmd.TokenReaders, configFile, authFile, datasource)
+func (cmd *Index) init(ctx context.Context, configFile, datasource string) (err error) {
+	cmd.datasource, err = initConfig(ctx, configFile, datasource)
 	return
 }
 
 func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*BulkFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
 	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken:      cmd.indexingToken,
-		ClientToken:        cmd.clientToken,
-		DocumentConverters: cmd.StaticResources.DocumentConverters,
-		UserConverters:     cmd.StaticResources.UserConverters,
-		NewOperationsFS:    cmd.DynamicResources.NewOperationsFS,
+		DocumentConverters: cmd.DocumentConverters,
+		UserConverters:     cmd.UserConverters,
+		NewOperationsFS:    cmd.NewOperationsFS,
 	})
 	if err != nil {
 		return err
@@ -109,13 +72,10 @@ func (cmd *Index) bulk(ctx context.Context, values interface{}, args []string) e
 
 func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*StatsFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
-	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken: cmd.indexingToken,
-		ClientToken:   cmd.clientToken,
-	})
+	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{})
 	if err != nil {
 		return err
 	}
@@ -124,13 +84,10 @@ func (cmd *Index) stats(ctx context.Context, values interface{}, args []string) 
 
 func (cmd *Index) query(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*QueryFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
-	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken: cmd.indexingToken,
-		ClientToken:   cmd.clientToken,
-	})
+	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{})
 	if err != nil {
 		return err
 	}
@@ -139,13 +96,10 @@ func (cmd *Index) query(ctx context.Context, values interface{}, args []string) 
 
 func (cmd *Index) delete(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*DeleteFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
-	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken: cmd.indexingToken,
-		ClientToken:   cmd.clientToken,
-	})
+	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{})
 	if err != nil {
 		return err
 	}
@@ -154,13 +108,10 @@ func (cmd *Index) delete(ctx context.Context, values interface{}, args []string)
 
 func (cmd *Index) deleteAll(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*DeleteAllFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
-	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken: cmd.indexingToken,
-		ClientToken:   cmd.clientToken,
-	})
+	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{})
 	if err != nil {
 		return err
 	}
@@ -169,13 +120,10 @@ func (cmd *Index) deleteAll(ctx context.Context, values interface{}, args []stri
 
 func (cmd *Index) processNow(ctx context.Context, values interface{}, args []string) error {
 	fv := values.(*ProcessNowFlags)
-	if err := cmd.init(ctx, fv.ConfigFile, fv.AuthFile, args[0]); err != nil {
+	if err := cmd.init(ctx, fv.ConfigFile, args[0]); err != nil {
 		return err
 	}
-	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{
-		IndexingToken: cmd.indexingToken,
-		ClientToken:   cmd.clientToken,
-	})
+	indexer, err := index.New(ctx, fv.FileFlags, args[0], index.Resources{})
 	if err != nil {
 		return err
 	}

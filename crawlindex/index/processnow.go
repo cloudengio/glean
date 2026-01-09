@@ -17,9 +17,12 @@ type ProcessNowFlags struct {
 }
 
 func (idx *Indexer) ProcessNow(ctx context.Context, _ *ProcessNowFlags) error {
-	ctx, client := idx.newGleanIndexingClient(ctx)
+	ctx, client, err := idx.newGleanIndexingClient(ctx)
+	if err != nil {
+		return err
+	}
 	req := gleansdk.NewProcessAllDocumentsRequest()
 	req.SetDatasource(idx.datasourceName)
-	_, err := client.DocumentsApi.ProcessalldocumentsPost(ctx).ProcessAllDocumentsRequest(*req).Execute()
+	_, err = client.DocumentsApi.ProcessalldocumentsPost(ctx).ProcessAllDocumentsRequest(*req).Execute()
 	return err
 }

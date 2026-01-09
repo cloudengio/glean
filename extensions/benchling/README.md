@@ -11,7 +11,6 @@ import cloudeng.io/glean/extensions/benchling
 ExtensionSpec = extensions.ExtensionSpec{
 	Name:       cmdName,
 	CmdSpec:    cmdSpec,
-	AuthCfg:    extensions.APIKey{},
 	ServiceCfg: benchlingcmd.Service{},
 	AddFunc:    AddExtension,
 }
@@ -43,7 +42,6 @@ func NewUserConverter() converters.User
 ```go
 type CommonFlags struct {
 	config.FileFlags
-	AuthFile string `subcmd:"benchling-auth,$HOME/.benchling.yaml,'benchling.io auth config file'"`
 }
 ```
 

@@ -3,14 +3,16 @@
 
 Usage of `runner`
 
-             crawl - crawl a datasource, optionally processing the results
-         crawl-all - crawl all configured datasources concurrently
-             index - index a datasource
-         index-all - index all configured datasources concurrently
-       crawl-index - crawl and index a datasource
-          show-all - show all commands
-        test-cache - test the cache configuration for a datasource and display the first n items therein
-    test-cache-all - test the cache configuration for all datasources
+              crawl - crawl a datasource, optionally processing the results
+          crawl-all - crawl all configured datasources concurrently
+              index - index a datasource
+          index-all - index all configured datasources concurrently
+        crawl-index - crawl and index a datasource
+    crawl-index-all - crawl and index all datasources
+           show-all - show all commands
+         test-cache - test the cache configuration for a datasource and display the first n items therein
+     test-cache-all - test the cache configuration for all datasources
+        index-stats - stats for indexed data for a given datasource, or for all datasources if none are specified on the command line
 
 global flags: [--datasource-configs=connectors.yaml --dry-run=false
 --executable=gleancli --verbose=false --working-dir=.]

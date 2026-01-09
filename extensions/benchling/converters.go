@@ -103,7 +103,8 @@ func (c *userConverter) Convert(_ context.Context, _ string, cfg config.Conversi
 	}
 	gd.SetName(*usr.Name)
 	gd.SetEmail(*usr.Email)
-	active := !(usr.IsSuspended != nil && *usr.IsSuspended)
+	isSuspended := usr.IsSuspended != nil && *usr.IsSuspended
+	active := !isSuspended
 	gd.SetIsActive(active)
 	gd.SetUserId(*usr.Id)
 	return gd, nil

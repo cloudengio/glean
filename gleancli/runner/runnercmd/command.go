@@ -190,7 +190,6 @@ func (c *T) CrawlAll(ctx context.Context, values interface{}, _ []string) error 
 	fv := values.(*CrawlFlags)
 	var g errgroup.T
 	for _, ds := range c.Datasources {
-		ds := ds
 		g.Go(func() error {
 			return c.crawlAndProcess(ctx, fv, ds)
 		})
@@ -205,7 +204,6 @@ func (c *T) Index(ctx context.Context, values interface{}, args []string) error 
 func (c *T) IndexAll(ctx context.Context, values interface{}, _ []string) error {
 	var g errgroup.T
 	for _, ds := range c.Datasources {
-		ds := ds
 		g.Go(func() error {
 			return c.RunCommands(ctx, ds, values, c.IndexCommands)
 		})
@@ -221,7 +219,6 @@ func (c *T) CrawlIndexAll(ctx context.Context, values interface{}, _ []string) e
 	fv := values.(*CrawlIndexFlags)
 	var g errgroup.T
 	for _, ds := range c.Datasources {
-		ds := ds
 		g.Go(func() error {
 			if err := c.crawlAndProcess(ctx, &fv.CrawlFlags, ds); err != nil {
 				return err

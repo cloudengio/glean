@@ -12,7 +12,6 @@ import (
 	"cloudeng.io/cmdutil/cmdyaml"
 	"cloudeng.io/cmdutil/structdoc"
 	"cloudeng.io/errors"
-	"cloudeng.io/glean/crawlindex"
 	"cloudeng.io/glean/crawlindex/config"
 	"cloudeng.io/glean/crawlindex/datasources"
 	"cloudeng.io/glean/gleancli/extensions"
@@ -21,12 +20,10 @@ import (
 
 type DownloadFlags struct {
 	config.FileFlags
-	crawlindex.AuthFileFlag
 }
 
 type RegisterFlags struct {
 	config.FileFlags
-	crawlindex.AuthFileFlag
 }
 
 type Datasources struct {
@@ -41,11 +38,7 @@ func (ds Datasources) Download(ctx context.Context, values any, args []string) e
 	if err != nil {
 		return err
 	}
-	indexingToken, _, err := initTokens(ctx, cfg, ds.TokenReaders, fv.AuthFile)
-	if err != nil {
-		return err
-	}
-	return datasources.Download(ctx, cfg.GleanDomain, datasource, indexingToken)
+	return datasources.Download(ctx, cfg.GleanDomain, datasource, cfg.GleanIndexingTokenName)
 }
 
 func (ds Datasources) Register(ctx context.Context, values interface{}, args []string) error {
@@ -55,11 +48,7 @@ func (ds Datasources) Register(ctx context.Context, values interface{}, args []s
 	if err != nil {
 		return err
 	}
-	indexingToken, _, err := initTokens(ctx, cfg, ds.TokenReaders, fv.AuthFile)
-	if err != nil {
-		return err
-	}
-	return datasources.Register(ctx, cfg, datasource, indexingToken)
+	return datasources.Register(ctx, cfg, datasource, cfg.GleanIndexingTokenName)
 }
 
 func (ds Datasources) ShowConfig(ctx context.Context, _ interface{}, args []string) error {
@@ -86,7 +75,7 @@ func (ds Datasources) ExplainConfig(_ context.Context, _ interface{}, _ []string
 }
 
 func explain(out *strings.Builder, indent int, cfg any) error {
-	desc, err := structdoc.Describe(cfg, "cmd", "YAML configuration file options\n")
+	desc, err := structdoc.Describe(cfg, "doc", "YAML configuration file options\n")
 	if err != nil {
 		return err
 	}
@@ -97,13 +86,6 @@ func explain(out *strings.Builder, indent int, cfg any) error {
 
 func explainConfig(out *strings.Builder, extensions []extensions.Extension) error {
 	var errs errors.M
-
-	fmt.Fprintf(out, "Authentication for Glean instances")
-
-	type gleanConfigs struct {
-		crawlindex.AuthFileFlag
-	}
-	errs.Append(explain(out, 0, gleanConfigs{}))
 
 	fmt.Fprintf(out, "Configuration for datasources/connectors, typically specified as a command line flag\n")
 	type datasources struct {
